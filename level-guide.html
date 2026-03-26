@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engineering Training Program — Level Guide</title>
+<style>
+  :root {
+    --bg: #121016;
+    --card: #1e3942;
+    --card2: #2d2d2d;
+    --accent: #e85b3c;
+    --text: #ffffff;
+    --sub: rgba(255,255,255,.65);
+    --muted: rgba(255,255,255,.38);
+    --correct: #4ade80;
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes staggerIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ── Page wrapper ────────────────────────────────────── */
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── Header ──────────────────────────────────────────── */
+  .page-header {
+    padding: 56px 0 48px;
+    animation: fadeUp 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .page-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .page-title {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 12px;
+  }
+  .page-title span {
+    background: linear-gradient(135deg, var(--accent), #ff9b6e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .page-sub {
+    font-size: 16px;
+    color: var(--sub);
+    max-width: 560px;
+    line-height: 1.65;
+  }
+
+  /* ── Track tabs ───────────────────────────────────────── */
+  .track-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+    animation: fadeUp 0.45s cubic-bezier(0.22,1,0.36,1) 0.1s both;
+    opacity: 0;
+    animation-fill-mode: forwards;
+  }
+  .track-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: var(--sub);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .track-tab:hover {
+    border-color: rgba(232,91,60,0.4);
+    color: var(--text);
+    background: rgba(232,91,60,0.07);
+  }
+  .track-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(232,91,60,0.35);
+  }
+  .track-tab-icon {
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  /* ── Track description ───────────────────────────────── */
+  .track-desc {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px;
+    margin-bottom: 36px;
+    font-size: 14px;
+    color: var(--sub);
+    line-height: 1.6;
+    animation: fadeIn 0.3s both;
+  }
+
+  /* ── Browse cards ────────────────────────────────────── */
+  .browse-cards { display: flex; flex-direction: column; gap: 24px; }
+
+  .browse-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 28px;
+    transition: border-color 0.2s;
+    animation: staggerIn 0.4s both;
+  }
+  .browse-card:hover { border-color: rgba(232,91,60,0.3); }
+
+  .browse-card-num {
+    font-size: 96px;
+    font-weight: 900;
+    line-height: 0.9;
+    color: rgba(255,255,255,0.05);
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+  .browse-card-body { display: block; }
+  .browse-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .browse-card-header h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+
+  .browse-focus {
+    font-size: 14px;
+    color: var(--sub);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .browse-scenarios h4 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .browse-scenarios ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .browse-scenarios li {
+    font-size: 14px;
+    color: var(--sub);
+    line-height: 1.55;
+    padding-left: 20px;
+    position: relative;
+  }
+  .browse-scenarios li::before {
+    content: '\2192';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 1px;
+  }
+
+  /* ── Keyword deep-dive ───────────────────────────────── */
+  .scenario-drill {
+    margin-top: 10px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.15);
+  }
+  .scenario-drill summary {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 8px 12px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    outline: none;
+    transition: background 0.15s;
+  }
+  .scenario-drill summary::-webkit-details-marker { display: none; }
+  .scenario-drill summary:hover { background: rgba(255,255,255,0.03); }
+  .scenario-drill[open] summary { border-bottom: 1px solid rgba(255,255,255,0.07); }
+
+  .kw-chevron {
+    font-size: 10px;
+    color: var(--accent);
+    margin-right: 8px;
+    transition: transform 0.2s;
+    display: inline-block;
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+  .scenario-drill[open] .kw-chevron { transform: rotate(90deg); }
+
+  .kw-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    flex-shrink: 0;
+    margin-right: 12px;
+  }
+
+
+  .kw-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px 12px;
+  }
+  .kw-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    background: rgba(232,91,60,0.08);
+    border: 1px solid rgba(232,91,60,0.2);
+    border-radius: 5px;
+    font-size: 11.5px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+    transition: background 0.15s, color 0.15s;
+  }
+  .kw-tag:hover {
+    background: rgba(232,91,60,0.16);
+    color: rgba(255,255,255,0.9);
+  }
+
+  .browse-topics {
+    margin-top: 24px;
+    background: rgba(0,0,0,0.3);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+  }
+  .browse-topics h5 {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .browse-topics p {
+    font-size: 13px;
+    color: var(--sub);
+    line-height: 1.6;
+  }
+
+  /* ── Footer ──────────────────────────────────────────── */
+  .page-footer {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ── Responsive ──────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .browse-card { grid-template-columns: 1fr; gap: 8px; }
+    .browse-card-num { font-size: 48px; }
+    .page-header { padding: 32px 0 32px; }
+    .track-tabs { gap: 6px; }
+    .track-tab { padding: 8px 14px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="page-header">
+    <p class="page-eyebrow">SEB Embedded &middot; Engineering Training Program</p>
+    <h1 class="page-title">Level <span>Guide</span></h1>
+    <p class="page-sub">Six levels across four competency areas. Find where you are today and where you're headed next.</p>
+  </header>
+
+  <div class="track-tabs" id="track-tabs"></div>
+  <div class="track-desc" id="track-desc"></div>
+  <div class="browse-cards" id="browse-cards"></div>
+
+  <footer class="page-footer">
+    <span>SEB Embedded &middot; Started March 2026</span>
+  </footer>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════════════════ */
+
+var TRACKS = {
+
+  database: {
+    id: 'database',
+    label: 'Database Engineering',
+    icon: '🗄',
+    desc: 'PostgreSQL on Cloud SQL (GCP). Covers everything from writing your first JOIN to running organisation-wide DR drills.',
+    levels: [
+      {
+        num: 1,
+        name: 'Foundations',
+        track: 'A',
+        focus: 'Getting data in and out, and understanding how it\'s organised.',
+        scenarios: [
+          'When a colleague asks me to pull specific data from the database, I can write a query that joins the right tables and filters to the correct result set.',
+          'When I need to add a new field to the application, I can trace how the data model maps to database tables and understand which table needs to change.',
+          'When I see a slow page or API endpoint, I can check the application logs to see what SQL the ORM is generating and spot obvious problems like N+1 queries.',
+          'When I need to connect to our database to inspect data, I can get connected through Cloud SQL Auth Proxy or a database client without needing someone to walk me through it each time.',
+          'When a colleague mentions indexes or transactions in a code review, I understand the concepts well enough to follow the conversation, even if I wouldn\'t make those decisions myself yet.'
+        ],
+        topics: 'SQL fundamentals (JOINs, WHERE, GROUP BY), table structure and relationships, how ORMs generate SQL, connecting to Cloud SQL, basic index and transaction concepts.',
+        keywords: [['SELECT', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'aliases', 'subqueries'], ['JPA', '@Entity', '@Column', '@Table', '@ManyToOne', '@OneToMany', 'Hibernate', 'schema inspection'], ['N+1 queries', 'Hibernate SQL logging', 'spring.jpa.show-sql', '@Transactional', 'FetchType.LAZY', 'FetchType.EAGER'], ['Cloud SQL Auth Proxy', 'psql', 'JDBC connection string', 'IAM database authentication', 'Cloud SQL instance connection name'], ['B-tree index', 'PRIMARY KEY', 'FOREIGN KEY', 'COMMIT', 'ROLLBACK', 'ACID', 'transaction isolation']]
+      },
+      {
+        num: 2,
+        name: 'Practitioner',
+        track: 'A',
+        focus: 'Designing features end-to-end from schema to migration, and understanding why queries are slow.',
+        scenarios: [
+          'When I\'m building a new feature, I can design the database schema myself — choosing tables, columns, relationships, and constraints — without needing a senior engineer to review the fundamentals.',
+          'When a query is slow, I can run EXPLAIN ANALYZE and understand the output well enough to identify the problem (missing index, bad join strategy, unnecessary sequential scan) and propose a fix.',
+          'When I need to add a column, change a type, or add a constraint in production, I can write a migration that won\'t lock the table or cause downtime — and I think about this before I write the migration, not after.',
+          'When choosing between different index strategies for a new table, I can reason about which columns to index, whether a composite index makes sense, and what the write overhead will be.',
+          'When a bug involves unexpected data states (phantom reads, lost updates), I can reason about which transaction isolation level is in play and whether it\'s the right choice.',
+          'When I suspect a query performance issue, I can find the relevant query in Cloud SQL Query Insights and use the data there to confirm or reject my hypothesis.'
+        ],
+        topics: 'Window functions, schema normalisation, EXPLAIN ANALYZE deep-dive, indexing strategies, transaction isolation levels, safe migration patterns, Cloud SQL monitoring and Query Insights.',
+        keywords: [['normalization', 'foreign key constraints', 'NOT NULL', 'UNIQUE', 'CHECK constraints', 'CASCADE', 'schema design', 'data types'], ['EXPLAIN ANALYZE', 'Seq Scan', 'Index Scan', 'Bitmap Heap Scan', 'cost estimates', 'actual rows', 'planning time', 'execution time'], ['Liquibase', 'ADD COLUMN', 'ALTER TABLE', 'ACCESS EXCLUSIVE lock', 'NOT VALID', 'VALIDATE CONSTRAINT', 'concurrent index creation'], ['CREATE INDEX CONCURRENTLY', 'composite index', 'index selectivity', 'write amplification', 'pg_stat_user_indexes', 'index bloat'], ['READ COMMITTED', 'REPEATABLE READ', 'SERIALIZABLE', 'phantom read', 'lost update', 'dirty read', 'SET TRANSACTION ISOLATION LEVEL'], ['Cloud SQL Query Insights', 'pg_stat_statements', 'query fingerprint', 'mean execution time', 'Cloud Monitoring']]
+      },
+      {
+        num: 3,
+        name: 'Advanced',
+        track: 'B',
+        focus: 'Handling complex regulated domains, diagnosing production issues, and understanding what\'s happening under the hood.',
+        scenarios: [
+          'When I\'m designing a schema for a domain with regulatory requirements (audit trails, temporal data, financial ledgers), I can choose the right patterns (soft deletes, audit columns, temporal tables) and explain why to the team.',
+          'When queries that used to be fast start degrading over weeks or months, I can investigate whether the cause is table bloat, stale statistics, or autovacuum not keeping up — and I know how to check this on Cloud SQL.',
+          'When I need to make a non-trivial schema change to a table that\'s actively serving production traffic, I can plan a multi-step migration that avoids locking the table and won\'t require a maintenance window.',
+          'When the team needs to isolate data between tenants in our multi-tenant BaaS platform, I can design and implement a row-level security strategy rather than relying purely on application-level filtering.',
+          'When an incident involves a query that\'s blocking other queries, I can identify the blocking chain, understand why the lock is held, and determine whether it\'s safe to terminate the offending transaction.',
+          'When choosing an indexing strategy for a complex query pattern, I can reach beyond basic B-tree indexes and evaluate whether a partial index, expression index, or covering index would be more effective.'
+        ],
+        topics: 'Complex domain schema patterns, PostgreSQL MVCC and vacuum internals, zero-downtime migration strategies, row-level security, lock diagnosis with pg_stat_activity and pg_locks, advanced indexing.',
+        keywords: [['audit table', 'temporal tables', 'soft delete', 'created_at', 'updated_at', 'deleted_at', 'pgaudit', 'SOX', 'PCI-DSS'], ['autovacuum', 'table bloat', 'pg_stat_user_tables', 'n_dead_tup', 'VACUUM ANALYZE', 'pg_statistic', 'ANALYZE', 'dead tuples'], ['ADD COLUMN DEFAULT', 'backfill', 'NOT VALID', 'VALIDATE CONSTRAINT', 'trigger-based migration', 'Liquibase', 'shadow column'], ['ROW LEVEL SECURITY', 'CREATE POLICY', 'ALTER TABLE ENABLE ROW LEVEL SECURITY', 'current_setting', 'tenant_id', 'SET LOCAL', 'security barrier'], ['pg_stat_activity', 'pg_locks', 'pg_blocking_pids()', 'wait_event', 'idle in transaction', 'SELECT pg_terminate_backend()', 'lock modes'], ['partial index', 'expression index', 'covering index', 'INCLUDE', 'GIN index', 'pg_stat_user_indexes', 'index-only scan']]
+      },
+      {
+        num: 4,
+        name: 'Specialist',
+        track: 'B',
+        focus: 'Operating at scale, managing platform-level database concerns, and ensuring compliance.',
+        scenarios: [
+          'When a table grows to tens of millions of rows and queries start slowing down, I can evaluate whether partitioning is the right solution, design the partitioning strategy, and plan the migration from unpartitioned to partitioned — including handling the transition period.',
+          'When our Cloud SQL instance fails over (planned or unplanned), I can explain to the team what happened, why the downtime lasted as long as it did, and whether our application handled reconnection correctly — and I can suggest improvements if it didn\'t.',
+          'When we\'re hitting connection limits or seeing connection timeout errors, I can trace the problem through the full stack (application pool settings, Auth Proxy behaviour, Cloud SQL instance limits) and propose the right fix at the right layer.',
+          'When a compliance review asks how our database encryption works or where our data retention policies are implemented, I can answer confidently — including explaining our CMEK setup, what\'s encrypted at rest, and how our archival strategy meets regulatory requirements.',
+          'When someone proposes changing a PostgreSQL configuration flag on Cloud SQL, I can evaluate whether it\'s likely to help, test it safely on a cloned instance, and measure the actual impact before recommending it for production.',
+          'When the team is debugging a performance issue that isn\'t a single slow query but a system-level pattern (high I/O wait, checkpoint pressure, cache miss rate), I can use Cloud Monitoring metrics and PostgreSQL stats views to identify the bottleneck.'
+        ],
+        topics: 'Table partitioning, Cloud SQL HA architecture and failover, connection pooling at scale, PostgreSQL tuning flags on Cloud SQL, compliance patterns (CMEK, audit, retention), system-level performance diagnosis.',
+        keywords: [['PARTITION BY RANGE', 'PARTITION BY LIST', 'PARTITION BY HASH', 'pg_partman', 'declarative partitioning', 'partition pruning', 'attach partition'], ['Cloud SQL HA', 'regional instance', 'failover replica', 'HikariCP reconnect', 'connection retry', 'Cloud SQL Auth Proxy reconnect', 'spring.datasource.hikari'], ['HikariCP', 'maximumPoolSize', 'connectionTimeout', 'max_connections', 'pg_stat_activity', 'PgBouncer', 'Cloud SQL Auth Proxy', 'wait_timeout'], ['CMEK', 'Cloud KMS', 'encryption at rest', 'pgaudit', 'data retention', 'archival', 'Cloud SQL disk encryption', 'PCI-DSS', 'SOX'], ['Cloud SQL flags', 'work_mem', 'shared_buffers', 'max_connections', 'checkpoint_completion_target', 'clone instance', 'pg_stat_bgwriter'], ['pg_stat_bgwriter', 'checkpoints_timed', 'blks_hit', 'blks_read', 'cache hit ratio', 'Cloud Monitoring', 'disk I/O metrics', 'WAL write rate']]
+      },
+      {
+        num: 5,
+        name: 'Expert',
+        track: 'M',
+        focus: 'Making architecture decisions that affect multiple teams, and operating at the boundary between database engineering and platform strategy.',
+        scenarios: [
+          'When the organisation is deciding whether a domain should have its own Cloud SQL instance or share with another domain, I can lead the analysis — weighing blast-radius isolation, operational cost, cross-instance query complexity, and compliance boundaries — and present a clear recommendation to stakeholders.',
+          'When a team needs to offload reporting or analytics queries from their primary database, I can design the read-replica routing strategy, define which workloads go where, and help the team understand the consistency trade-offs (how stale is acceptable for each use case).',
+          'When a schema change needs to touch a table with tens of millions of rows in production, I can own the migration plan end-to-end: estimate the duration on a Cloud SQL clone, write the runbook, define the monitoring plan, prepare the rollback procedure, and communicate the risk to stakeholders.',
+          'When a query is slow and the fix isn\'t obvious from a basic EXPLAIN, I can dig into the planner\'s decisions — understanding why it chose a particular join order or scan strategy — and find ways to guide it toward a better plan without resorting to workarounds.',
+          'When another team asks for help with a database design question outside my own domain, I can review their proposal, identify risks they may have missed, and provide actionable feedback — and I\'ve contributed to shared standards (ADRs, modelling guidelines, Terraform modules) that teams actually reference.',
+          'When we\'re reviewing Cloud SQL costs and someone asks whether we\'re spending appropriately, I can break down the cost drivers (instance tier, HA, storage, replicas, network) and propose specific changes with their performance and cost implications.'
+        ],
+        topics: 'At this level, growth comes primarily through architecture reviews, cross-team mentoring, and real production decisions rather than structured workshops. Level 5–6 engineers lead sessions in Track A and Track B.',
+        keywords: [['Cloud SQL instance isolation', 'blast radius', 'cross-database queries', 'compliance boundaries', 'ADR', 'cost modelling', 'multi-tenant architecture'], ['Cloud SQL read replica', 'replication lag', 'replica routing', 'read-after-write consistency', 'analytics workloads', 'Spring AbstractRoutingDataSource'], ['Cloud SQL clone', 'migration runbook', 'pg_stat_progress_alter_table', 'lock monitoring', 'rollback plan', 'Liquibase', 'pg_repack'], ['query planner', 'planner statistics', 'pg_stats', 'default_statistics_target', 'join order', 'enable_hashjoin', 'enable_seqscan', 'ANALYZE'], ['ADR', 'Terraform Cloud SQL module', 'schema review', 'data modeling', 'referential integrity', 'naming conventions', 'shared standards'], ['Cloud SQL pricing', 'instance tier', 'HA standby', 'read replica cost', 'storage auto-increase', 'network egress', 'committed use discounts']]
+      },
+      {
+        num: 6,
+        name: 'Authority',
+        track: 'M',
+        focus: 'Organisational strategy, disaster recovery validation, and technology direction.',
+        scenarios: [
+          'When the organisation needs a database strategy that spans regions (for disaster recovery, data residency, or latency requirements), I can design the approach — including cross-region replication topology, failover procedures, and the trade-offs between consistency, availability, and cost — and present it at the leadership level.',
+          'When we\'re evaluating whether to stay on Cloud SQL or explore alternatives (AlloyDB, self-managed PostgreSQL on GKE), I can run the evaluation: define the criteria, set up a proof-of-concept, benchmark the relevant workloads, and produce a written recommendation that non-technical stakeholders can act on.',
+          'When we need to validate that our disaster recovery actually works (not just that it exists on paper), I can design and run a failover drill — including defining success criteria, coordinating with affected teams, measuring actual recovery time, and documenting the gaps we find.',
+          'When a team is building new internal tooling (CI migration checks, schema validation, monitoring dashboards, Terraform modules for Cloud SQL), I can review or contribute to the design, ensuring it meets the needs of multiple teams and doesn\'t create operational debt.',
+          'When leadership asks "how long until we need to scale this database, and what will it cost?", I can produce a capacity projection grounded in actual growth data — storage trajectory, connection count trends, instance tier headroom — with clear decision points and cost estimates for each scaling path.'
+        ],
+        topics: 'At this level, growth comes from owning cross-cutting decisions, running organisational processes (DR drills, technology evaluations), and building platform capabilities. There is no structured training track — this is the level that shapes the training programme itself.',
+        keywords: [['cross-region replication', 'Cloud SQL cross-region replica', 'RTO', 'RPO', 'data residency', 'PITR', 'failover topology', 'CAP theorem'], ['AlloyDB', 'Cloud SQL', 'self-managed PostgreSQL on GKE', 'pgbench', 'benchmark criteria', 'TCO', 'managed vs self-hosted', 'technology evaluation'], ['DR drill', 'Cloud SQL failover', 'PITR restore', 'RTO measurement', 'runbook validation', 'incident coordination', 'gap analysis'], ['Terraform Cloud SQL module', 'Liquibase CI', 'schema validation', 'Cloud Monitoring dashboard', 'platform tooling', 'reusable modules', 'operational debt'], ['capacity planning', 'storage growth rate', 'connection count trends', 'instance tier upgrade', 'Cloud SQL metrics', 'cost projection', 'scaling thresholds']]
+      }
+    ]
+  },
+
+  jvm: {
+    id: 'jvm',
+    label: 'JVM Understanding',
+    icon: '☕',
+    desc: 'Spring Boot 3 on GKE with PostgreSQL on Cloud SQL and Kafka. Covers JVM internals, memory management, thread behaviour, and production diagnosis.',
+    levels: [
+      {
+        num: 1,
+        name: 'Foundations',
+        track: 'A',
+        focus: 'Reading what the application is telling you and understanding the basic runtime model.',
+        scenarios: [
+          'When an application throws an OutOfMemoryError or StackOverflowError, I can read the stack trace, understand what it means, and know where to start looking — even if I haven\'t seen that specific error before.',
+          'When a service is slow or unresponsive, I can check the logs and Spring Boot Actuator health endpoints to get an initial picture of what\'s wrong before escalating.',
+          'When I look at a Grafana dashboard showing JVM heap usage or GC pause time, I can follow what the chart is measuring and tell whether what I\'m seeing is normal or not.',
+          'When I deploy a Spring Boot service to GKE, I understand what a Pod restart means for in-flight requests, and I know to check whether the liveness and readiness probes are configured correctly.',
+          'When HikariCP logs a "connection timeout" warning, I understand that it means the pool is exhausted and I know the first place to look: how many connections are open and whether any are stuck.'
+        ],
+        topics: 'JVM memory model (heap, stack, metaspace), GC basics, Spring Boot Actuator, reading GKE Pod logs, HikariCP pool fundamentals, liveness and readiness probes.',
+        keywords: [['OutOfMemoryError', 'StackOverflowError', 'heap space', 'metaspace', 'GC overhead limit exceeded', 'stack trace', 'java.lang.Error', 'OOM killer'], ['Spring Boot Actuator', '/actuator/health', '/actuator/metrics', 'structured logging', 'liveness', 'readiness', 'application logs', 'kubectl logs'], ['jvm.memory.used', 'jvm.gc.pause', 'heap committed', 'eden space', 'old gen', 'Grafana', 'Cloud Monitoring', 'GC frequency'], ['livenessProbe', 'readinessProbe', 'Pod restart', 'terminationGracePeriodSeconds', 'OOMKilled', 'CrashLoopBackOff', 'kubectl describe pod', 'GKE'], ['HikariCP', 'connection timeout', 'hikari.pool.ActiveConnections', 'hikari.pool.PendingConnections', 'maximumPoolSize', 'connectionTimeout', 'pool exhausted', 'Cloud SQL']]
+      },
+      {
+        num: 2,
+        name: 'Practitioner',
+        track: 'A',
+        focus: 'Configuring the runtime correctly for your service and diagnosing the most common production problems.',
+        scenarios: [
+          'When I size a new service for GKE, I can set JVM heap limits (-Xmx) and GKE resource requests/limits so the container doesn\'t get OOM-killed — and I understand why the JVM doesn\'t automatically respect the container\'s memory limit without explicit configuration.',
+          'When GC pause times are elevated or GC frequency spikes, I can read the GC logs or JFR data well enough to distinguish between a temporary allocation surge and a genuine memory leak, and I know which one needs immediate action.',
+          'When a Kafka consumer in our service starts falling behind on lag, I can check whether the cause is slow processing, insufficient concurrency, or a downstream bottleneck, and I can adjust the consumer thread pool or `max.poll.records` to address it.',
+          'When I need to investigate a production issue without a debugger, I can attach a JFR recording to a running pod, pull the file, and open it in JMC to identify hot methods or lock contention without taking the service down.',
+          'When I write integration tests with Testcontainers for a Spring Boot service, I understand why the test JVM and container startup sequence matters and how to avoid flaky tests caused by connection timing.'
+        ],
+        topics: 'JVM container awareness (UseContainerSupport), HikariCP tuning, GC log analysis, Kafka consumer groups and lag, Java Flight Recorder basics, Spring Boot test slices with Testcontainers.',
+        keywords: [['-Xmx', '-Xms', 'UseContainerSupport', 'MaxRAMPercentage', 'resources.requests', 'resources.limits', 'OOMKilled', 'cgroup memory'], ['GC logs', '-Xlog:gc', 'jvm.gc.pause', 'allocation rate', 'heap pressure', 'Java Flight Recorder', 'JFR', 'G1GC'], ['consumer lag', 'max.poll.records', 'max.poll.interval.ms', 'consumer group', 'kafka.consumer.fetch-latency-avg', 'concurrency', 'partition', '@KafkaListener'], ['Java Flight Recorder', 'JFR', 'jcmd', 'Java Mission Control', 'JMC', 'jcmd VM.unlock_commercial_features', 'kubectl cp', 'lock contention'], ['Testcontainers', '@SpringBootTest', '@Container', 'waitingFor', 'withStartupTimeout', 'Spring Boot test slices', 'flaky tests', 'DataSourceAutoConfiguration']]
+      },
+      {
+        num: 3,
+        name: 'Advanced',
+        track: 'B',
+        focus: 'Diagnosing non-obvious production problems and tuning the runtime under real load.',
+        scenarios: [
+          'When a service\'s heap usage grows slowly over days until it triggers a restart, I can collect and analyse a heap dump to identify which objects are accumulating, which GC roots are keeping them alive, and whether the cause is a code bug or a configuration problem.',
+          'When a service intermittently stalls under load and the cause isn\'t obvious from logs, I can take a thread dump at the right moment, read the output, and identify whether the stall is caused by lock contention, a thread pool being saturated, or a blocked I/O call.',
+          'When Kafka consumer rebalancing is causing repeated processing pauses or duplicate processing, I can trace the cause — whether it\'s `max.poll.interval.ms` being exceeded, insufficient heartbeat threads, or a partition assignment strategy mismatch — and fix it.',
+          'When a service is consuming more CPU than expected on GKE, I can use async-profiler or JFR CPU profiling to identify which code paths are hot and distinguish between application logic, GC overhead, and framework overhead.',
+          'When a Spring Boot service starts leaking database connections under load, I can trace the leak: identify which code paths are acquiring connections without releasing them, verify the fix with load testing, and add the right HikariCP metrics to catch it early in future.'
+        ],
+        topics: 'Heap dump analysis (Eclipse MAT or VisualVM), thread dump interpretation, async-profiler, Kafka consumer configuration deep-dive, HikariCP leak detection, GC tuning (G1 vs ZGC trade-offs).',
+        keywords: [['heap dump', 'Eclipse MAT', 'VisualVM', 'jmap', 'GC roots', 'retained heap', 'dominator tree', 'memory leak'], ['thread dump', 'jstack', 'BLOCKED', 'WAITING', 'synchronized', 'thread pool saturation', 'virtual threads', 'deadlock'], ['max.poll.interval.ms', 'session.timeout.ms', 'heartbeat.interval.ms', 'partition assignment', 'CooperativeStickyAssignor', 'rebalance listener', 'duplicate processing', 'consumer group coordinator'], ['async-profiler', 'JFR', 'CPU profiling', 'flame graph', 'jvm.gc.overhead', 'safepoint', 'JIT compilation', 'profiling overhead'], ['HikariCP', 'leakDetectionThreshold', 'hikari.pool.ActiveConnections', 'hikari.pool.PendingConnections', 'connection leak', '@Transactional', 'DataSource', 'load testing']]
+      },
+      {
+        num: 4,
+        name: 'Specialist',
+        track: 'B',
+        focus: 'Owning JVM health across multiple services and solving platform-level performance problems.',
+        scenarios: [
+          'When the team needs to decide whether to switch GC algorithms (G1 to ZGC or Shenandoah) for a latency-sensitive service, I can design the experiment: define success criteria, run the before/after comparison under representative load, and produce a written recommendation with data.',
+          'When a service is underperforming on GKE and the cause isn\'t the application code, I can investigate at the platform level: CPU throttling due to CFS quota, NUMA effects, network I/O bottlenecks, or noisy neighbour problems on the node.',
+          'When our Kafka consumers need to handle a dramatic increase in message volume, I can design the scaling strategy — whether that\'s horizontal pod scaling, partition rebalancing, or batching changes — and implement it without causing consumer group instability.',
+          'When we\'re building a service that must meet strict latency SLOs, I can identify the JVM sources of latency variance (GC pauses, JIT compilation, class loading at startup) and apply techniques (warmup periods, AOT hints, GC tuning) to reduce that variance.',
+          'When a Cloud SQL connection pool problem cascades across multiple services during a traffic spike, I can trace the problem from HikariCP metrics through the Cloud SQL Auth Proxy to the database instance limits, and propose a platform-level fix rather than a per-service workaround.'
+        ],
+        topics: 'GC algorithm comparison under production load, Linux CFS CPU throttling on GKE, Kafka partition scaling, JVM startup optimisation (CDS, AOT), cross-service connection pool management, platform-level JVM observability.',
+        keywords: [['G1GC', 'ZGC', 'Shenandoah', '-XX:+UseZGC', 'GC pause p99', 'throughput vs latency', 'JFR', 'benchmark'], ['CFS throttling', 'cpu.cfs_quota_us', 'throttled_time', 'NUMA', 'node affinity', 'kubectl top node', 'container_cpu_cfs_throttled_seconds_total', 'noisy neighbour'], ['partition scaling', 'consumer group', 'HPA', 'max.poll.records', 'fetch.min.bytes', 'fetch.max.wait.ms', 'consumer concurrency', 'rebalance'], ['GC pause', 'JIT warmup', 'Class Data Sharing', 'CDS', 'AOT', 'GraalVM', 'p99 latency', 'safepoint'], ['HikariCP', 'Cloud SQL Auth Proxy', 'max_connections', 'hikari.pool.PendingConnections', 'connection cascade', 'pgbouncer', 'Cloud SQL', 'connection limits']]
+      },
+      {
+        num: 5,
+        name: 'Expert',
+        track: 'M',
+        focus: 'Setting JVM and runtime standards that apply across the organisation and mentoring teams through complex production issues.',
+        scenarios: [
+          'When multiple teams are independently tuning their JVM configurations and arriving at inconsistent results, I can consolidate what works, define org-wide baseline settings for GKE Spring Boot services, and explain the reasoning so teams understand why rather than just following rules.',
+          'When a team hits a JVM problem they can\'t diagnose themselves, I can join a production incident, work through the evidence (heap dumps, thread dumps, JFR recordings, GC logs), and get to a root cause — and turn the incident into a learning session for the team afterwards.',
+          'When we\'re evaluating new Java versions or JVM distributions for the platform, I can design and run the evaluation: identify the relevant changes, test against our actual workloads (Spring Boot + HikariCP + Kafka), and produce a migration recommendation with a rollout plan.',
+          'When a service\'s performance under load doesn\'t match what local testing suggested, I can design a realistic load test using our actual traffic patterns, identify the discrepancy, and determine whether it\'s a test fidelity problem or a genuine production-only behaviour.',
+          'When teams ask how we should instrument our Spring Boot services for observability, I can define the standard: which JVM and application metrics to expose, how to structure custom spans in OpenTelemetry, and how to connect JVM behaviour to business-level SLOs in Grafana.'
+        ],
+        topics: 'At this level, growth comes from cross-team mentoring, production incident ownership, and contributing to platform standards. Level 5–6 engineers lead JVM sessions in Track A and Track B.',
+        keywords: [['MaxRAMPercentage', 'UseContainerSupport', 'G1GC', 'ZGC', 'JVM baseline', 'GKE resource limits', 'platform standards', 'Spring Boot defaults'], ['heap dump', 'thread dump', 'JFR', 'GC logs', 'incident retrospective', 'Eclipse MAT', 'async-profiler', 'root cause analysis'], ['Java LTS', 'Java 21', 'virtual threads', 'GraalVM', 'JDK migration', 'Spring Boot compatibility', 'Testcontainers', 'canary rollout'], ['load testing', 'k6', 'Gatling', 'traffic shaping', 'JFR', 'throughput', 'p99 latency', 'production traffic patterns'], ['Micrometer', 'OpenTelemetry', 'jvm.memory.used', 'jvm.gc.pause', 'custom spans', 'SLO', 'Grafana', 'Spring Boot Actuator']]
+      },
+      {
+        num: 6,
+        name: 'Authority',
+        track: 'M',
+        focus: 'JVM platform strategy, tooling investment, and organisation-wide runtime governance.',
+        scenarios: [
+          'When the organisation needs to decide on a long-term JVM strategy (LTS versions, GraalVM native, container-native tuning), I can lead the decision: gather input from teams, evaluate options against our actual constraints (startup time, memory footprint, tooling ecosystem), and produce a recommendation at the leadership level.',
+          'When we need to build or select tooling to standardise JVM observability across all services (custom Grafana dashboards, shared JFR event libraries, baseline alert rules), I can own the design and adoption — ensuring the tooling works for the range of services we run, not just the ones I know best.',
+          'When a critical production incident involves JVM behaviour at a scale or complexity that stumps the team, I can take ownership of the investigation: organise the evidence, form and test hypotheses, coordinate with engineers across teams, and produce a post-mortem that prevents recurrence.',
+          'When leadership asks about the cost and risk of migrating the entire backend from Java 17 to Java 21 (or any equivalent platform shift), I can produce a structured assessment: compatibility risks, testing strategy, rollout order, and what "done" looks like.',
+          'When there is no structured training track for JVM topics and teams are learning inconsistently, I can identify the gaps, commission or build the curriculum, and ensure the training programme covers what engineers actually need — not just what\'s interesting to experts.'
+        ],
+        topics: 'At this level, growth comes from technology strategy, tooling investment, and shaping the engineering culture around JVM topics. There is no structured training track — this is the level that defines what the training programme covers.',
+        keywords: [['GraalVM native image', 'Java LTS', 'Project Leyden', 'startup time', 'memory footprint', 'container-native', 'AOT compilation', 'GKE'], ['JFR custom events', 'Micrometer', 'Grafana dashboards', 'alert rules', 'OpenTelemetry', 'jvm.memory.used', 'platform observability', 'shared libraries'], ['post-mortem', 'heap dump', 'JFR', 'thread dump', 'incident command', 'root cause analysis', 'async-profiler', 'cross-team coordination'], ['Java 17', 'Java 21', 'virtual threads', 'sequenced collections', 'Spring Boot 3', 'migration risk', 'compatibility matrix', 'rollout strategy'], ['curriculum design', 'skills gap', 'training programme', 'adaptive quiz', 'JVM fundamentals', 'GC tuning', 'observability', 'competency levels']]
+      }
+    ]
+  },
+
+  design: {
+    id: 'design',
+    label: 'Solution Design',
+    icon: '🏗',
+    desc: 'Architecture and system design for distributed BaaS services. Covers API design, data modelling, event-driven patterns, and cross-team architectural decisions.',
+    levels: [
+      {
+        num: 1,
+        name: 'Foundations',
+        track: 'A',
+        focus: 'Understanding existing system designs and contributing to discussions with confidence.',
+        scenarios: [
+          'When I read a service\'s API contract (OpenAPI spec or Confluence doc), I can understand what it does, what inputs it expects, and what error responses it might return — well enough to integrate against it without needing the owning team to walk me through it.',
+          'When I join a design discussion, I can follow the conversation — understanding what\'s being traded off and why — even if I\'m not yet the one proposing options.',
+          'When I\'m asked to implement a small feature that touches an existing service boundary, I can identify whether my change requires a schema change, a new API endpoint, or an event — and flag the right people before I start coding.',
+          'When I read an Architecture Decision Record for a system I work in, I understand the structure: the context, the decision, the alternatives considered, and the consequences.',
+          'When a bug turns out to be a design problem (e.g. two services caching the same data independently), I can articulate why it happened structurally — not just what the code did wrong.'
+        ],
+        topics: 'Service boundaries and contracts, reading OpenAPI specs, basic request/response vs event patterns, ADR format, how our BaaS platform is structured (Credit Lifecycle, Fincrime, Payments domains).',
+        keywords: [['OpenAPI', 'Swagger', 'HTTP verbs', 'status codes', 'request/response schema', 'error responses', 'path parameters', 'query parameters'], ['trade-off analysis', 'synchronous vs asynchronous', 'consistency vs availability', 'service boundaries', 'latency', 'bounded context'], ['service boundary', 'API contract', 'Kafka topic', 'schema migration', 'Liquibase', 'REST endpoint', 'event-driven'], ['ADR', 'Architecture Decision Record', 'context', 'consequences', 'alternatives', 'MADR', 'decision log'], ['cache invalidation', 'data consistency', 'single source of truth', 'service coupling', 'shared state', 'stale data']]
+      },
+      {
+        num: 2,
+        name: 'Practitioner',
+        track: 'A',
+        focus: 'Designing features that span service boundaries and documenting those decisions clearly.',
+        scenarios: [
+          'When I\'m building a new feature that involves multiple services, I can design the interaction: define the API contract, identify who owns what data, and choose between synchronous HTTP and async Kafka messaging based on the consistency and latency requirements.',
+          'When I need to document a technical decision I\'ve made, I can write an ADR that explains the context clearly, states the decision, lists what I considered and rejected, and describes the consequences — including the downsides.',
+          'When I design a new REST endpoint, I can reason about the right HTTP verb and status codes, what goes in the URL vs the body, how pagination should work, and what error responses the client needs to handle.',
+          'When I\'m designing the data model for a new feature, I can identify what the aggregate root is, where the consistency boundary sits, and whether any data needs to be replicated across services — and I can explain the trade-offs to my team.',
+          'When someone proposes a design in a PR or design doc, I can give concrete feedback: not just "I don\'t like this" but specific concerns about consistency, error handling, backwards compatibility, or missing failure modes.'
+        ],
+        topics: 'REST API design conventions, synchronous vs asynchronous patterns, event-driven basics with Kafka, data consistency trade-offs, aggregate design, writing effective ADRs, backwards compatibility.',
+        keywords: [['OpenAPI', 'Kafka topic', 'REST', 'synchronous vs asynchronous', 'eventual consistency', 'data ownership', '@KafkaListener', 'Spring WebClient'], ['ADR', 'Architecture Decision Record', 'MADR', 'decision log', 'trade-off', 'consequences', 'alternatives considered'], ['HTTP verbs', 'idempotency', 'PUT vs PATCH', 'cursor pagination', 'RFC 9457', 'problem+json', '400 vs 422', 'REST conventions'], ['aggregate root', 'consistency boundary', 'DDD', 'bounded context', 'data replication', 'eventual consistency', 'domain event', 'foreign key vs event'], ['backwards compatibility', 'error propagation', 'failure mode', 'idempotency', 'contract versioning', 'non-functional requirements', 'edge cases']]
+      },
+      {
+        num: 3,
+        name: 'Advanced',
+        track: 'B',
+        focus: 'Designing systems that handle complex domains, failure modes, and regulatory constraints.',
+        scenarios: [
+          'When a domain has strict auditability requirements (PCI-DSS, SOX), I can design the data flow and event sourcing strategy so that every state change is traceable — choosing between event sourcing, audit tables, and change data capture depending on what the compliance requirement actually demands.',
+          'When a business process needs to span multiple services and must be reliable even if one service is temporarily unavailable, I can design the saga — deciding between orchestration and choreography, defining the compensation logic, and identifying where idempotency is required.',
+          'When an API needs to evolve without breaking existing consumers, I can design the versioning strategy: whether to use URL versioning, content negotiation, or field-level backwards compatibility — and I can explain to the team what "breaking change" actually means in each case.',
+          'When a service needs to handle data for multiple tenants in our BaaS platform, I can design the tenancy model — data isolation strategy, how tenant context flows through the call stack, and how we prevent cross-tenant data leaks at the application and database layers.',
+          'When a new integration with an external financial system is proposed, I can identify the integration failure modes, design the retry and dead-letter strategy for Kafka consumers, and define what "at-least-once" vs "exactly-once" delivery means for that specific use case.'
+        ],
+        topics: 'Event sourcing and audit design for regulated systems, saga patterns (orchestration vs choreography), idempotency, API versioning strategies, multi-tenancy patterns, Kafka exactly-once semantics, PCI-DSS and SOX data design implications.',
+        keywords: [['event sourcing', 'audit log', 'change data capture', 'CDC', 'Debezium', 'PCI-DSS', 'SOX', 'append-only table', 'event store', 'immutable records'], ['saga pattern', 'orchestration', 'choreography', 'compensation transaction', 'idempotency key', 'distributed transaction', 'outbox pattern', 'Spring State Machine'], ['API versioning', 'URL versioning', 'content negotiation', 'Accept header', 'backwards compatibility', 'breaking change', 'additive change', 'consumer-driven contracts', 'Pact'], ['multi-tenancy', 'tenant isolation', 'row-level security', 'tenant context', 'ThreadLocal', 'schema-per-tenant', 'data leakage', 'PostgreSQL RLS', 'Spring Security'], ['dead-letter topic', 'DLT', 'at-least-once delivery', 'exactly-once semantics', 'idempotent consumer', 'retry backoff', '@RetryableTopic', 'Kafka transactions', 'poison pill']]
+      },
+      {
+        num: 4,
+        name: 'Specialist',
+        track: 'B',
+        focus: 'Owning cross-service designs end-to-end and raising the quality bar across your domain.',
+        scenarios: [
+          'When a feature requires coordinated changes across three or more services owned by different teams, I can lead the design: facilitate the cross-team design session, produce the shared contract, identify the sequencing dependencies, and maintain the overall design coherence as implementation details emerge.',
+          'When a performance or scalability problem can\'t be solved within a single service, I can redesign the system boundary: propose caching, CQRS, or read-model patterns, evaluate the consistency trade-offs, and own the migration from the current design to the new one.',
+          'When the team is about to build something that\'s been built before in a slightly different form elsewhere in the org, I can identify the overlap, propose reuse or consolidation, and explain what we gain and what we lose by sharing the solution.',
+          'When I review a design from another team, I can identify systemic risks they may have missed — not just local code issues but things like retry storms, thundering herds, inconsistent error propagation, or an unstated assumption about ordering guarantees.',
+          'When a compliance audit asks how a specific financial transaction flows through our system from initiation to settlement, I can trace it end-to-end across all the services involved, explain the consistency model at each step, and identify any gaps in our audit trail.'
+        ],
+        topics: 'Cross-team API design facilitation, CQRS and read-model patterns, distributed caching strategies, system-level failure mode analysis, compliance traceability, shared platform component design.',
+        keywords: [['cross-team API contract', 'OpenAPI', 'RFC process', 'design session facilitation', 'sequencing dependencies', 'interface versioning', 'consumer-driven contracts', 'Pact'], ['CQRS', 'read model', 'event projection', 'distributed cache', 'Redis', 'eventual consistency', 'materialised view', 'write model', 'cache invalidation'], ['platform component', 'shared library', 'inner source', 'API gateway', 'consolidation', 'reuse vs coupling', "Conway's Law", 'bounded context'], ['retry storm', 'thundering herd', 'circuit breaker', 'Resilience4j', 'ordering guarantee', 'error propagation', 'backpressure', 'fan-out', 'cascading failure'], ['end-to-end traceability', 'correlation ID', 'audit trail', 'PCI-DSS', 'SOX', 'distributed tracing', 'OpenTelemetry', 'consistency model', 'settlement flow']]
+      },
+      {
+        num: 5,
+        name: 'Expert',
+        track: 'M',
+        focus: 'Setting architectural standards for the organisation and leading the highest-complexity design work.',
+        scenarios: [
+          'When multiple teams are making independent architectural decisions that are slowly diverging in ways that will create integration pain, I can identify the pattern, propose the standard, write the ADR, and get enough buy-in that teams actually follow it — without having to mandate it top-down.',
+          'When the organisation is considering a major architectural shift (e.g. moving from a monolith to event-driven microservices, or adopting a new data platform), I can scope the work, identify the risks, define what success looks like, and present a phased approach to leadership.',
+          'When a team is stuck on a design problem that has no clear right answer, I can facilitate the decision process: surface the real trade-offs, challenge hidden assumptions, help the team separate "what we prefer" from "what the constraints require", and get to a decision that the team owns.',
+          'When a new technology is proposed for adoption (a new messaging system, a new service mesh, a new API gateway), I can lead the evaluation: define the criteria, prototype the relevant scenarios, and produce an honest assessment of fit for our specific context.',
+          'When the training programme needs to cover solution design, I can define the curriculum: what scenarios to cover, what exercises produce real artefacts, and how to structure the progression from "can read a design" to "can lead a design".'
+        ],
+        topics: 'At this level, growth comes from cross-team standards work, architecture facilitation, and technology strategy. Level 5–6 engineers lead Solution Design sessions in Track A and Track B.',
+        keywords: [['ADR', 'architectural standard', 'divergence', 'design guild', 'RFC process', 'buy-in', "Conway's Law", 'org-wide pattern'], ['strangler fig', 'event-driven architecture', 'migration strategy', 'phased rollout', 'risk assessment', 'architectural runway', 'monolith decomposition', 'bounded context mapping'], ['facilitation', 'trade-off analysis', 'assumption mapping', 'design workshop', 'decision criteria', 'constraint vs preference', 'ADR', 'architectural fitness function'], ['technology evaluation', 'proof of concept', 'fit assessment', 'service mesh', 'API gateway', 'Kafka vs alternatives', 'non-functional requirements', 'vendor lock-in'], ['curriculum design', 'scenario-based learning', 'design artefact', 'ADR writing', 'progression framework', 'workshop facilitation', 'competency mapping']]
+      },
+      {
+        num: 6,
+        name: 'Authority',
+        track: 'M',
+        focus: 'Architectural governance, technology strategy, and building the organisation\'s design capability.',
+        scenarios: [
+          'When the organisation needs a coherent architecture for a new strategic direction (e.g. expanding into a new market, onboarding a new banking client, or offering a new BaaS product), I can lead the architecture from first principles: domain modelling, system boundary design, data strategy, and platform requirements.',
+          'When the way we make architectural decisions is inconsistent or poorly documented, I can redesign the decision-making process: define when ADRs are required, who needs to be involved for which scopes, and how decisions get revisited when context changes.',
+          'When an audit or regulatory review questions our system design (how data flows, where data lives, what happens in a failure), I can own the response: provide the evidence, identify any genuine gaps, and propose the remediations at an architectural level.',
+          'When we need to assess technical debt across the platform and prioritise what to fix first, I can produce a structured assessment: map the current architecture, identify the highest-risk coupling and inconsistency, and propose a sequenced improvement roadmap.',
+          'When engineers across the organisation don\'t have a shared vocabulary for discussing architecture, I can build it: define the standards, run the design guild, and create the reference architectures that teams use as starting points.'
+        ],
+        topics: 'At this level, growth comes from architectural governance, strategic design leadership, and building organisational capability. There is no structured training track — this is the level that defines what good design looks like for the organisation.',
+        keywords: [['domain modelling', 'bounded context', 'context mapping', 'event storming', 'system boundary', 'data strategy', 'BaaS platform', 'strategic DDD'], ['ADR governance', 'decision process', 'architectural review board', 'RFC process', 'design guild', 'RACI', 'decision log', 'revisiting decisions'], ['PCI-DSS', 'SOX', 'data flow diagram', 'regulatory audit', 'data residency', 'failure mode documentation', 'audit evidence', 'gap analysis', 'remediation roadmap'], ['technical debt', 'coupling analysis', 'architectural risk', 'dependency mapping', 'improvement roadmap', 'strangler fig', 'fitness function', 'sequenced migration'], ['reference architecture', 'design guild', 'architectural vocabulary', 'pattern library', 'architectural standard', 'inner source', 'community of practice', 'golden path']]
+      }
+    ]
+  },
+
+  cloud: {
+    id: 'cloud',
+    label: 'Cloud & Observability',
+    icon: '☁',
+    desc: 'GCP, GKE, and the full observability stack: Cloud Monitoring, OpenTelemetry, Grafana, structured logging, and distributed tracing.',
+    levels: [
+      {
+        num: 1,
+        name: 'Foundations',
+        track: 'A',
+        focus: 'Reading what the platform is telling you and navigating GCP without getting lost.',
+        scenarios: [
+          'When a service alert fires in Grafana, I can open the dashboard, understand what the panel is measuring, and tell the difference between a metric that\'s genuinely out of range and one that\'s noisy or stale.',
+          'When a pod is restarting in GKE, I can use `kubectl` to get the pod status, read the recent logs, and identify whether it\'s an OOM kill, a failing liveness probe, or a crash at startup.',
+          'When I need to find a specific log line from a service in the last hour, I can use Cloud Logging\'s query interface to filter by service name, severity, and time range without needing someone to write the query for me.',
+          'When an alert fires for a service I don\'t own, I can look at the runbook link, follow the triage steps, and escalate to the right team with a useful summary of what I observed — not just "the alert fired".',
+          'When I look at a Cloud SQL metrics dashboard, I can read CPU utilisation, connection count, and storage usage, and tell whether any of those numbers suggest something needs attention.'
+        ],
+        topics: 'GCP Console navigation, GKE Pod lifecycle and kubectl basics, Cloud Logging query interface, Grafana dashboard reading, alert anatomy (what fires, why, what the runbook says), Cloud SQL metrics overview.',
+        keywords: [['Grafana', 'alert state', 'no data vs firing', 'evaluation interval', 'alert thresholds', 'dashboard panels', 'time range selector'], ['kubectl describe pod', 'kubectl logs --previous', 'OOMKilled', 'liveness probe', 'CrashLoopBackOff', 'exit codes', 'pod restart count'], ['Cloud Logging', 'Log Explorer', 'resource.type', 'severity filter', 'timestamp filter', 'log query language', 'jsonPayload'], ['runbook', 'alert annotations', 'escalation path', 'Cloud Monitoring alert policy', 'Grafana alert labels', 'incident summary'], ['Cloud SQL metrics', 'database/cpu/utilization', 'database/postgresql/num_backends', 'storage utilization', 'Cloud Monitoring', 'GCP Console', 'metrics explorer']]
+      },
+      {
+        num: 2,
+        name: 'Practitioner',
+        track: 'A',
+        focus: 'Instrumenting your service correctly and contributing to the team\'s observability setup.',
+        scenarios: [
+          'When I deploy a new service to GKE, I can configure its resource requests and limits correctly, set up the liveness and readiness probes, and verify that the service appears healthy in Cloud Monitoring before declaring the deployment done.',
+          'When I add a new feature that touches a critical business flow, I can add structured log statements with the right fields (trace ID, tenant ID, operation name, duration) so that the flow is traceable in Cloud Logging without producing log spam.',
+          'When I need to add a custom metric for a new feature (e.g. number of payment retries per minute), I can instrument it with Micrometer in Spring Boot, verify it appears in Prometheus scraping, and build a simple Grafana panel to display it.',
+          'When I need to understand how a request flows through our system, I can use the trace view in Cloud Trace or Grafana Tempo to follow a trace ID across services and identify where the latency is being spent.',
+          'When the team needs to create a basic alert for a new service, I can define the alert condition, set an appropriate threshold, link it to a runbook, and configure the notification channel — without creating a noisy alert that pages people at 3am for non-issues.'
+        ],
+        topics: 'GKE resource configuration, structured logging with Spring Boot, Micrometer and custom metrics, distributed tracing with OpenTelemetry, Grafana panel creation, alert threshold design.',
+        keywords: [['resources.requests', 'resources.limits', 'livenessProbe', 'readinessProbe', 'kubectl rollout status', 'Cloud Monitoring uptime check', 'GKE workload health'], ['structured logging', 'JSON log format', 'trace_id field', 'Spring Boot logback', 'MDC (Mapped Diagnostic Context)', 'log severity levels', 'Cloud Logging jsonPayload'], ['Micrometer', 'Counter', 'MeterRegistry', 'prometheus scrape', 'Spring Boot Actuator /actuator/prometheus', 'Grafana panel editor', 'PromQL'], ['Cloud Trace', 'Grafana Tempo', 'trace ID', 'span', 'OpenTelemetry', 'trace waterfall view', 'service-to-service latency'], ['Cloud Monitoring alerting policy', 'alert condition', 'notification channel', 'alert threshold', 'runbook URL annotation', 'alert duration window', 'Grafana alert rule']]
+      },
+      {
+        num: 3,
+        name: 'Advanced',
+        track: 'B',
+        focus: 'Diagnosing complex production issues across multiple services and owning the observability for a domain.',
+        scenarios: [
+          'When a production incident involves latency degradation that isn\'t obviously caused by a single service, I can use distributed traces to identify where time is being lost, correlate that with metrics (GC pauses, database query times, Kafka consumer lag), and produce a coherent diagnosis rather than guessing.',
+          'When GKE nodes are showing high CPU or memory utilisation and the cause isn\'t a single misbehaving pod, I can investigate at the node level: identify which pods are responsible, whether any are being throttled due to limit settings, and propose the right remedy.',
+          'When our OpenTelemetry instrumentation is producing too much data (high cardinality, excessive sampling, or noisy spans), I can tune the configuration: adjust sampling rates, filter low-value spans, and reduce cardinality without losing the signals that matter for diagnosis.',
+          'When I need to build a dashboard for a business-critical flow, I can design it from the user perspective: identify the right golden signals for that flow (request rate, error rate, latency, saturation), choose the right visualisations, and ensure the dashboard tells a story rather than just showing numbers.',
+          'When Terraform is used to manage our GKE workloads and Cloud SQL instances, I can read and modify the relevant modules, plan and apply changes safely, and understand what a Terraform state conflict or drift means in practice.'
+        ],
+        topics: 'Cross-service trace correlation, GKE node-level investigation, OpenTelemetry sampling and cardinality, golden signals dashboard design, Terraform for GKE and Cloud SQL, Cloud Monitoring alerting policies.',
+        keywords: [['Grafana Tempo', 'trace correlation', 'span attributes', 'kafka_consumer_lag', 'GC pause duration', 'Cloud SQL query latency', 'exemplars', 'trace-to-metrics linking'], ['kubectl top node', 'kubectl top pod', 'CFS throttling', 'container/cpu/limit_utilization', 'node pool metrics', 'GKE system metrics', 'throttled_time', 'resource limits'], ['otel.traces.sampler', 'otel.traces.sampler.arg', 'TraceIdRatioBased sampler', 'span processor', 'attribute cardinality', 'span filtering', 'OTEL collector config', 'tail-based sampling'], ['golden signals', 'rate / errors / latency / saturation', 'Grafana dashboard', 'histogram_quantile', 'error rate PromQL', 'SLI panels', 'time series vs stat panels', 'dashboard variables'], ['google_container_cluster', 'google_sql_database_instance', 'terraform plan', 'terraform apply', 'terraform state', 'state drift', 'terraform import', 'module variables']]
+      },
+      {
+        num: 4,
+        name: 'Specialist',
+        track: 'B',
+        focus: 'Owning the observability platform for the domain and ensuring the team can operate services in production with confidence.',
+        scenarios: [
+          'When the team needs to define SLOs for a critical service, I can lead the process: define the right SLI measurements, set realistic error budget targets based on actual traffic patterns, configure the Cloud Monitoring SLO, and explain to stakeholders what the error budget means in practice.',
+          'When GCP cloud costs for the domain are growing faster than traffic, I can analyse the cost breakdown, identify the main drivers (GKE instance types, Cloud SQL tier, storage, network egress), and propose concrete changes with their cost and performance implications.',
+          'When we need to do a zero-downtime deployment of a change that requires GKE rolling updates and a database migration simultaneously, I can design and execute the deployment sequencing: migration first, then application rollout, with rollback triggers and observability checkpoints at each step.',
+          'When a team in another domain asks how to set up observability for a new service, I can produce a reusable guide: the standard logging format, the required metrics, the tracing setup, the alert templates, and the Grafana dashboard starting point — so they don\'t have to figure it out from scratch.',
+          'When a Cloud SQL instance needs maintenance (version upgrade, certificate rotation, configuration change), I can plan and execute the change with minimum disruption: schedule the window, communicate to stakeholders, verify application reconnection behaviour, and confirm service health afterwards.'
+        ],
+        topics: 'SLO/SLI/error budget design, GCP cost optimisation, deployment sequencing with observability gates, reusable observability templates, Cloud SQL maintenance operations, GKE upgrade management.',
+        keywords: [['Cloud Monitoring SLO', 'SLI definition', 'error budget', 'request-based SLI', 'window-based SLI', 'burn rate alert', 'good request ratio', '99th percentile latency SLO'], ['GCP Billing export', 'BigQuery cost analysis', 'GKE cost breakdown', 'Cloud SQL tier', 'network egress cost', 'committed use discounts', 'Spot VMs', 'resource rightsizing'], ['kubectl rollout', 'rolling update strategy', 'maxUnavailable / maxSurge', 'Liquibase', 'blue-green deployment', 'deployment observability gate', 'rollback trigger', 'readiness probe during migration'], ['observability template', 'standard log format', 'required Micrometer metrics', 'OTEL Java agent config', 'Grafana dashboard JSON', 'alert policy template', 'Spring Boot Actuator', 'runbook template'], ['Cloud SQL maintenance window', 'SSL certificate rotation', 'HikariCP reconnection', 'Cloud SQL flags', 'Cloud SQL instance restart', 'connection validation', 'maintenance notification', 'gcloud sql instances patch']]
+      },
+      {
+        num: 5,
+        name: 'Expert',
+        track: 'M',
+        focus: 'Setting observability and cloud standards for the organisation and mentoring teams through complex production scenarios.',
+        scenarios: [
+          'When teams across the organisation are instrumenting their services inconsistently (different log formats, different metric names, different trace sampling strategies), I can define the standard, build the shared libraries or configuration templates, and drive adoption without making it feel like bureaucracy.',
+          'When a major incident spans multiple teams and the on-call rotation isn\'t enough to coordinate the response, I can take incident commander role: coordinate the investigation, manage communication to stakeholders, ensure hypotheses are tested systematically, and drive the post-mortem.',
+          'When the organisation is evaluating whether to adopt a new observability tool (a new APM, a new logging backend, a new tracing platform), I can lead the evaluation: define the criteria, prototype the integration, and produce an honest comparison against what we already have.',
+          'When GKE platform costs are a concern at the leadership level, I can provide the analysis: break down cost by workload, identify optimisation opportunities (spot instances, vertical pod autoscaling, node pool rightsizing), and model the savings and risks of each option.',
+          'When teams don\'t know how to write good runbooks, I can define the standard: what a runbook must contain, how to test it, and how to keep it up to date — and run a session where teams actually write and peer-review their runbooks rather than just hearing about it.'
+        ],
+        topics: 'At this level, growth comes from cross-team standards, incident command, and platform strategy. Level 5–6 engineers lead Cloud & Observability sessions in Track A and Track B.',
+        keywords: [['OTEL SDK configuration', 'shared logging library', 'standard metric naming', 'otel-collector config', 'Spring Boot starter', 'trace sampling policy', 'instrumentation standard', 'adoption strategy'], ['incident command', 'incident timeline', 'stakeholder communication', 'hypothesis-driven diagnosis', 'post-mortem', 'blameless retrospective', 'incident channel', 'action items'], ['tool evaluation criteria', 'APM comparison', 'Grafana vs Cloud Monitoring', 'OTEL backend compatibility', 'POC scope', 'total cost of ownership', 'migration path', 'vendor lock-in assessment'], ['GKE cost by namespace', 'Spot VMs', 'Vertical Pod Autoscaler (VPA)', 'node pool rightsizing', 'committed use discounts', 'GKE cost allocation', 'workload identity', 'cost modelling'], ['runbook structure', 'alert-to-runbook linking', 'runbook testing', 'escalation matrix', 'diagnostic steps', 'runbook review process', 'on-call readiness', 'alert annotation']]
+      },
+      {
+        num: 6,
+        name: 'Authority',
+        track: 'M',
+        focus: 'Cloud platform strategy, reliability engineering at the organisational level, and technology direction.',
+        scenarios: [
+          'When the organisation needs to decide its long-term GCP strategy (which managed services to use, what to run on GKE vs serverless vs managed, how to manage multi-region), I can lead the analysis and produce a technology direction document that engineering leadership can act on.',
+          'When we need to validate that our disaster recovery procedures actually work (not just that they\'re documented), I can design and run the DR drill: define success criteria, coordinate the participating teams, execute the failover, measure the results, and produce a gap analysis.',
+          'When the organisation\'s Cloud spend is being reviewed at the executive level, I can own the cost narrative: explain the main drivers, identify the highest-leverage optimisation opportunities, and present a credible roadmap for cost management as we scale.',
+          'When a regulatory audit requires evidence of how we detect, alert on, and respond to security events in our cloud environment, I can produce that evidence: describe the detection mechanisms, the alerting chain, the response procedures, and the audit log retention.',
+          'When we need to build a platform capability that will benefit all engineering teams (e.g. a standard observability stack, a shared incident management process, a Terraform module library), I can lead the design and rollout — ensuring it\'s adopted because it\'s genuinely useful, not because it\'s mandated.'
+        ],
+        topics: 'At this level, growth comes from cloud strategy, organisational reliability engineering, and platform investment decisions. There is no structured training track — this is the level that shapes the cloud and observability direction for the organisation.',
+        keywords: [['GKE vs Cloud Run vs GKE Autopilot', 'multi-region architecture', 'managed services trade-offs', 'GCP service selection', 'technology radar', 'architecture decision record', 'long-term cost model', 'vendor strategy'], ['DR drill', 'Cloud SQL failover', 'RTO / RPO', 'GKE multi-region failover', 'DR runbook', 'success criteria', 'gap analysis', 'chaos engineering'], ['GCP Billing export', 'BigQuery cost dashboard', 'committed use discounts', 'sustained use discounts', 'FinOps', 'cost roadmap', 'unit economics', 'executive cost narrative'], ['Cloud Audit Logs', 'Cloud IAM audit trail', 'Cloud KMS key usage', 'Security Command Center', 'log retention policy', 'alert evidence', 'PCI-DSS / SOX compliance', 'audit log export'], ['Terraform module registry', 'shared observability stack', 'platform capability design', 'inner-source adoption', 'OTEL collector deployment', 'Grafana provisioning', 'platform engineering', 'developer experience']]
+      }
+    ]
+  }
+
+};
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════ */
+var activeTrack = 'database';
+
+/* ═══════════════════════════════════════════════════════
+   RENDER
+════════════════════════════════════════════════════════ */
+function buildTabs() {
+  var container = document.getElementById('track-tabs');
+  container.innerHTML = '';
+  Object.values(TRACKS).forEach(function(track) {
+    var btn = document.createElement('button');
+    btn.className = 'track-tab' + (track.id === activeTrack ? ' active' : '');
+    btn.innerHTML = '<span class="track-tab-icon">' + track.icon + '</span>' + track.label;
+    btn.addEventListener('click', function() { switchTrack(track.id); });
+    container.appendChild(btn);
+  });
+}
+
+function buildDesc() {
+  var el = document.getElementById('track-desc');
+  el.textContent = TRACKS[activeTrack].desc;
+  el.style.animation = 'none';
+  void el.offsetWidth;
+  el.style.animation = 'fadeIn 0.3s both';
+}
+
+function buildCards() {
+  var container = document.getElementById('browse-cards');
+  container.innerHTML = '';
+  var levels = TRACKS[activeTrack].levels;
+
+  levels.forEach(function(d, idx) {
+
+    var scenariosHtml = d.scenarios.map(function(s, i) {
+      var kws = (d.keywords && d.keywords[i]) ? d.keywords[i] : [];
+      var drillHtml = '';
+      if (kws.length) {
+        var allChips = kws.map(function(k) {
+          return '<span class="kw-tag">' + escapeHtml(k) + '</span>';
+        }).join('');
+        drillHtml =
+          '<details class="scenario-drill">' +
+            '<summary>' +
+              '<span class="kw-chevron">&#9658;</span>' +
+              '<span class="kw-label">Skills &amp; tools</span>' +
+            '</summary>' +
+            '<div class="kw-chips">' + allChips + '</div>' +
+          '</details>';
+      }
+      return '<li>' + escapeHtml(s) + drillHtml + '</li>';
+    }).join('');
+
+    var card = document.createElement('div');
+    card.className = 'browse-card';
+    card.style.animationDelay = (idx * 0.07) + 's';
+    card.innerHTML =
+      '<div class="browse-card-num">' + d.num + '</div>' +
+      '<div class="browse-card-body">' +
+        '<div class="browse-card-header">' +
+          '<h2>' + escapeHtml(d.name) + '</h2>' +
+        '</div>' +
+        '<p class="browse-focus">' + escapeHtml(d.focus) + '</p>' +
+        '<div class="browse-scenarios">' +
+          '<h4>I feel comfortable performing the following activities\u2026</h4>' +
+          '<ul>' + scenariosHtml + '</ul>' +
+        '</div>' +
+      '</div>';
+    container.appendChild(card);
+  });
+}
+
+function switchTrack(id) {
+  activeTrack = id;
+  buildTabs();
+  buildDesc();
+  buildCards();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════ */
+buildTabs();
+buildDesc();
+buildCards();
+</script>
+</body>
+</html>
