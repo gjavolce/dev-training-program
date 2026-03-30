@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEB Embedded — Curriculum Matrices with Blockers</title>
+<style>
+:root {
+  --bg: #ffffff; --bg2: #f5f5f0; --bg3: #eeeee8;
+  --text: #1a1a1a; --text2: #555; --text3: #888;
+  --border: #ddd; --border2: #ccc;
+  --blue: #2563eb; --blue-bg: #eff6ff; --blue-text: #1e40af;
+  --green: #059669; --green-bg: #ecfdf5; --green-text: #065f46;
+  --orange: #d97706; --orange-bg: #fffbeb; --orange-text: #92400e;
+  --purple: #7c3aed; --purple-bg: #f5f3ff; --purple-text: #5b21b6;
+  --red: #dc2626; --red-bg: #fef2f2; --red-text: #991b1b;
+  --teal: #0d9488; --teal-bg: #f0fdfa; --teal-text: #134e4a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1a; --bg2: #222; --bg3: #2a2a2a;
+    --text: #e5e5e5; --text2: #aaa; --text3: #777;
+    --border: #333; --border2: #444;
+    --blue-bg: #1e3a5f; --blue-text: #93c5fd;
+    --green-bg: #064e3b; --green-text: #6ee7b7;
+    --orange-bg: #78350f; --orange-text: #fcd34d;
+    --purple-bg: #4c1d95; --purple-text: #c4b5fd;
+    --red-bg: #7f1d1d; --red-text: #fca5a5;
+    --teal-bg: #134e4a; --teal-text: #5eead4;
+  }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+.subtitle { font-size: 14px; color: var(--text2); margin-bottom: 24px; }
+.nav { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.nav-btn { padding: 8px 16px; font-size: 13px; font-weight: 500; border: 1px solid var(--border); background: var(--bg); color: var(--text2); border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+.nav-btn:hover { background: var(--bg2); }
+.nav-btn.active { background: var(--blue-bg); color: var(--blue-text); border-color: var(--blue-text); }
+.track-nav { display: flex; gap: 6px; margin-bottom: 12px; }
+.track-btn { padding: 6px 14px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); background: var(--bg); color: var(--text2); border-radius: 6px; cursor: pointer; }
+.track-btn:hover { background: var(--bg2); }
+.track-btn.active { background: var(--bg2); color: var(--text); border-color: var(--border2); }
+.entry-note { font-size: 12px; background: var(--orange-bg); color: var(--orange-text); padding: 8px 14px; border-radius: 6px; margin-bottom: 16px; display: inline-block; }
+.legend { display: flex; gap: 20px; margin-bottom: 20px; font-size: 12px; color: var(--text2); flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+.area-section { margin-bottom: 32px; }
+.area-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+.area-header h2 { font-size: 16px; font-weight: 600; }
+.area-dot-lg { width: 12px; height: 12px; border-radius: 3px; }
+.session-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 12px; }
+.session-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.session-num { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.session-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.session-desc { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+.exercise-section { margin-bottom: 8px; }
+.exercise-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 4px; }
+.label-theory { background: var(--blue-bg); color: var(--blue-text); }
+.label-core { background: var(--green-bg); color: var(--green-text); }
+.label-medium { background: var(--orange-bg); color: var(--orange-text); }
+.label-hard { background: var(--red-bg); color: var(--red-text); }
+.label-between { background: var(--purple-bg); color: var(--purple-text); }
+.label-blocker { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-text); }
+.exercise-text { font-size: 12px; color: var(--text); margin-bottom: 6px; line-height: 1.6; }
+.blocker-box { background: var(--red-bg); border: 1px solid color-mix(in srgb, var(--red-text) 30%, transparent); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
+.blocker-box .exercise-label { margin-bottom: 6px; }
+.blocker-box .exercise-text { color: var(--red-text); }
+.blocker-title { font-weight: 600; font-size: 12px; color: var(--red-text); margin-bottom: 2px; }
+.blocker-symptom { font-size: 11px; color: var(--red-text); opacity: 0.85; }
+.view-toggle { display: flex; gap: 4px; margin-bottom: 16px; }
+.view-btn { padding: 6px 12px; font-size: 11px; border: 1px solid var(--border); background: var(--bg); color: var(--text3); border-radius: 6px; cursor: pointer; }
+.view-btn.active { background: var(--bg2); color: var(--text); }
+.collapsed .exercise-section, .collapsed .blocker-box { display: none; }
+.collapsed .session-card { padding: 10px 16px; }
+.collapsed .session-desc { margin-bottom: 0; }
+.filter-row { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>SEB Embedded — Engineering Training Program</h1>
+<p class="subtitle">Curriculum matrices with practical exercises and planted blockers across all 4 competency areas × 3 tracks</p>
+
+<div class="nav" id="area-nav"></div>
+<div class="filter-row">
+  <div class="track-nav" id="track-nav"></div>
+  <div class="view-toggle" id="view-toggle"></div>
+</div>
+<div id="entry-note"></div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#2563eb"></div>Database Engineering</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#059669"></div>Memory Management</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div>Solution Design</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div>Cloud & Observability</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#dc2626;border:1px solid #991b1b"></div>Planted blocker</div>
+</div>
+<div id="content"></div>
+</div>
+
+<script>
+const AREAS = [
+  { key:'all', name:'All areas', color:'#555' },
+  { key:'db', name:'Database Engineering', color:'#2563eb' },
+  { key:'mem', name:'Memory Management', color:'#059669' },
+  { key:'sd', name:'Solution Design', color:'#d97706' },
+  { key:'co', name:'Cloud & Observability', color:'#7c3aed' }
+];
+const TRACKS = [
+  { key:'a', label:'Track A (L1→L2)', from:'L1 Foundations', to:'L2 Practitioner', entry:'Self-assessment places engineer at L1' },
+  { key:'b', label:'Track B (L2→L3)', from:'L2 Practitioner', to:'L3 Adept', entry:'Completed Track A capstone assignment (or self-assessed at L2)' },
+  { key:'c', label:'Track C (L3→L4)', from:'L3 Adept', to:'L4 Veteran', entry:'Completed Track B capstone assignment (or self-assessed at L3)' }
+];
+
+// ======== DATABASE ========
+const DB = {
+  color: '#2563eb', name: 'Database Engineering',
+  a: [
+    { num:'A1', title:'SQL beyond the basics', desc:'GROUP BY, HAVING, subqueries, CTEs',
+      blocker: { title:'Query returns wrong count', symptom:'A loyalty CTE query returns 0 rows when it should return 47. Engineers must find that the CTE has a WHERE clause filtering on status = \'active\' but the test data uses status = \'ACTIVE\' — PostgreSQL string comparison is case-sensitive.' },
+      theory:'Credit scoring: query applicant data, bureau scores, and risk categories using CTEs and subqueries.',
+      core:'Write 5 queries against the loyalty DB: points per member, high-value members, tier qualification, top earners, monthly summary.',
+      medium:'Rewrite a Java-computed loyalty report as a single SQL query with CTEs. Compare execution time.',
+      hard:'Enable Hibernate SQL logging on your team\'s service. Find one surprising query.',
+      between:'Identify 3 ORM-generated queries in the loyalty service. Write hand-crafted equivalents.'
+    },
+    { num:'A2', title:'Window functions & practical patterns', desc:'ROW_NUMBER, RANK, LAG/LEAD, running totals',
+      blocker: { title:'Running balance goes negative', symptom:'The running points balance query using SUM() OVER (ORDER BY earned_at) produces negative intermediate balances. Root cause: the ORDER BY is not deterministic — transactions with the same timestamp are ordered randomly, and burn events sometimes sort before earn events. Fix: add a tiebreaker column (ORDER BY earned_at, id).' },
+      theory:'Credit scoring: running score averages, rank applicants by score, detect trend changes with LAG.',
+      core:'4 window function queries on loyalty: running balance, rank within tier, find gaps, compare to previous transaction.',
+      medium:'Replace a batch "monthly tier snapshot" job with a window function query.',
+      hard:'Find application code in your team that could be a window function. Document the pattern.',
+      between:'Write a query showing each member\'s current tier alongside their previous tier using LAG.'
+    },
+    { num:'A3', title:'Schema design for a feature', desc:'Normalization, keys, foreign keys, designing for queries',
+      blocker: { title:'Foreign key prevents data insertion', symptom:'Engineers try to INSERT a loyalty redemption record but get ERROR: insert or update on table "redemptions" violates foreign key constraint "redemptions_reward_id_fkey". The rewards table is empty — the schema DDL created rewards table but the seed data script loads rewards AFTER redemptions. Fix: reorder the seed script or add rewards seed data first.' },
+      theory:'Credit scoring: design schema for scoring rule engine — rules, weights, score history.',
+      core:'Design the loyalty schema: members, tiers, points, rewards, redemptions. Write CREATE TABLE statements.',
+      medium:'Same brief plus 6 query patterns. Adjust schema for query performance. Justify denormalizations.',
+      hard:'Pull your team\'s schema. Sketch the ER diagram. Note one design improvement.',
+      between:'Extend your loyalty schema to handle point expiry rules with partner-specific overrides.'
+    },
+    { num:'A4', title:'Indexing fundamentals', desc:'B-tree basics, composite indexes, write overhead, pg_stat_user_indexes',
+      blocker: { title:'Index exists but query still does seq scan', symptom:'Engineers add an index on (member_id, earned_at) for the points table, but EXPLAIN still shows Seq Scan. Root cause: the query has WHERE earned_at > \'2024-01-01\' AND member_id = $1 but the table has only 200 rows in the training seed — PostgreSQL planner chooses Seq Scan for small tables because it\'s faster. Fix: load 500K rows of seed data, then the index is used. Teaches: the planner is cost-based, not rule-based.' },
+      theory:'Credit scoring: composite index on (applicant_id, score_date), column order impact.',
+      core:'5 slow queries on the loyalty training DB. Add appropriate indexes, document EXPLAIN before/after.',
+      medium:'Find 2 redundant or unused indexes using pg_stat_user_indexes. Propose removals.',
+      hard:'Run pg_stat_user_indexes on your team\'s instance. Find one index with zero scans.',
+      between:'Add a composite index for "member points history by date range." Test column order impact.'
+    },
+    { num:'A5', title:'Reading EXPLAIN plans', desc:'EXPLAIN vs EXPLAIN ANALYZE, scan types, join strategies, Cloud SQL Query Insights',
+      blocker: { title:'EXPLAIN ANALYZE shows 50x more rows than estimated', symptom:'A loyalty query joining members and points shows estimated rows: 10 but actual rows: 4,800. The pg_stats table shows the members table has never been ANALYZED — stale statistics from initial empty state. Fix: run ANALYZE members; and re-run the query. Plan switches from Nested Loop (bad for 4800 rows) to Hash Join.' },
+      theory:'Credit scoring: EXPLAIN ANALYZE on a complex scoring join. Walk through node types.',
+      core:'Run EXPLAIN ANALYZE on 5 loyalty queries. Fill in the template for each.',
+      medium:'3 loyalty queries with suboptimal plans. Diagnose and fix.',
+      hard:'Find the slowest query in your team\'s Cloud SQL Query Insights. Pull and annotate the EXPLAIN plan.',
+      between:'Run EXPLAIN on your tier qualification query. Is it using your session 4 indexes?'
+    },
+    { num:'A6', title:'Transactions: what can go wrong', desc:'ACID, isolation levels, lost updates, phantom reads',
+      blocker: { title:'Point balance goes negative after concurrent operations', symptom:'Two concurrent point-burn requests for the same member both succeed, even though the member only has enough points for one. Each reads balance=500, checks 500>=300, deducts. Final balance: -100. Root cause: Read Committed allows both transactions to see the same initial balance. Fix: use SELECT ... FOR UPDATE to lock the row, or use Repeatable Read with retry on serialization failure.' },
+      theory:'Credit scoring: race condition when two applications trigger rescoring simultaneously.',
+      core:'Reproduce a lost update in the loyalty DB with two concurrent psql sessions. Fix with correct isolation.',
+      medium:'Fix a race condition in the "points transfer" endpoint. Write a test proving correctness.',
+      hard:'Assess your team\'s most important write operation\'s isolation level.',
+      between:'Design transaction boundaries for the "redeem reward" operation.'
+    },
+    { num:'A7', title:'Writing your first safe migration', desc:'Table locks, CREATE INDEX CONCURRENTLY, NOT VALID pattern',
+      blocker: { title:'Migration locks table for 45 seconds', symptom:'A Liquibase changeset adds a NOT NULL constraint with DEFAULT to the loyalty points table (500K rows). The ALTER TABLE acquires an ACCESS EXCLUSIVE lock and rewrites the entire table, blocking all reads and writes for 45 seconds. Fix: split into 3 steps — (1) ADD COLUMN nullable, (2) UPDATE in batches of 10K with pg_sleep(0.1) between batches, (3) ADD CONSTRAINT NOT NULL NOT VALID + VALIDATE CONSTRAINT.' },
+      theory:'Credit scoring: demonstrate unsafe migration on score_history. Show safe alternative.',
+      core:'3 unsafe migration scripts for the loyalty DB. Identify problems, rewrite as safe alternatives.',
+      medium:'Design safe migration for adding NOT NULL "expiry_date" to loyalty points table (5M rows).',
+      hard:'Assess the last 3 Liquibase migrations your team ran for safety.',
+      between:'Write a Liquibase changeset for a CONCURRENT index on the loyalty points table.'
+    },
+    { num:'A8', title:'Getting comfortable with Cloud SQL', desc:'GCP Console, Query Insights, Cloud Monitoring, Auth Proxy',
+      blocker: { title:'Cannot connect to Cloud SQL via Auth Proxy', symptom:'Engineers try to connect via Cloud SQL Auth Proxy but get "connection refused on 127.0.0.1:5432." The Auth Proxy is running, but it\'s listening on port 5433 (configured in the sidecar container spec), not the default 5432. The application.yml has spring.datasource.url pointing to port 5432. Fix: either change the Auth Proxy port to 5432 or update the datasource URL to 5433.' },
+      theory:'Credit scoring: tour Cloud SQL console for the scoring database.',
+      core:'Console scavenger hunt on the loyalty training instance. Build a basic Cloud Monitoring dashboard.',
+      medium:'Create a 6-panel Cloud Monitoring dashboard for the loyalty instance. Add one alert.',
+      hard:'Connect to your team\'s Cloud SQL via Auth Proxy without assistance. Browse Query Insights.',
+      between:'Compare loyalty training instance Query Insights with your team\'s instance.'
+    },
+    { num:'A9', title:'Design challenge: putting it together', desc:'Team exercise — schema, queries, indexes, migration for a new feature',
+      blocker: { title:'Referral fraud query returns false positives', symptom:'The team\'s fraud detection query (find members who referred more than 5 people from the same IP) returns every member because the test data has ip_address = NULL for all referrals, and NULL != NULL evaluates to NULL (not false), so the GROUP BY/HAVING logic misbehaves. Fix: add COALESCE(ip_address, \'unknown\') or filter WHERE ip_address IS NOT NULL. Teaches: NULL handling in SQL aggregations.' },
+      theory:'N/A — capstone.',
+      core:'Teams design "referral program with fraud prevention." Schema, queries, indexes, migration plan.',
+      medium:'Add monitoring for referral fraud. Design migration rollback plan.',
+      hard:'Write an ADR for the riskiest schema decision in your design.',
+      between:'Final reflection on growth from session 1 to 9.'
+    }
+  ],
+  b: [
+    { num:'B1', title:'MVCC deep dive: why your database is bloated', desc:'Tuple headers, xmin/xmax, dead tuples, autovacuum tuning',
+      blocker: { title:'Autovacuum never runs on the high-churn table', symptom:'The loyalty points table has 2M dead tuples but autovacuum hasn\'t run. pg_stat_user_tables shows last_autovacuum = NULL. Root cause: a previous admin set autovacuum_enabled = false on this specific table (visible in pg_class.reloptions) as a misguided performance optimization. Fix: ALTER TABLE points SET (autovacuum_enabled = true, autovacuum_vacuum_scale_factor = 0.01).' },
+      theory:'Credit scoring: inspect score_history bloat. Demonstrate idle-in-transaction blocking vacuum.',
+      core:'Identify top 5 tables by dead tuple ratio. Generate bloat. Tune autovacuum.',
+      medium:'Find the idle-in-transaction blocking vacuum. Set session timeout. Measure recovery.',
+      hard:'Document your team\'s bloat situation. Share with team lead.',
+      between:'Monitor identified tables for two weeks.'
+    },
+    { num:'B2', title:'Advanced indexing: beyond B-tree', desc:'Partial, expression, covering, GIN indexes',
+      blocker: { title:'GIN index on JSONB column makes writes 10x slower', symptom:'After adding a GIN index on reward_metadata JSONB column, INSERT throughput drops from 5000/s to 500/s. The JSONB documents are large (50+ keys each) and the GIN index must index every key-value pair. Fix: use a GIN index with jsonb_path_ops operator class (indexes only specific paths, not all keys) or use a partial GIN index on only the fields actually queried.' },
+      theory:'Credit scoring: partial index on active rules, expression index, covering index.',
+      core:'6 loyalty query patterns needing different index types. Create each, verify with EXPLAIN.',
+      medium:'Audit indexes on loyalty points table. Identify optimization opportunity. Benchmark.',
+      hard:'Write a one-page index optimization proposal for your team.',
+      between:'Review and refine your proposal based on colleague feedback.'
+    },
+    { num:'B3', title:'Schema patterns for regulated domains', desc:'Audit trails, temporal tables, soft deletes, ledger patterns',
+      blocker: { title:'Temporal query returns wrong historical state', symptom:'The "point balance at date X" query returns the current balance instead of the historical one. The temporal table design uses valid_from/valid_to columns, but the query WHERE \'2025-03-15\' BETWEEN valid_from AND valid_to fails because valid_to for the current record is NULL, and comparisons with NULL return NULL. Fix: use WHERE valid_from <= \'2025-03-15\' AND (valid_to IS NULL OR valid_to > \'2025-03-15\').' },
+      theory:'Credit scoring: audit trail for score decisions — event sourcing vs audit columns vs triggers.',
+      core:'Design two audit trail schema alternatives for the loyalty program. Compare trade-offs.',
+      medium:'Design bi-temporal tier history schema. Write the "tier at historical date" query.',
+      hard:'Evaluate your team\'s regulatory schema against the discussed patterns.',
+      between:'Discuss gap assessment with team lead.'
+    },
+    { num:'B4', title:'Row-level security and multi-tenant isolation', desc:'RLS policies, performance, alternatives',
+      blocker: { title:'RLS policy bypassed — all partners see all data', symptom:'RLS is enabled on the loyalty members table, but queries return all rows regardless of tenant. Root cause: the service connects as a superuser role (postgres), and superusers bypass RLS by default. Fix: create a non-superuser application role, GRANT appropriate permissions, set the application\'s connection to use this role. Or: ALTER TABLE members FORCE ROW LEVEL SECURITY (forces RLS even for table owners).' },
+      theory:'Credit scoring: implement RLS on scoring tables. Verify filter pushdown.',
+      core:'Implement RLS on loyalty training DB. Verify isolation by switching tenant context.',
+      medium:'Design RLS for shared reward catalogs but isolated member data.',
+      hard:'Evaluate RLS feasibility for your team\'s multi-tenant model. Write ADR.',
+      between:'Format evaluation as ADR for peer review.'
+    },
+    { num:'B5', title:'Lock diagnosis and concurrency', desc:'pg_stat_activity, pg_locks, blocking chains, deadlocks',
+      blocker: { title:'Migration hangs indefinitely — no error, just waiting', symptom:'A schema migration (ALTER TABLE points ADD COLUMN) hangs with no error. pg_stat_activity shows the migration is "idle in transaction" waiting for a lock. pg_locks reveals it\'s waiting for AccessExclusiveLock, which is blocked by a long-running analytics query that holds an AccessShareLock (SELECT on the same table). Fix: either terminate the analytics query (pg_terminate_backend) or wait for it to finish. Prevention: add lock_timeout = \'5s\' to migrations.' },
+      theory:'Credit scoring: 3 blocking scenarios — rule update vs live scoring, concurrent recalculations, report blocking autovacuum.',
+      core:'3 blocking scenarios on loyalty training instance. Use pg_stat_activity + pg_locks to find chains.',
+      medium:'Write a lock monitoring query. Add a Grafana panel for lock wait time.',
+      hard:'Add monitoring query to your team\'s migration runbook.',
+      between:'Test monitoring query during a practice migration.'
+    },
+    { num:'B6', title:'Zero-downtime migrations at scale', desc:'NOT VALID + VALIDATE, batched backfills, enum evolution',
+      blocker: { title:'Backfill UPDATE runs out of disk space', symptom:'The batched backfill (UPDATE points SET expiry_date = earned_at + interval \'12 months\' WHERE id BETWEEN $start AND $end) generates so many dead tuples that the table doubles in size and Cloud SQL runs out of disk. Root cause: vacuum can\'t keep up with the rapid backfill. Fix: add a pg_sleep(1) between batches to let autovacuum catch up, or run VACUUM manually every 50K rows.' },
+      theory:'Credit scoring: 4-step migration on score_history — add nullable, backfill, NOT VALID, validate.',
+      core:'Execute 4-step migration on loyalty points table. Measure lock time per step.',
+      medium:'Design zero-lock migration for TEXT to ENUM type change. Write full runbook.',
+      hard:'Write full migration runbook for your team\'s riskiest upcoming schema change.',
+      between:'Peer review another participant\'s migration runbook.'
+    },
+    { num:'B7', title:'Cloud SQL operations: HA, replicas, monitoring', desc:'Failover, read replicas, connection pooling, advanced monitoring',
+      blocker: { title:'Read replica returns stale data — tier status is wrong', symptom:'The loyalty reporting dashboard reads from a read replica and shows a member as "Silver" tier, but the primary shows "Gold" (updated 30 seconds ago). Replication lag is 45 seconds. The reporting app has no staleness tolerance — it blindly trusts replica data. Fix: (1) add replication lag monitoring, (2) for tier-sensitive queries, route to primary, (3) add a "data as of" timestamp to reports. Teaches: replicas are eventually consistent.' },
+      theory:'Credit scoring: map scoring Cloud SQL architecture. Build 6-panel dashboard.',
+      core:'Map loyalty training Cloud SQL architecture. Build monitoring dashboard.',
+      medium:'Design read-replica routing: live operations → primary, reports → replica. Configure HikariCP two-datasource.',
+      hard:'Map your team\'s Cloud SQL architecture. Build dashboard. Set up 3 alerts.',
+      between:'Document your team\'s database architecture diagram.'
+    },
+    { num:'B8', title:'Performance investigation end-to-end', desc:'Simulated degradation — full investigation',
+      blocker: { title:'Performance fix makes it worse', symptom:'Engineers identify that a tier recalculation query is slow (2s) because of a Seq Scan on a large table. They add an index. The query now takes 4s. Root cause: the added index (on a low-selectivity column with only 3 distinct values: Bronze/Silver/Gold) results in thousands of random I/O lookups, which is slower than a single sequential scan. Fix: drop the bad index, use a composite index that includes a high-selectivity column, or add a covering index that enables index-only scan.' },
+      theory:'Credit scoring: staged degradation. Full investigation combining B1-B7.',
+      core:'Investigate 2 degradation scenarios on loyalty. Document symptom → investigation → root cause → fix.',
+      medium:'Find the secondary issue masked by the primary one. Both must be found and fixed.',
+      hard:'Investigate one real performance concern from your team.',
+      between:'Write investigation as incident report format.'
+    },
+    { num:'B9', title:'Design challenge: complex domain', desc:'Team exercise — regulated, multi-tenant, performant loyalty marketplace',
+      blocker: { title:'Cross-partner reward query violates RLS', symptom:'The loyalty marketplace feature requires members from Partner A to see rewards from Partner B. But the RLS policy on the rewards table restricts to current_setting(\'app.tenant_id\'). The cross-partner query fails silently — returns 0 rows instead of error. Fix: design a "shared catalog" RLS policy using a join table (partner_reward_visibility) that explicitly grants cross-partner access. Teaches: RLS policies must be designed for the business model, not just "isolate everything."' },
+      theory:'N/A — capstone.',
+      core:'Design loyalty marketplace: cross-partner rewards, revenue sharing, audit trail.',
+      medium:'Peer critique: RLS correctness, migration safety, bloat strategy.',
+      hard:'Polish your strongest ADR as Track B exit artifact.',
+      between:'Present best ADR to team. Reflect on Track A → Track B growth.'
+    }
+  ],
+  c: [
+    { num:'C1', title:'Partitioning: strategy and implementation', desc:'Range/list/hash, partition pruning, archival',
+      blocker: { title:'Partition pruning doesn\'t work — all partitions scanned', symptom:'After partitioning points_ledger by month, EXPLAIN shows all 24 partitions scanned for WHERE created_at BETWEEN \'2025-06-01\' AND \'2025-06-30\'. Root cause: the partition key is (created_at::date) using a cast, but the query filters on the timestamptz column. The types don\'t match, so the planner can\'t prune. Fix: partition by the raw timestamptz column, or rewrite the query to match the partition key type.' },
+      theory:'Credit scoring: partition score_history by month. Show pruning working and breaking.',
+      core:'Partition loyalty points_ledger by month. Verify pruning. Write maintenance script.',
+      medium:'Handle conflicting access patterns: date-range (pruning works) AND member-specific (scans all). Design solution.',
+      hard:'Write a partitioning ADR for a table in your team\'s domain.',
+      between:'Present partitioning ADR to team lead.'
+    },
+    { num:'C2', title:'Capacity planning and growth modeling', desc:'Trends, projection, connection pool sizing, scaling decisions',
+      blocker: { title:'Capacity projection wildly wrong — missed a data multiplier', symptom:'The capacity model projects 50GB storage in 12 months, but actual growth is 200GB in 3 months. Root cause: the model used "1 row per point earn" but missed that each earn also creates 3 audit log rows + 1 tier recalculation snapshot + 1 Kafka outbox entry = 5x the projected row count. Fix: map ALL tables that grow with traffic, not just the primary entity table.' },
+      theory:'Credit scoring: project when storage, connections, CPU hit limits.',
+      core:'Project loyalty instance capacity: storage, connections, CPU headroom. Present timeline.',
+      medium:'Account for seasonality (3x volume during holidays). Include cost projections.',
+      hard:'Build capacity projection for your team\'s actual Cloud SQL instance.',
+      between:'Present capacity plan. Document decision made.'
+    },
+    { num:'C3', title:'Cloud SQL architecture: HA, replicas, cost', desc:'Failover deep dive, DR, pricing, AlloyDB',
+      blocker: { title:'Failover takes 5 minutes instead of expected 30 seconds', symptom:'During a planned Cloud SQL failover test, the loyalty service is unavailable for 5 minutes. Expected: 30 seconds. Root cause: HikariCP connection pool holds stale connections to the old primary and retries with exponential backoff. The default connectionTimeout is 30s and maxLifetime is 30 minutes — stale connections aren\'t recycled fast enough. Fix: set maxLifetime=600s, connectionTimeout=5s, add a connection validation query.' },
+      theory:'Credit scoring: map full architecture, calculate cost, identify over/under-provisioned areas.',
+      core:'Map loyalty Cloud SQL architecture. Calculate monthly cost. Propose right-sizing.',
+      medium:'Design DR strategy: RPO/RTO, cross-region replica, promotion procedure, cost delta.',
+      hard:'Map your team\'s Cloud SQL architecture with monthly cost. Write cost-optimization proposal.',
+      between:'Validate cost numbers with platform team.'
+    },
+    { num:'C4', title:'Multi-instance topology and domain boundaries', desc:'When to split, blast radius, compliance, replica routing',
+      blocker: { title:'Cross-instance JOIN is impossible', symptom:'The proposed instance topology puts loyalty data and reporting data in separate Cloud SQL instances. But the reporting dashboard needs to JOIN loyalty.members with reporting.aggregated_metrics. PostgreSQL can\'t JOIN across instances. Fix: either use postgres_fdw (foreign data wrapper, but performance is poor), replicate needed data via Kafka CDC to the reporting instance, or reconsider the topology — maybe reporting stays on a read replica of the loyalty instance instead of a separate instance.' },
+      theory:'Credit scoring: design instance topology for 4 domains with mixed compliance.',
+      core:'Design loyalty instance topology: engine, partner API, reporting, archive.',
+      medium:'PCI-DSS isolation for payment-linked reward data. Design instance boundary.',
+      hard:'Draw your current database architecture. Identify one topology improvement. Write ADR.',
+      between:'Share ADR with affected team leads.'
+    },
+    { num:'C5', title:'Large-scale migration ownership', desc:'Partitioning existing tables, estimating duration, DRI role',
+      blocker: { title:'Migration duration estimate off by 10x', symptom:'The migration runbook estimates "backfill 100M rows: 2 hours" based on INSERT rate on an empty table. Actual time: 20 hours. Root cause: (1) the table has 5 indexes that must be updated per INSERT, (2) autovacuum competes for I/O during backfill, (3) the production workload continues during migration, consuming 60% of CPU. Fix: test on a clone with realistic indexes, realistic concurrent workload, and realistic autovacuum. Never estimate from empty-table benchmarks.' },
+      theory:'Credit scoring: plan partitioning 100M-row score_history while online.',
+      core:'Write full migration plan for partitioning loyalty points_ledger online.',
+      medium:'Handle complication: Kafka consumers write during migration. Design dual-write and cutover.',
+      hard:'Write complete migration runbook for your team\'s biggest upcoming schema change.',
+      between:'Peer-review another participant\'s migration runbook.'
+    },
+    { num:'C6', title:'Performance architecture', desc:'Vertical vs horizontal, caching, materialized views, CQRS',
+      blocker: { title:'Materialized view is always stale — dashboard shows yesterday\'s data', symptom:'The loyalty dashboard uses a materialized view (CREATE MATERIALIZED VIEW tier_summary AS SELECT...) that\'s refreshed by a cron job at midnight. But the business expects real-time data. REFRESH MATERIALIZED VIEW takes 90 seconds and locks the view during refresh (no CONCURRENTLY option used). Fix: use REFRESH MATERIALIZED VIEW CONCURRENTLY (requires a unique index), reduce refresh interval to 5 minutes, or switch to a denormalized read model updated by Kafka events.' },
+      theory:'Credit scoring: CQRS, Redis cache for active rules, materialized views.',
+      core:'Design CQRS for loyalty: separate read/write paths. Present trade-offs.',
+      medium:'Evaluate materialized view vs Redis vs denormalized read model for member dashboard.',
+      hard:'Design architectural solution for a performance concern in your team\'s system.',
+      between:'Discuss proposal with architect or EM.'
+    },
+    { num:'C7', title:'Cross-team database review', desc:'Review checklist, giving actionable feedback',
+      blocker: { title:'Reviewer misses a critical anti-pattern', symptom:'The reviewed schema stores monetary amounts as FLOAT instead of NUMERIC. The reviewer checks for missing indexes, unsafe migrations, and RLS — but misses the floating-point money anti-pattern. Running SELECT SUM(amount) FROM points returns 99999.99999999997 instead of 100000.00. Fix: add "data type appropriateness" to the review checklist, specifically: monetary values must use NUMERIC(precision, scale), never FLOAT/REAL/DOUBLE PRECISION.' },
+      theory:'N/A — practice session.',
+      core:'Review another participant\'s artifact using structured checklist. Write 3 feedback items.',
+      medium:'Review a real design from another team. Deliver written feedback.',
+      hard:'Synthesize "common patterns and anti-patterns" summary from all reviews.',
+      between:'Follow up with reviewed team.'
+    },
+    { num:'C8', title:'Monitoring, alerting, and runbook strategy', desc:'Beyond basics: bloat trends, percentiles, runbook-driven ops',
+      blocker: { title:'Alert fires but runbook leads to wrong root cause', symptom:'Alert: "loyalty DB p99 query latency > 500ms." The runbook says: "Step 1: Check for missing indexes." Engineers find indexes are fine. Actual cause: a batch job running pg_dump for backups is consuming all I/O, causing all queries to slow down. The runbook doesn\'t cover backup-related performance impact. Fix: update the runbook decision tree — add "Step 2: Check for backup/maintenance operations" before deep-diving into query plans.' },
+      theory:'Credit scoring: monitoring strategy design — which metrics, thresholds, runbooks per alert.',
+      core:'Design monitoring and alerting for loyalty DB. Implement alerts. Write runbooks.',
+      medium:'Redesign noisy alerts (expected batch spikes). Suppress known patterns, alert on unknowns.',
+      hard:'Audit your team\'s monitoring. Write improvement proposal.',
+      between:'Implement at least one monitoring improvement.'
+    },
+    { num:'C9', title:'Architecture decision forum', desc:'Present ADR, peer review board',
+      blocker: { title:'ADR trade-off analysis is incomplete — hidden cost discovered', symptom:'A participant presents an ADR recommending partitioning over archival. The peer review board discovers a hidden cost: the application uses JPA/Hibernate, and Hibernate doesn\'t support partition-aware queries natively — every query must include the partition key or Hibernate generates queries that scan all partitions. Fix: update the ADR with this implementation cost and either adjust the recommendation or add a "required application changes" section.' },
+      theory:'N/A — presentations.',
+      core:'Present strongest ADR. Group critiques as review board.',
+      medium:'Select highest-impact ADRs. Recommend for org decision log.',
+      hard:'Synthesize "Track C Database Playbook." Organizational artifact.',
+      between:'Write letter to your past self. Exit artifact.'
+    }
+  ]
+};
+
+// ======== MEMORY MANAGEMENT ========
+const MEM = {
+  color: '#059669', name: 'Memory Management',
+  a: [
+    { num:'A1', title:'Your Spring Boot app uses memory — here\'s how to see it', desc:'Grafana dashboards, recognizing healthy vs unhealthy',
+      blocker: { title:'Grafana dashboard shows 0 for all JVM metrics', symptom:'Engineers open the loyalty service Grafana dashboard but all JVM panels show "No data." The service is running and responding to requests. Root cause: the Spring Boot Actuator dependency is included but management.endpoints.web.exposure.include doesn\'t include prometheus. The /actuator/prometheus endpoint returns 404. Fix: add management.endpoints.web.exposure.include=health,info,prometheus to application.yml and restart.' },
+      theory:'Credit scoring: open scoring service Grafana. Walk through healthy vs unhealthy.',
+      core:'Open Grafana for loyalty service. Find heap, GC, thread panels. Assess health.',
+      medium:'Hit /simulate-load 500 times. Watch Grafana. Document the timeline.',
+      hard:'Screenshot your team\'s memory dashboards during peak. Write brief assessment.',
+      between:'Check loyalty dashboard at 3 different times over 2 weeks.'
+    },
+    { num:'A2', title:'What eats memory in a Spring Boot app', desc:'Connection pools, caches, thread pools, Kafka buffers',
+      blocker: { title:'@Cacheable causes OutOfMemoryError after 20 minutes', symptom:'The loyalty service crashes with java.lang.OutOfMemoryError: Java heap space after ~20 minutes of load. The @Cacheable annotation on getMemberTier() uses the default ConcurrentHashMap (no eviction, no size limit). With 100K unique members, the cache consumes 800MB of heap. Fix: add a cache configuration with maxSize and TTL — e.g., Caffeine cache with maximumSize=10000, expireAfterWrite=5m.' },
+      theory:'Credit scoring: walk through scoring service memory consumers — HikariCP, Kafka, caches.',
+      core:'List loyalty service memory consumers from config. Calculate minimum non-heap memory.',
+      medium:'Reproduce unbounded cache growth. Implement bounded cache with eviction.',
+      hard:'Review a PR in your team for potential memory concerns.',
+      between:'Read loyalty service Actuator /actuator/metrics. Document current memory values.'
+    },
+    { num:'A3', title:'Container memory: JVM + Kubernetes = tricky', desc:'OOMKill vs OOM, memory budget formula, resource limits',
+      blocker: { title:'Pod OOMKilled despite heap looking healthy', symptom:'The loyalty pod gets OOMKilled (Exit Code 137) but Grafana shows heap usage at only 60% of -Xmx. The container limit is 1Gi and -Xmx is 900m. Root cause: -Xmx only controls heap. The JVM also needs ~150MB for Metaspace + ~50MB for thread stacks (50 threads × 1MB) + ~100MB for direct byte buffers (Kafka + HikariCP) = 1.2GB total > 1Gi limit. Fix: reduce -Xmx to 600m (60% of container limit).' },
+      theory:'Credit scoring: 3 pods with different configs — OOMKilled, GC thrashing, healthy.',
+      core:'Identify which of 3 loyalty pods is OOMKilled, GC-thrashing, and healthy. Fix configs.',
+      medium:'Calculate full memory budget: heap + Metaspace + threads + direct buffers. Check fit.',
+      hard:'Audit your team\'s service JVM + container configuration.',
+      between:'Recalculate budget after adding new Kafka consumer group.'
+    },
+    { num:'A4', title:'Garbage collection: what\'s happening under the hood', desc:'Generational GC, young/old gen, GC logs',
+      blocker: { title:'GC log file not created — blank output', symptom:'Engineers add -Xlog:gc* to the JVM flags but the GC log file is empty. Root cause: the flag is -Xlog:gc*:file=/tmp/gc.log but the container filesystem mounts /tmp as noexec with a read-only layer. The JVM silently fails to write. Fix: change the log path to a writable directory, e.g., -Xlog:gc*:file=/var/log/gc.log, and ensure the volume mount is writable.' },
+      theory:'Credit scoring: GC logging, generational hypothesis with scoring objects.',
+      core:'Run loyalty service with GC logging. Capture log. Analyze 5 GC events.',
+      medium:'Compare GC logs between high-allocation and cache-heavy workloads.',
+      hard:'Enable GC logging on your team\'s service in test. Write health assessment.',
+      between:'Compare your team\'s GC profile with the loyalty service\'s.'
+    },
+    { num:'A5', title:'Heap dumps and finding memory problems', desc:'jcmd, Eclipse MAT, dominator tree, retention chains',
+      blocker: { title:'Heap dump file is 0 bytes', symptom:'Engineers run jcmd <pid> GC.heap_dump /tmp/heap.hprof but the file is 0 bytes. Root cause: the container has insufficient disk space — the heap is 512MB but the container\'s ephemeral storage limit is 256Mi. The dump fails silently (or with an error buried in container stderr). Fix: increase ephemeral storage limit in the pod spec, or dump to a mounted volume (e.g., an emptyDir with a sufficient sizeLimit).' },
+      theory:'Credit scoring: heap dump of scoring service with memory leak. Walk through Eclipse MAT.',
+      core:'Take heap dump of loyalty service with leak. Find leaking object in Eclipse MAT.',
+      medium:'Compare two heap dumps 5 minutes apart. Trace growing object graph.',
+      hard:'Take heap dump from your team\'s service. Report on top 5 objects by retained size.',
+      between:'Verify the leak is fixed with a post-fix heap dump.'
+    },
+    { num:'A6', title:'Profiling with Java Flight Recorder', desc:'JFR basics, JDK Mission Control, hot methods, allocation',
+      blocker: { title:'JFR recording shows 0 events for allocation profiling', symptom:'JFR recording opens in JMC but the Memory → Allocation tab is empty. Root cause: the JFR was started with default "continuous" profile, which disables allocation profiling (jdk.ObjectAllocationSample disabled by default for low overhead). Fix: start JFR with the "profile" configuration: jcmd <pid> JFR.start settings=profile duration=180s, which enables allocation sampling.' },
+      theory:'Credit scoring: JFR on scoring service. Find hot method, top allocator, GC pause average.',
+      core:'Start JFR on loyalty service. Generate load. Find hottest method, top allocator, GC stats.',
+      medium:'Find contention issue only visible under load. Identify the synchronized block.',
+      hard:'Capture JFR from your team\'s service. Write performance snapshot.',
+      between:'Based on JFR data, which optimization would cut response time 20%?'
+    },
+    { num:'A7', title:'Thread dumps and concurrency basics', desc:'Thread states, deadlocks, pool exhaustion',
+      blocker: { title:'Thread dump shows no deadlock but service is frozen', symptom:'The loyalty service stops responding. Thread dump shows no deadlock detected by the JVM. But all 200 Tomcat threads are in TIMED_WAITING on HikariCP.getConnection(). HikariCP pool shows 10 active connections, 0 idle, 190 pending. Root cause: 10 connections are held by threads running a slow tier recalculation (each takes 30s due to a missing index). Fix: add the missing index on the tier calculation query. Also: set HikariCP connectionTimeout=5s instead of the default 30s so requests fail fast instead of queuing.' },
+      theory:'Credit scoring: deadlock in scoring service. Take thread dump. Find it.',
+      core:'Find deadlock in loyalty service. Draw lock dependency cycle.',
+      medium:'Diagnose thread pool exhaustion cascade. Propose fixes.',
+      hard:'Take thread dump from your team\'s service during peak. Categorize threads.',
+      between:'Compare your team\'s thread profile with loyalty service.'
+    },
+    { num:'A8', title:'GC algorithms: G1 vs ZGC', desc:'Trade-offs, benchmarking, when to switch',
+      blocker: { title:'ZGC uses 2x more memory than G1', symptom:'After switching to ZGC, the loyalty pod gets OOMKilled. G1 used 600MB heap, ZGC uses 1.1GB for the same workload. Root cause: ZGC uses colored pointers and multi-mapped memory, requiring approximately 2x the heap RSS compared to the logical heap size. The container limit (1.5Gi) was sized for G1. Fix: either increase the container limit to accommodate ZGC overhead, or tune ZGC with -XX:SoftMaxHeapSize to constrain it, or stay with G1 and tune MaxGCPauseMillis instead.' },
+      theory:'Credit scoring: benchmark G1 vs ZGC. Show which meets the scoring SLA.',
+      core:'Run loyalty service with G1 and ZGC. Compare pauses, throughput, memory.',
+      medium:'Test against p99 SLA of 30ms. Tune G1, compare with ZGC.',
+      hard:'Evaluate your team\'s GC algorithm choice for latency-sensitive services.',
+      between:'Write GC recommendation for loyalty service with supporting data.'
+    },
+    { num:'A9', title:'Diagnose a sick service', desc:'Team exercise — multi-factor diagnosis',
+      blocker: { title:'The "obvious" fix makes a second problem visible', symptom:'Teams find and fix the tier cache leak (obvious from heap dump). Service improves from 800ms to 200ms — but the SLA is 30ms. The second issue: after fixing the leak, GC pauses drop, but now thread contention becomes visible — a synchronized block in PointsCalculator that was masked by GC pause queuing. JFR shows lock contention only when GC pauses are short. Fix: replace synchronized with a ReentrantReadWriteLock or make the calculation stateless.' },
+      theory:'N/A — capstone.',
+      core:'Diagnose staged incident with multiple factors. Write timeline. Present.',
+      medium:'Find the secondary issue masked by the primary one.',
+      hard:'Apply diagnostic approach to your team\'s most problematic service.',
+      between:'Write "ideal JVM config" for the loyalty service with justification.'
+    }
+  ],
+  b: [
+    { num:'B1', title:'Spring Boot memory consumers in depth', desc:'HikariCP internals, Kafka buffer memory, Tomcat threads, Spring caches',
+      blocker: { title:'Memory map doesn\'t add up — 300MB unaccounted', symptom:'Engineers calculate: heap 512MB + Metaspace 80MB + threads 50MB = 642MB. But container shows 950MB RSS. 300MB missing. Root cause: Kafka consumer fetch.max.bytes = 50MB × 3 consumers × 2 (double buffering) = 300MB of direct byte buffers not visible in heap metrics. Fix: include Kafka consumer buffer memory in the budget. Check with jcmd <pid> VM.native_memory (if enabled).' },
+      theory:'Credit scoring: deep dive into scoring service memory map.',
+      core:'Trace each loyalty service memory consumer. Build a memory map diagram.',
+      medium:'Explain why 3 identical pods use 400MB, 600MB, 900MB. Different Kafka partition assignments.',
+      hard:'Build memory map for your team\'s most important service.',
+      between:'Estimate memory impact of 2 new @Cacheable methods.'
+    },
+    { num:'B2', title:'Actuator metrics for memory diagnosis', desc:'jvm.memory.*, hikaricp.*, custom metrics',
+      blocker: { title:'Custom metric Counter increments but Grafana shows 0', symptom:'Engineers add a custom Micrometer Counter (points.processed.count) and verify it increments in /actuator/metrics. But the Grafana panel shows 0. Root cause: the PromQL query is points_processed_count (underscore) but Micrometer exports it as points_processed_count_total (Prometheus convention adds _total suffix to counters). Fix: update the PromQL query to points_processed_count_total or use rate(points_processed_count_total[5m]).' },
+      theory:'Credit scoring: Grafana dashboard from Actuator metrics.',
+      core:'Build 6-panel Grafana dashboard from loyalty service Actuator metrics.',
+      medium:'Add custom metric tracking tier cache size. Create alert for cache > 100MB.',
+      hard:'Review your team\'s Actuator metrics. Add one missing metric.',
+      between:'Run 30-minute load test. Capture metrics. Write memory behavior report.'
+    },
+    { num:'B3', title:'OOMKill investigation in Kubernetes', desc:'Container limit vs heap, non-heap growth, diagnosing real cause',
+      blocker: { title:'OOMKill only happens during batch — but batch uses same code path', symptom:'The loyalty batch point expiry job triggers OOMKill, but the same code runs fine for individual requests. Root cause: the batch job processes 100K records in a single @Transactional method. Hibernate\'s first-level cache (persistence context) holds all 100K entities in memory, growing the heap by 400MB. Fix: use batch processing with periodic flush/clear: entityManager.flush(); entityManager.clear(); every 1000 records.' },
+      theory:'Credit scoring: OOMKill during batch scoring. Thread count spikes past container limit.',
+      core:'Investigate loyalty OOMKill during batch point expiry. Fix thread/memory issue.',
+      medium:'Subtle OOMKill: direct byte buffers from large Kafka partner messages. Use native memory tracking.',
+      hard:'Review your team\'s OOMKill history. Write prevention strategy.',
+      between:'Create OOMKill prevention checklist and runbook.'
+    },
+    { num:'B4', title:'Profiling memory allocation with JFR', desc:'Allocation hotspots, TLAB, object lifetime',
+      blocker: { title:'JFR shows unexpected top allocator: byte[] from logging', symptom:'JFR allocation profiling shows the #1 allocating class is byte[], consuming 60% of all allocations. Engineers expect PointTransaction to be #1. Root cause: the service has DEBUG logging enabled in production, and each log line creates a byte[] for string formatting. With 50K requests/second, logging allocates 300MB/s of garbage. Fix: set logging level to INFO in production (spring.profiles.active=prod), reducing allocation rate by 60%.' },
+      theory:'Credit scoring: JFR allocation profiling. Correlation with GC pressure.',
+      core:'Capture JFR on loyalty service. Find top allocators. Analyze promotion behavior.',
+      medium:'Find TierEvaluationContext objects unexpectedly promoted to old gen.',
+      hard:'Analyze your team\'s allocation profile. Find top 3 allocating classes.',
+      between:'Compare loyalty service allocation profile between low and high load.'
+    },
+    { num:'B5', title:'Thread model and concurrency in Spring Boot', desc:'Tomcat, @Async, Kafka listener, virtual threads',
+      blocker: { title:'@Async doesn\'t actually run async — blocks the caller', symptom:'The loyalty service\'s tier recalculation is annotated @Async but still blocks the HTTP request for 500ms. Root cause: @Async requires @EnableAsync on a @Configuration class, which is missing. Without it, Spring ignores the @Async annotation and runs the method synchronously. Fix: add @EnableAsync to the application configuration. Verify with a thread dump: the async method should run on a thread from the async executor pool, not the Tomcat thread.' },
+      theory:'Credit scoring: map scoring service thread model — Tomcat, @Async, Kafka.',
+      core:'Map loyalty service thread model. Take thread dump. Categorize by type.',
+      medium:'Diagnose @Async pool exhaustion under load. Implement fix.',
+      hard:'Map your team\'s thread model. Assess pool sizing.',
+      between:'Research Java 21 virtual threads for the loyalty service.'
+    },
+    { num:'B6', title:'Memory leak patterns in Spring applications', desc:'Unbounded caches, event listeners, ThreadLocal, connection pool',
+      blocker: { title:'Memory leak only manifests after 48 hours', symptom:'The loyalty service passes all load tests (30 minutes) but slowly leaks in production over 2 days. Root cause: a Spring @EventListener for PointsEarnedEvent stores events in an ArrayList for "batch reporting" but the reporting job silently fails (NullPointerException in a catch block) and never clears the list. Each event is ~2KB, and at 10K events/hour, the list grows 20MB/hour = 480MB in 24 hours. Fix: add a max-size check, fix the reporting job exception, add monitoring for list size.' },
+      theory:'Credit scoring: 3 leak patterns — unbounded cache, event listener, ThreadLocal.',
+      core:'Find memory leak in loyalty service via heap dump comparison. Identify retention chain.',
+      medium:'Find ThreadLocal leak in Tomcat filter. Implement fix with ThreadLocal.remove().',
+      hard:'Review your team\'s codebase for the 3 common leak patterns.',
+      between:'Write code review checklist item for each leak pattern.'
+    },
+    { num:'B7', title:'Connection pool sizing and behavior', desc:'HikariCP internals, pool exhaustion, sizing formula',
+      blocker: { title:'Connection pool exhaustion despite correct sizing', symptom:'HikariCP pool is sized at 30 (matching Tomcat thread count), but "connection not available" errors appear under moderate load. Root cause: one endpoint holds connections for 10+ seconds (a batch export that streams results). 5 concurrent export requests hold 5 connections for 10s each, reducing available connections to 25 for the remaining 30 threads. Fix: use a separate DataSource with its own HikariCP pool for long-running queries, or add a connection timeout on the export endpoint.' },
+      theory:'Credit scoring: pool sized at 10, but 30 Tomcat + 5 Kafka consumers need connections.',
+      core:'Diagnose connection exhaustion in loyalty service. Fix pool sizing.',
+      medium:'Multiple services sharing one Cloud SQL instance. Design connection allocation strategy.',
+      hard:'Audit your team\'s HikariCP vs Cloud SQL connection limits.',
+      between:'Write connection pool sizing guide for your team.'
+    },
+    { num:'B8', title:'Metaspace and class loading', desc:'What lives in Metaspace, class loader leaks, dynamic proxies',
+      blocker: { title:'Metaspace OOM after 200 rule updates', symptom:'The loyalty reward rule evaluator uses SpEL expressions compiled at runtime. Each rule update compiles a new class. After 200 updates, Metaspace hits the 256MB limit: java.lang.OutOfMemoryError: Metaspace. Root cause: compiled SpEL expressions are cached by Spring but the classloader that created them is never unloaded. Fix: (1) increase MaxMetaspaceSize as immediate mitigation, (2) implement a bounded expression cache that evicts old compiled rules, (3) add Metaspace monitoring with alerts.' },
+      theory:'Credit scoring: dynamic rule compilation causing Metaspace growth.',
+      core:'Investigate loyalty Metaspace growth. Set MaxMetaspaceSize. Add monitoring alert.',
+      medium:'Find Spring DevTools misconfiguration causing proxy regeneration.',
+      hard:'Check your team\'s Metaspace usage. Write assessment.',
+      between:'Add Metaspace monitoring to your team\'s Grafana dashboard.'
+    },
+    { num:'B9', title:'Full memory health assessment', desc:'Team exercise — comprehensive profile',
+      blocker: { title:'Health assessment misses the biggest risk', symptom:'Teams produce comprehensive memory assessments covering heap, GC, and caches — but miss that the loyalty service has no HeapDumpOnOutOfMemoryError flag. When the next OOM occurs in production, there will be no heap dump to analyze — the only evidence will be the OOMKilled exit code. Fix: add -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp to JVM flags. Also: ensure /tmp has enough ephemeral storage for the dump (= heap size).' },
+      theory:'N/A — capstone.',
+      core:'Produce comprehensive memory health assessment. Present.',
+      medium:'Include prioritized recommendations with effort estimates.',
+      hard:'Apply same assessment to your team\'s critical service. Track B exit artifact.',
+      between:'Write ideal configuration for loyalty service with justification.'
+    }
+  ],
+  c: [
+    { num:'C1', title:'GC tuning for production SLAs', desc:'G1 pause targets, ZGC, tuning workflow',
+      blocker: { title:'MaxGCPauseMillis set to 5ms causes throughput collapse', symptom:'Engineers set -XX:MaxGCPauseMillis=5 to meet the 30ms p99 SLA. GC pauses drop to 3-5ms but GC runs 10x more frequently, consuming 40% of CPU. Throughput drops by 50%. p99 latency is actually worse (35ms) because requests wait for CPU during GC cycles. Fix: MaxGCPauseMillis=15 is the sweet spot — pauses of 10-15ms, GC overhead < 5%, p99 = 22ms. Teaches: the pause target is a hint, not a guarantee, and aggressive targets cause more overall damage.' },
+      theory:'Credit scoring: tuning workflow for p99 SLA.',
+      core:'Tune loyalty service GC for 30ms p99 SLA. Document each step.',
+      medium:'Batch throughput vs live latency on same JVM. Design GC strategy for both.',
+      hard:'Measure GC contribution to tail latency for your team\'s service.',
+      between:'Implement one GC tuning recommendation. Measure before/after.'
+    },
+    { num:'C2', title:'Cold start optimization for Spring Boot on GKE', desc:'JIT warmup, Spring context, pool warmup, readiness',
+      blocker: { title:'Readiness probe passes but first real request fails', symptom:'The loyalty pod readiness probe (HTTP GET /actuator/health) passes at T+8s. But the first real request at T+9s gets a 503 because HikariCP hasn\'t initialized its connection pool yet — it lazily creates connections on first use. The readiness probe hits the health endpoint which doesn\'t require a DB connection. Fix: (1) add a custom readiness indicator that checks hikaricp.connections.active > 0, or (2) add a @PostConstruct method that warms the pool by executing SELECT 1.' },
+      theory:'Credit scoring: break down cold start timeline — context, pool, Kafka, JIT.',
+      core:'Measure loyalty service cold start timeline. Implement one optimization.',
+      medium:'Design complete readiness strategy with warmup endpoint for JIT compilation.',
+      hard:'Map your team\'s cold start timeline. Propose optimization.',
+      between:'Design deployment strategy that accounts for warmup time.'
+    },
+    { num:'C3', title:'Production JVM configuration blueprint', desc:'Complete flag set, container awareness, diagnostics',
+      blocker: { title:'JVM ignores container memory limit — uses host memory', symptom:'The loyalty pod has a 2Gi container limit, but the JVM allocates 8GB heap (matching the host node). Root cause: the base Docker image uses an older JDK 11 build where UseContainerSupport is broken (a known JDK bug in certain builds). The JVM reads /proc/meminfo (host) instead of cgroup limits. Fix: upgrade to JDK 21 where container support is reliable, and explicitly set -Xmx to a calculated value rather than relying on MaxRAMPercentage.' },
+      theory:'Credit scoring: walk through the "golden" JVM configuration.',
+      core:'Write complete JVM config for loyalty service deployment manifest. Justify each flag.',
+      medium:'Design JVM config template with per-service overrides for 4 loyalty microservices.',
+      hard:'Review your team\'s JVM config against the blueprint. Write a PR with fixes.',
+      between:'Propose JVM configuration as team standard.'
+    },
+    { num:'C4', title:'Thread pool architecture for mixed workloads', desc:'Optimal pool shapes, bulkhead, virtual threads',
+      blocker: { title:'Bulkhead isolation doesn\'t prevent cascade — wrong executor', symptom:'Engineers implement a separate executor for tier calculation to isolate it from the Tomcat pool. But under load, the tier calculation still blocks HTTP requests. Root cause: the @Async("tierExecutor") method calls a @Transactional repository method, which executes on the calling thread (Spring\'s @Transactional proxy doesn\'t move to the @Async thread for the DB call). The Tomcat thread is still blocked waiting for the DB connection. Fix: the tier calculation must run entirely within the async thread, including the DB call — move the @Transactional boundary inside the async method.' },
+      theory:'Credit scoring: 3 thread pools sized differently for different workload types.',
+      core:'Design thread pool config for loyalty service. Justify sizes. Implement and load test.',
+      medium:'Implement bulkhead pattern. Verify: flood tier calculations, point balance API stays responsive.',
+      hard:'Map your team\'s thread pool architecture. Identify and fix one mis-sized pool.',
+      between:'Assess Java 21 virtual threads for loyalty service.'
+    },
+    { num:'C5', title:'JVM upgrade risk assessment', desc:'Java 17→21, changed defaults, dependency compatibility',
+      blocker: { title:'Java 21 upgrade breaks Kafka consumer with SecurityManager error', symptom:'After upgrading to Java 21, the loyalty service fails to start: java.lang.UnsupportedOperationException: The Security Manager is deprecated and will be removed in a future release. A third-party Kafka serializer library calls System.setSecurityManager() on startup. Fix: (1) add --allow-deprecated-security-manager JVM flag as temporary workaround, (2) upgrade the Kafka serializer library to a version that doesn\'t use SecurityManager, (3) document in the upgrade plan which dependencies need to be checked for Security Manager usage.' },
+      theory:'Credit scoring: Java 17→21 upgrade assessment.',
+      core:'Perform upgrade assessment for loyalty service. Write risk document.',
+      medium:'Execute upgrade in training. Run tests. Measure performance delta.',
+      hard:'Assess Java 21 readiness for your team\'s critical service.',
+      between:'Present upgrade assessment to team. Refine plan.'
+    },
+    { num:'C6', title:'Large payload memory management', desc:'Streaming vs buffering, direct byte buffers',
+      blocker: { title:'Streaming refactored endpoint is slower than buffered version', symptom:'Engineers refactor bulk point accrual from buffered (read all into List) to streaming (BufferedReader line by line). But the streaming version is 3x slower. Root cause: each line triggers an individual INSERT statement (inside the line-processing loop), whereas the buffered version used a batch INSERT (addBatch/executeBatch). The streaming fix removed the I/O problem but created an N+1 database problem. Fix: combine streaming input with batched output — read in chunks of 1000 lines, batch-insert each chunk.' },
+      theory:'Credit scoring: batch scoring with large datasets — streaming vs buffering.',
+      core:'Refactor loyalty bulk import from buffered to streaming. Measure heap difference.',
+      medium:'Handle large partner JSON responses. Streaming JSON parse with Jackson.',
+      hard:'Identify large-payload pattern in your team\'s service. Measure memory impact.',
+      between:'Write large payload handling guide for your team.'
+    },
+    { num:'C7', title:'Cross-service memory cascade diagnosis', desc:'GC cascades, connection pool cascade, Kafka lag from GC',
+      blocker: { title:'Circuit breaker doesn\'t help — failure mode is GC pause, not error', symptom:'The loyalty service has a Resilience4j circuit breaker wrapping the partner API call. During GC pauses, the partner API call doesn\'t fail — it just takes 3 seconds instead of 50ms (the GC pause freezes the HTTP client mid-request). The circuit breaker counts this as "slow" but not "failed" — its failure threshold is based on error rate, not latency. Fix: configure the circuit breaker with slowCallRateThreshold and slowCallDurationThreshold in addition to failureRateThreshold.' },
+      theory:'Credit scoring: GC pauses causing timeout cascades in downstream services.',
+      core:'Trace GC pause → Kafka consumer lag → downstream alert cascade. Propose fixes.',
+      medium:'Design circuit breakers and timeouts. Test by artificially inducing GC pauses.',
+      hard:'Review your team\'s cross-service dependencies for cascade risk. Write ADR.',
+      between:'Implement one cross-service protection mechanism. Test and document.'
+    },
+    { num:'C8', title:'Fleet-wide JVM standards and observability', desc:'Standard baseline, automated JFR, fleet dashboards',
+      blocker: { title:'Fleet dashboard shows healthy averages but one service is dying', symptom:'The fleet-wide JVM dashboard shows average GC pause = 15ms (healthy). But one of the 4 loyalty services has average GC pause = 180ms — it\'s dragged up to 15ms by the other 3 services at 5ms each. The dashboard uses AVG() across all services. Fix: replace AVG() with per-service panels or use MAX() as the top-level indicator, with drill-down to individual services. Add an alert on per-service p99 GC pause, not fleet average.' },
+      theory:'Credit scoring: JVM configuration standard for all scoring microservices.',
+      core:'Define JVM baseline for loyalty microservices. Document with rationale.',
+      medium:'Build fleet-wide Grafana dashboard. Add anomaly detection alert for GC behavior.',
+      hard:'Propose JVM standard for your team. Track C portfolio piece.',
+      between:'Implement standard on one service. Measure before/after.'
+    },
+    { num:'C9', title:'Memory architecture decision forum', desc:'Present strongest assessment, peer review',
+      blocker: { title:'Recommendation ignores the cost dimension', symptom:'A participant recommends switching all loyalty services to ZGC for lower pause times. The peer review board calculates: ZGC\'s 2x memory overhead × 4 services × 3 replicas = 12 pods needing 2x memory = significant GKE cost increase. The ADR mentions performance benefits but has no cost section. Fix: add a "cost impact" section to every memory-related ADR. The right recommendation might be: ZGC for the 1 latency-critical service, G1 (tuned) for the other 3.' },
+      theory:'N/A — presentations.',
+      core:'Present strongest artifact. Group critiques.',
+      medium:'Identify 2-3 recommendations for fleet-wide adoption.',
+      hard:'Synthesize "Memory Management Playbook." Organizational artifact.',
+      between:'Write letter to past self. Exit artifact.'
+    }
+  ]
+};
+
+// ======== SOLUTION DESIGN ========
+const SD = {
+  color: '#d97706', name: 'Solution Design',
+  a: [
+    { num:'A1', title:'Reading Spring Boot service structure', desc:'Controller → service → repository layers',
+      blocker: { title:'Request returns 404 but the controller exists', symptom:'Engineers add a GET /api/v1/members/{id}/tier endpoint to the loyalty TierController, but requests return 404. The controller class is annotated @Controller instead of @RestController. Spring MVC expects a view name (Thymeleaf template) instead of a JSON response body. Fix: change to @RestController (or add @ResponseBody to the method). Teaches: @Controller vs @RestController and Spring MVC dispatch.' },
+      theory:'Credit scoring: walk through ScoreController → ScoreService → ScoreRepository.',
+      core:'Map GET /api/v1/members/{id}/points request flow. Draw sequence diagram.',
+      medium:'Find the controller that bypasses the service layer. Explain why it\'s a problem. Refactor.',
+      hard:'Draw request flow for your team\'s most important endpoint.',
+      between:'Extend diagram to include tier calculation service dependency.'
+    },
+    { num:'A2', title:'REST API design fundamentals', desc:'HTTP methods, status codes, resource naming',
+      blocker: { title:'POST endpoint is not idempotent — creates duplicates on retry', symptom:'The loyalty POST /api/v1/points/earn endpoint creates a duplicate point record when the client retries after a timeout. The first request succeeded (points added to DB) but the response was lost. The retry creates a second record. Fix: add an idempotency_key parameter (e.g., transaction_id from the payment service). Check for existing record before insert. Return 200 with existing record if duplicate.' },
+      theory:'Credit scoring: design scoring API — POST, GET, status codes.',
+      core:'Design loyalty API: members, points, rewards, redemptions. Write OpenAPI stub.',
+      medium:'Design points transfer endpoint. Handle insufficient balance. Choose status codes.',
+      hard:'Evaluate 3 of your team\'s API endpoints for correct design.',
+      between:'Add standard error response contract to loyalty API.'
+    },
+    { num:'A3', title:'Designing a feature end-to-end', desc:'API → domain logic → persistence, vertical slice',
+      blocker: { title:'Redemption succeeds but points aren\'t actually deducted', symptom:'The "redeem reward" endpoint returns 200 OK with a redemption record, but the member\'s points balance is unchanged. Root cause: the RedemptionService creates the redemption record in one transaction, then calls PointsService.deductPoints() — but deductPoints() has @Transactional(propagation = REQUIRES_NEW), which runs in a separate transaction. If the redemption commit succeeds but the points deduction throws an exception (e.g., OptimisticLockException), the redemption is committed but points aren\'t deducted. Fix: use a single transaction boundary around both operations.' },
+      theory:'Credit scoring: design "add score explanation" feature end-to-end.',
+      core:'Design "redeem reward" feature: API → domain → persistence. Write specs.',
+      medium:'Handle concurrent redemptions for limited-inventory rewards. Implement.',
+      hard:'Retrospect on a feature your team recently built. Was the vertical slice clean?',
+      between:'Design "gift points" feature for loyalty service.'
+    },
+    { num:'A4', title:'Design patterns in practice', desc:'Strategy, Builder, Factory in service code',
+      blocker: { title:'Strategy pattern loads wrong implementation at runtime', symptom:'The TierCalculationService uses @Autowired List<TierStrategy> to discover all strategies. But the PointsBasedTierStrategy always runs even for partners configured for SpendBasedTierStrategy. Root cause: the TierCalculationService iterates the list and runs the first match, but the list order is undefined in Spring. Both strategies\' supports() method returns true because the partner config check has a bug (checks partner_type instead of tier_strategy_type). Fix: fix the supports() predicate and add @Order annotation for deterministic ordering.' },
+      theory:'Credit scoring: Strategy for scoring algorithms, Builder for ScoreResult, Factory for ScoringStrategy.',
+      core:'Implement 3 patterns in loyalty: Strategy (tier calc), Builder (RewardOffer), Factory (PointsCalculator).',
+      medium:'Refactor if/else chain to Strategy pattern. Ensure tests pass. Add new strategy.',
+      hard:'Find a missing pattern in your team\'s codebase. Write refactoring proposal.',
+      between:'Add ActivityBased tier strategy without modifying existing strategies.'
+    },
+    { num:'A5', title:'Service integration: sync vs async', desc:'HTTP vs Kafka, trade-offs, failure handling',
+      blocker: { title:'Kafka consumer silently drops events — no error, no processing', symptom:'The loyalty service\'s Kafka consumer for "payment-completed" events appears to start but never processes any messages. No errors in logs. Root cause: the consumer group.id is set to a group that already consumed all existing messages, and auto.offset.reset=latest means it only sees new messages. But no new messages are being produced to the topic (the payment service publishes to "payment.completed" not "payment-completed" — hyphen vs dot mismatch). Fix: verify topic name matches between producer and consumer. Use kafka-console-consumer to verify messages exist.' },
+      theory:'Credit scoring: sync call to bureau (need result) vs async Kafka to credit lifecycle.',
+      core:'Implement sync (payment verification) and async (points earned event) integrations.',
+      medium:'Convert slow sync call to async with Kafka. Implement state machine.',
+      hard:'Review your team\'s integrations. Assess sync vs async choices.',
+      between:'Design error handling for async earn-points flow with timeout compensation.'
+    },
+    { num:'A6', title:'Writing useful ADRs', desc:'Context, alternatives, decision, consequences',
+      blocker: { title:'ADR is missing a viable alternative — biased analysis', symptom:'An engineer writes an ADR for "point expiry strategy" with 3 alternatives: (1) hard delete — dismissed as "obviously wrong," (2) soft delete with batch job — described neutrally, (3) event-driven expiry — described glowingly. The ADR is biased toward the pre-chosen option. Peer review reveals that hard delete is actually the simplest for compliance (data retention = no retention). Fix: rewrite each alternative with genuine pros and cons. The best ADR makes the rejected alternatives look reasonable.' },
+      theory:'Credit scoring: ADR for score model versioning.',
+      core:'Write ADR for loyalty point expiry strategy.',
+      medium:'Trace consequences of your chosen approach across other system components.',
+      hard:'Write a retroactive ADR for a recent team decision.',
+      between:'Read and provide feedback on two other participants\' ADRs.'
+    },
+    { num:'A7', title:'SOLID principles applied', desc:'SRP, DIP, OCP in real service code',
+      blocker: { title:'Refactored code passes tests but breaks at runtime', symptom:'Engineers refactor PointsService to extract NotificationService (SRP). Unit tests pass. But at runtime, the service throws: UnsatisfiedDependencyException — no qualifying bean of type NotificationService. Root cause: the new NotificationService class is in a package not covered by @ComponentScan (it\'s in com.loyalty.notification but the scan only covers com.loyalty.service). Fix: either move the class to a scanned package, add @ComponentScan for the new package, or adjust the base package.' },
+      theory:'Credit scoring: SRP, DIP violations in ScoreService. Walk through refactoring.',
+      core:'Find 3 SOLID violations in loyalty PointsService. Refactor. Verify tests pass.',
+      medium:'Refactor tier calculation to follow Open/Closed with Spring auto-discovery.',
+      hard:'Review a class in your team\'s codebase for SRP violation. Write refactoring plan.',
+      between:'Reassess loyalty PointsService after refactoring.'
+    },
+    { num:'A8', title:'DDD basics for BaaS domains', desc:'Entities, Value Objects, Aggregates, Repositories',
+      blocker: { title:'Value Object comparison fails — two "equal" Points objects are not equal', symptom:'A test asserts that Points.of(100, "SEK").equals(Points.of(100, "SEK")) but it fails. Root cause: the Points class is a Value Object but doesn\'t override equals() and hashCode() — Java uses reference equality by default. Fix: implement equals() and hashCode() based on amount and currency. Or use a Java record (record Points(BigDecimal amount, String currency) {}), which auto-generates both. Teaches: Value Object semantics require structural equality.' },
+      theory:'Credit scoring: Score (Entity), ScoreRange (VO), CreditApplication (Aggregate).',
+      core:'Model loyalty domain: Member (Entity), Points (VO), LoyaltyAccount (Aggregate). Implement.',
+      medium:'Design tension: should Reward be inside LoyaltyAccount aggregate or separate? Model both.',
+      hard:'Model one bounded context from your team using DDD patterns.',
+      between:'Add RedemptionRequest entity. Decide aggregate placement.'
+    },
+    { num:'A9', title:'Design challenge: new loyalty capability', desc:'Team exercise — full vertical slice',
+      blocker: { title:'Partnership earn rate applied incorrectly — multiplied instead of replaced', symptom:'The team\'s design for partner-to-partner point earning applies earn rates multiplicatively (Partner A rate × Partner B rate) instead of using Partner B\'s configured rate for cross-partner earnings. Test: member from Partner A (rate=2x) earns at Partner B (rate=1.5x). Expected: 1.5x. Actual: 3x. Root cause: the earn rate resolver traverses both partner configurations and multiplies. Fix: clarify the domain rule — cross-partner earn uses the earning partner\'s rate, not both. Add a test case for cross-partner scenarios.' },
+      theory:'N/A — capstone.',
+      core:'Design partnership feature: cross-partner earn, configurable rates, settlement.',
+      medium:'Write ADR for key decision. Add feature toggle strategy.',
+      hard:'Compare your design with your team\'s approach to a similar feature.',
+      between:'Write architectural vision for loyalty service redesign.'
+    }
+  ],
+  b: [
+    { num:'B1', title:'Cross-domain workflows', desc:'Features spanning credit + scoring + fincrime + notifications',
+      blocker: { title:'Notification sent before points are committed — race condition', symptom:'Members receive "You earned 500 points!" notifications but their balance shows 0 points. Root cause: the loyalty service publishes a "points-earned" event to Kafka, the notification service consumes it and sends the email immediately, but the loyalty service\'s database transaction hasn\'t committed yet (the Kafka publish happens inside the transaction, before commit). Fix: use the Outbox pattern — publish after commit. Or: publish the event after transaction commit using @TransactionalEventListener(phase = AFTER_COMMIT).' },
+      theory:'Credit scoring: map full workflow across 5 services.',
+      core:'Map loyalty cross-domain workflow. Draw sequence diagram. List failure modes.',
+      medium:'Handle payment refund after points committed. Design compensation.',
+      hard:'Map a cross-domain workflow in your team. Document failure points.',
+      between:'Identify blast radius of each failure in the loyalty workflow.'
+    },
+    { num:'B2', title:'Sagas and the Outbox pattern', desc:'Orchestrated vs choreographed, compensation, reliable publishing',
+      blocker: { title:'Saga compensation creates negative reward inventory', symptom:'The redemption saga compensates step 2 (release reserved inventory) when step 3 (fulfillment) fails. But the compensation runs twice because the Kafka consumer processes the compensation event twice (at-least-once delivery). Inventory goes from 0 → 1 (first release) → 2 (duplicate release). Fix: make compensation idempotent — check current state before applying compensation. If inventory already released (tracked by redemption status), skip.' },
+      theory:'Credit scoring: choreographed saga for application → scoring → fincrime → decision.',
+      core:'Implement redemption saga with compensation handlers.',
+      medium:'Convert to orchestrated saga. Implement outbox pattern.',
+      hard:'Identify a "hope-based consistency" operation in your team. Propose saga.',
+      between:'Test saga with artificial failures. Verify compensation.'
+    },
+    { num:'B3', title:'Idempotency design', desc:'Idempotency keys, deduplication, safe retries',
+      blocker: { title:'Idempotency check passes but still creates duplicate', symptom:'The loyalty service checks for duplicate idempotency keys before processing, but under concurrent load, two identical requests arrive simultaneously and both pass the check (both SELECT finds no existing key, both INSERT). Root cause: the check-then-insert is not atomic. Fix: use a UNIQUE constraint on idempotency_key column, catch the constraint violation (ON CONFLICT DO NOTHING), and return the existing result. Or: use SELECT FOR UPDATE to lock the key row.' },
+      theory:'Credit scoring: duplicate scoring prevented with idempotency key.',
+      core:'Implement idempotency for duplicate Kafka events. Test with 3x same event.',
+      medium:'Design HTTP idempotency: client-generated key, server cache, handle in-flight duplicates.',
+      hard:'Review your team\'s most important write endpoint for idempotency.',
+      between:'Add cleanup job and monitoring for idempotency records.'
+    },
+    { num:'B4', title:'Aggregate design and consistency boundaries', desc:'What\'s inside vs outside, eventual consistency',
+      blocker: { title:'Aggregate invariant violated — points balance negative', symptom:'The LoyaltyAccount aggregate has an invariant: points balance >= 0. But a concurrent earn (+100) and burn (-200) from starting balance 150 both pass validation independently: earn sees 150 ≥ 0 ✓, burn sees 150 ≥ 200... wait, burn should be blocked. But with Read Committed and no locking, both transactions read balance=150 before either writes. Earn writes 250, burn writes -50 (150-200). Fix: load the aggregate with SELECT FOR UPDATE or use optimistic locking (@Version) with retry on conflict.' },
+      theory:'Credit scoring: CreditApplication aggregate boundaries.',
+      core:'Design loyalty aggregate boundaries. Implement with JPA. Write consistency test.',
+      medium:'Design cross-aggregate redemption (points + inventory). Evaluate approaches.',
+      hard:'Review aggregate boundary in your team\'s domain.',
+      between:'Design point pooling feature. How does it change aggregate boundaries?'
+    },
+    { num:'B5', title:'Event-driven architecture with Kafka', desc:'Schemas, topics, consumer groups, ordering',
+      blocker: { title:'Events processed out of order — tier downgraded then upgraded', symptom:'Member earns points (event 1: balance=500, tier=Silver), then earns more (event 2: balance=1000, tier=Gold). But the notification service receives event 2 first ("Congratulations, Gold!") then event 1 ("Your tier is Silver") — overwriting Gold with Silver. Root cause: events are partitioned by topic (default), not by member_id. Two events for the same member land on different partitions and are consumed by different threads. Fix: set the Kafka partition key to member_id, ensuring all events for one member are ordered.' },
+      theory:'Credit scoring: Kafka topic structure for scoring events.',
+      core:'Design loyalty Kafka topics. Define schemas. Implement producers and consumers.',
+      medium:'Handle out-of-order point events. Implement ordering solution.',
+      hard:'Review your team\'s Kafka topic design for ordering guarantees.',
+      between:'Add backward-compatible schema evolution to loyalty events.'
+    },
+    { num:'B6', title:'Audit trail design for regulation', desc:'Event sourcing vs audit columns vs log, SOX/PCI-DSS',
+      blocker: { title:'Audit log shows wrong "before" value for point adjustment', symptom:'The audit trail records before_value and after_value for point changes. An admin adjusts member points from 500 to 700. Audit log shows: before=450, after=700. The before_value is wrong (450 not 500). Root cause: a concurrent point earn (50 points) committed between the audit log reading the "before" value and the adjustment writing the "after" value. The audit log captured a stale read. Fix: read and write in the same transaction with proper isolation, or compute "before" from the event log (previous event\'s after_value) instead of reading from current state.' },
+      theory:'Credit scoring: 3 audit approaches for score decisions.',
+      core:'Implement 2 audit approaches for loyalty points. Compare.',
+      medium:'Design event-sourced points ledger. Implement projection query.',
+      hard:'Review your team\'s audit trail for regulatory compliance.',
+      between:'Write audit query: "member X balance on March 1 with transaction history."'
+    },
+    { num:'B7', title:'Outbox pattern deep dive', desc:'Why dual-write fails, outbox table, polling vs CDC',
+      blocker: { title:'Outbox poller publishes events in wrong order', symptom:'The outbox table has events with IDs 1, 2, 3 for the same member. The poller processes them as 1, 3, 2 (because event 2 was inserted by a slow transaction that committed after event 3). Root cause: the poller queries ORDER BY id but IDs are assigned at INSERT time, not at COMMIT time. A long-running transaction gets a low ID but commits late. Fix: order by created_at (set to CURRENT_TIMESTAMP at commit time using a trigger), or use a sequence that advances only at commit.' },
+      theory:'Credit scoring: dual-write problem demo. Outbox pattern solution.',
+      core:'Implement outbox pattern for loyalty service. Build @Scheduled poller.',
+      medium:'Compare polling vs CDC. Implement CDC simulation.',
+      hard:'Identify a dual-write pattern in your team. Write outbox migration proposal.',
+      between:'Add monitoring: unpublished count, publish latency, failure rate.'
+    },
+    { num:'B8', title:'Coupling analysis', desc:'Shared database, API coupling, event coupling, contract testing',
+      blocker: { title:'Pact contract test passes locally but fails in CI', symptom:'Consumer-side Pact test for the loyalty → payment integration passes locally but fails in CI with "Pact verification failed: unexpected request body field." Root cause: the local test uses a relaxed Pact matcher (type-based matching) but CI runs with strict mode. The payment service added a new required field (processing_fee) that the loyalty consumer doesn\'t send. Fix: update the consumer Pact to include the new field. Teaches: contract tests must evolve with the provider API — they\'re a conversation, not a one-time setup.' },
+      theory:'Credit scoring: shared database anti-pattern. Refactor to events.',
+      core:'Analyze loyalty service coupling. Rate each integration. Propose mitigations.',
+      medium:'Implement Pact contract testing for loyalty → payment integration.',
+      hard:'Map coupling in your team\'s service. Identify tightest point. Write decoupling proposal.',
+      between:'Design event-driven migration to break shared "members" table coupling.'
+    },
+    { num:'B9', title:'Design challenge: multi-domain loyalty', desc:'Team exercise — payments + credit + notifications',
+      blocker: { title:'Cash-back credit creates infinite loop', symptom:'The cash-back feature: payment → earn points → Gold tier → cash-back credit to account. But the cash-back credit is itself a "transaction" that triggers the loyalty service again (earn points on the credit). This creates a loop: payment → points → cash-back → points → cash-back → ... Fix: add a transaction_type field to the event schema. Loyalty service ignores events where transaction_type = "cashback_credit." Teaches: recursive event chains are a common pitfall in event-driven architectures.' },
+      theory:'N/A — capstone.',
+      core:'Design loyalty cash-back feature spanning 3 services.',
+      medium:'Peer critique: saga correctness, audit sufficiency, duplicate handling.',
+      hard:'Polish strongest ADR as Track B exit artifact.',
+      between:'Write reflection on design thinking growth.'
+    }
+  ],
+  c: [
+    { num:'C1', title:'End-to-end BaaS architecture', desc:'Full architecture: API → domain → integration → deployment',
+      blocker: { title:'Architecture diagram hides a single point of failure', symptom:'The loyalty architecture shows 3 API replicas, 3 service replicas, but only 1 Cloud SQL instance with no HA configured. Under the peer review, someone asks "what happens when the database fails?" and the answer is "everything stops." The SPOF was invisible because the diagram showed it as a single box without redundancy notation. Fix: add HA to the architecture, mark each component\'s redundancy (N=3, HA pair, single), and explicitly label SPOFs that are accepted risks.' },
+      theory:'Credit scoring: full architecture from gateway to GKE.',
+      core:'Produce full loyalty architecture. Component responsibilities, technologies, failure modes.',
+      medium:'Design 10x scaling strategy for promotional events. Identify bottleneck.',
+      hard:'Produce comparable architecture diagram for your team\'s domain.',
+      between:'Present to a colleague. Refine based on questions.'
+    },
+    { num:'C2', title:'Regulatory design constraints', desc:'PSD2, SOX, PCI-DSS as first-class design concerns',
+      blocker: { title:'GDPR "right to delete" conflicts with SOX "retain for 7 years"', symptom:'The loyalty service must comply with GDPR (delete member data on request) AND SOX (retain transaction audit trail for 7 years). A member requests deletion. Engineers can\'t delete the audit records (SOX violation) but can\'t keep them (GDPR violation). Fix: pseudonymize rather than delete — replace PII (name, email) with anonymized tokens in audit records, delete the PII mapping table. The audit trail retains financial data without identifying the individual.' },
+      theory:'Credit scoring: PSD2, SOX, PCI-DSS constraints shaping architecture.',
+      core:'Apply 3 regulatory constraints to loyalty architecture. Write fitness functions.',
+      medium:'Remove PCI scope by extracting card data to tokenization service.',
+      hard:'Review your team\'s regulatory architecture. Identify "bolted on" compliance.',
+      between:'Present regulatory design to compliance team member (simulated).'
+    },
+    { num:'C3', title:'Anti-corruption layers for integrations', desc:'Wrapping external APIs, adapters, circuit breakers',
+      blocker: { title:'ACL adapter swallows partner API errors — returns empty result instead', symptom:'The loyalty PartnerBAdapter catches all exceptions from the SOAP partner API and returns an empty RewardCatalog instead of propagating the error. The loyalty service treats this as "no rewards available" and removes Partner B rewards from the catalog. Root cause: a catch(Exception e) { return RewardCatalog.empty(); } that was added as a "safety measure." Fix: let meaningful errors propagate (wrap as PartnerIntegrationException), only catch transient network errors, use circuit breaker for repeated failures.' },
+      theory:'Credit scoring: ACL for 3 credit bureaus with different API formats.',
+      core:'Design ACL for 3 loyalty partners (REST, SOAP, batch CSV). Implement one adapter.',
+      medium:'Handle partners with different latencies. Unified interface hiding differences.',
+      hard:'Identify an integration in your team lacking an ACL. Write refactoring proposal.',
+      between:'Add Partner D (GraphQL) without modifying existing code.'
+    },
+    { num:'C4', title:'Build vs buy evaluation', desc:'Criteria, TCO, vendor risk, compliance',
+      blocker: { title:'TCO calculation ignores integration and migration cost', symptom:'The build-vs-buy evaluation shows vendor solution at $50K/year vs build at $200K/year. But the vendor TCO ignores: $80K integration effort (adapting vendor API to loyalty domain model), $30K/year maintenance of the integration layer, $40K data migration from current system, $20K compliance certification of the vendor. Revised TCO: vendor = $220K first year, build = $200K. Fix: TCO must include integration, migration, maintenance, compliance, and switching costs — not just the vendor license.' },
+      theory:'Credit scoring: build vs buy for scoring rules engine.',
+      core:'Build vs buy evaluation for loyalty reward fulfillment.',
+      medium:'Quantify PCI compliance cost of sending member data to vendor cloud.',
+      hard:'Apply evaluation framework to a build/buy decision your team faces.',
+      between:'Present to simulated leadership audience.'
+    },
+    { num:'C5', title:'Evolutionary architecture', desc:'Strangler fig, parallel runs, feature toggles',
+      blocker: { title:'Parallel run shows 2% discrepancy — unclear which system is correct', symptom:'The parallel run between legacy and new loyalty systems shows 2% discrepancy in point balances. Engineers assume the new system has bugs. After investigation: the legacy system has a rounding error (uses FLOAT for point amounts, losing precision). The new system (NUMERIC) is actually correct. But stakeholders don\'t trust the new system because it "disagrees with production." Fix: prove the legacy system has the bug by finding specific members whose balances differ and showing the float arithmetic error. Add this evidence to the migration approval document.' },
+      theory:'Credit scoring: strangler fig from batch to event-driven scoring.',
+      core:'Design strangler fig for legacy → event-driven loyalty migration.',
+      medium:'Implement reconciliation job. Define cutover criteria.',
+      hard:'Design strangler fig for a migration your team needs.',
+      between:'Design per-partner feature toggle for the migration.'
+    },
+    { num:'C6', title:'Cross-team API contract negotiation', desc:'Versioning, breaking changes, consumer-driven contracts',
+      blocker: { title:'API versioning breaks one consumer but fixes another', symptom:'The loyalty API v2 restructures the member response (flattens nested tier object into top-level fields). Consumer A needs the flat structure. Consumer B\'s code depends on the nested structure and breaks. Content negotiation (Accept header) was supposed to solve this but Consumer B sends Accept: application/json (no version), which defaults to v2. Fix: default unversioned requests to v1 (backward compatible), require explicit Accept: application/vnd.loyalty.v2+json for new format. Add deprecation header to v1 responses.' },
+      theory:'Credit scoring: backward-compatible schema change with 3 consumers.',
+      core:'Design backward-compatible event evolution. Verify consumer contracts.',
+      medium:'Handle breaking change request. Implement versioning with adapter.',
+      hard:'Identify API contract tension in your team. Write negotiation document.',
+      between:'Set up Pact contract tests between loyalty and one consumer.'
+    },
+    { num:'C7', title:'Design review practice', desc:'Structured checklist, actionable feedback',
+      blocker: { title:'Reviewed design looks correct on paper but fails under load', symptom:'The review passes all checklist items (separation of concerns ✓, failure handling ✓, scalability ✓). But under load testing, the design fails because the "scalability" review only checked horizontal scaling (add more pods) without checking vertical bottlenecks (all pods share one Kafka topic with 1 partition → only 1 consumer actually processes). Fix: add "concurrency model" to the review checklist — for each async component, verify: partition count ≥ consumer count, no single-threaded bottlenecks, no shared mutable state.' },
+      theory:'N/A — practice.',
+      core:'Review another participant\'s design. Write 3 actionable feedback items.',
+      medium:'Review a design from another team. Report cross-team learnings.',
+      hard:'Write a design review checklist from all reviews.',
+      between:'Follow up on feedback outcomes.'
+    },
+    { num:'C8', title:'DDD strategic patterns: context mapping', desc:'Bounded contexts, conformist, ACL, open host',
+      blocker: { title:'Context map shows wrong relationship — conformist when it should be ACL', symptom:'The loyalty service is labeled "Conformist" to the payment service (accepts payment events as-is). But the payment event schema includes payment-specific fields (acquirer_id, merchant_category_code) that leak into the loyalty domain model. When the payment team changes the schema, loyalty breaks. This is a missing ACL. Fix: the relationship should be Anti-Corruption Layer — loyalty translates payment events to its own PointEarnTrigger domain event, isolating from payment schema changes.' },
+      theory:'Credit scoring: context map for scoring bounded context.',
+      core:'Draw context map for loyalty platform. Label each relationship.',
+      medium:'Migrate conformist relationship to ACL. What changes in code? In team dynamics?',
+      hard:'Draw context map for your domain. Identify wrong-pattern relationships.',
+      between:'Analyze where a new partner channel fits on the context map.'
+    },
+    { num:'C9', title:'Architecture decision forum', desc:'Present, peer review board',
+      blocker: { title:'Architecture is technically sound but organizationally infeasible', symptom:'A participant presents a clean event-driven loyalty architecture. Technically excellent. But the peer review board asks: "Which team owns the event schema registry? Who operates the Kafka cluster? Who maintains the ACL adapters?" No team owns these cross-cutting concerns. The architecture requires organizational changes (a platform team, shared schema governance) that aren\'t in scope. Fix: add "organizational prerequisites" section to architecture proposals. The best architecture fails if nobody maintains it.' },
+      theory:'N/A — presentations.',
+      core:'Present strongest design. Group critiques.',
+      medium:'Select highest-impact designs. Recommend for org decision log.',
+      hard:'Synthesize "Solution Design Playbook."',
+      between:'Write letter to past self. Exit artifact.'
+    }
+  ]
+};
+
+// ======== CLOUD & OBSERVABILITY ========
+const CO = {
+  color: '#7c3aed', name: 'Cloud & Observability',
+  a: [
+    { num:'A1', title:'Where your service runs', desc:'GKE pods, Cloud SQL, Kafka deployment landscape',
+      blocker: { title:'Pod can\'t reach Cloud SQL — connection refused', symptom:'The loyalty pod starts but crashes on startup with "Connection refused to 10.0.0.5:5432." The Cloud SQL instance is running. Root cause: the Cloud SQL Auth Proxy sidecar container hasn\'t started yet — the main container starts first and tries to connect before the proxy is ready. Fix: add an initContainer that waits for the proxy port, or use a startup probe on the main container with a retry loop.' },
+      theory:'Credit scoring: walk through Docker → GKE → Cloud SQL → Kafka deployment.',
+      core:'Map loyalty service deployment. Draw deployment diagram.',
+      medium:'Diagnose CrashLoopBackOff from misconfigured Auth Proxy. Fix the manifest.',
+      hard:'Map one of your team\'s services. Draw deployment diagram for onboarding.',
+      between:'Extend diagram with ConfigMap, Secret, Service.'
+    },
+    { num:'A2', title:'Docker and container basics', desc:'Dockerfile, building, running locally',
+      blocker: { title:'Docker build succeeds but container exits immediately', symptom:'docker build completes. docker run shows the container exiting with code 1 after 0.5s. No application logs. Root cause: the ENTRYPOINT uses exec java -jar app.jar but the JAR path is wrong (copied to /app/application.jar but ENTRYPOINT references /app/app.jar). The error is "Error: Unable to access jarfile /app/app.jar" but it goes to stderr, which isn\'t visible without docker logs. Fix: match the COPY destination with the ENTRYPOINT path. Use docker logs <container> to see the error.' },
+      theory:'Credit scoring: Dockerfile walkthrough. Build, run, override flags.',
+      core:'Build loyalty Docker image. Run with docker-compose. Verify health endpoint.',
+      medium:'Optimize Dockerfile: multi-stage, slim JRE, layer caching.',
+      hard:'Review your team\'s Dockerfile for optimization opportunities.',
+      between:'Add HEALTHCHECK instruction. Understand interaction with K8s probes.'
+    },
+    { num:'A3', title:'Reading Grafana dashboards', desc:'CPU, memory, error rate, latency — healthy vs unhealthy',
+      blocker: { title:'Dashboard shows 100% CPU but the service feels fine', symptom:'Grafana CPU panel shows 100% utilization. Engineers panic. But the service is responding normally. Root cause: the CPU metric is showing container CPU usage as a percentage of the REQUEST (100m = 0.1 CPU), not the LIMIT (500m = 0.5 CPU). The container uses 100m, which is 100% of request but only 20% of limit. Fix: change the Grafana query to show usage as percentage of limit, not request. Teaches: requests ≠ limits in K8s resource model.' },
+      theory:'Credit scoring: tour Grafana panels. Healthy vs problem patterns.',
+      core:'Assess 6 loyalty dashboard panels. Write one-sentence evaluation per panel.',
+      medium:'Investigate recurring CPU spike pattern. Correlate with batch job.',
+      hard:'Open your team\'s dashboards. Find one unexplained pattern. Investigate.',
+      between:'Create dashboard reading guide for loyalty service.'
+    },
+    { num:'A4', title:'Kubernetes manifests and configuration', desc:'Deployments, Services, ConfigMaps, Secrets',
+      blocker: { title:'ConfigMap change doesn\'t take effect after kubectl apply', symptom:'Engineers update application.yml in the ConfigMap and run kubectl apply. But the loyalty service still uses the old config. Root cause: ConfigMap changes don\'t trigger pod restarts — the pod must be restarted to pick up the new volume mount. Fix: kubectl rollout restart deployment/loyalty-service. Prevention: use configmap hash annotation in the deployment (forces rolling update when ConfigMap changes).' },
+      theory:'Credit scoring: read Deployment, Service, ConfigMap, Secret manifests.',
+      core:'Read loyalty K8s manifests. Answer 5 "what if" questions about config changes.',
+      medium:'Add readiness probe, liveness probe, and resource requests/limits. Deploy. Verify.',
+      hard:'Review your team\'s K8s manifests for missing configuration.',
+      between:'Add a new environment variable via ConfigMap.'
+    },
+    { num:'A5', title:'Centralized logging', desc:'Finding errors, filtering, structured logging',
+      blocker: { title:'Logs show error but no stack trace — can\'t find root cause', symptom:'The loyalty service log shows: "ERROR - Failed to process point earn request" but no stack trace. Root cause: the catch block logs log.error("Failed to process point earn request") without the exception object. Fix: change to log.error("Failed to process point earn request", e) — the second argument makes SLF4J include the stack trace. Teaches: always pass the exception as the last argument to log.error().' },
+      theory:'Credit scoring: find error in centralized logging. Show structured vs unstructured.',
+      core:'Find 3 planted errors in loyalty logs. Document each.',
+      medium:'Refactor from unstructured to structured JSON logging.',
+      hard:'Review your team\'s logging. Can you trace a request end-to-end?',
+      between:'Add correlation ID to loyalty service logs via MDC.'
+    },
+    { num:'A6', title:'Terraform basics', desc:'Resources, variables, state, modules',
+      blocker: { title:'Terraform apply fails — resource already exists', symptom:'terraform apply fails with "Error creating Cloud SQL instance: googleapi: Error 409: Instance already exists." Root cause: someone created the instance manually in the GCP console, and Terraform doesn\'t know about it (not in state). Fix: terraform import google_sql_database_instance.loyalty <instance-name> to add it to state. Teaches: Terraform state must match reality.' },
+      theory:'Credit scoring: Terraform for Cloud SQL, IAM, GCS.',
+      core:'Write Terraform for loyalty Cloud SQL, IAM service account, GCS bucket.',
+      medium:'Refactor hardcoded values to variables. Add environments (dev/staging/prod).',
+      hard:'Review your team\'s Terraform for modularization and parameterization.',
+      between:'Add a read replica to loyalty Terraform.'
+    },
+    { num:'A7', title:'Application metrics with Micrometer', desc:'Counters, gauges, timers, histograms',
+      blocker: { title:'Timer metric always shows 0ms', symptom:'The tier_calculation_duration Timer metric always reports 0 in /actuator/metrics. Root cause: the Timer.record() is called with the duration in nanoseconds, but passed as 0 because the calculation runs asynchronously — the timer measures only the time to submit to the executor, not the actual calculation. Fix: move the Timer.record() inside the async method, or use Timer.Sample (start before async call, stop in the callback).' },
+      theory:'Credit scoring: add Counter, Timer, Gauge to scoring service.',
+      core:'Add 4 Micrometer metrics to loyalty service. Verify in Actuator and PromQL.',
+      medium:'Create 6-panel Grafana dashboard from loyalty metrics. Add one alert.',
+      hard:'Add one custom metric to your team\'s service that helps diagnose issues.',
+      between:'Write PromQL queries for 3 loyalty metrics.'
+    },
+    { num:'A8', title:'Troubleshooting pods with kubectl', desc:'describe, logs, exec, port-forward',
+      blocker: { title:'kubectl exec fails — "container not found"', symptom:'Engineers try kubectl exec -it loyalty-pod -- /bin/bash to debug a running pod, but get "container not found." Root cause: the pod has two containers (main app + cloud-sql-proxy sidecar). kubectl exec defaults to the first container alphabetically (cloud-sql-proxy), which doesn\'t have /bin/bash. Fix: specify the container: kubectl exec -it loyalty-pod -c loyalty-app -- /bin/bash.' },
+      theory:'Credit scoring: kubectl troubleshooting walkthrough.',
+      core:'Diagnose 4 failing loyalty pods, each with a different problem.',
+      medium:'Diagnose slow pod: kubectl top, check throttling, exec to check JVM.',
+      hard:'Document kubectl troubleshooting steps for your team\'s next pod failure.',
+      between:'Create kubectl cheat sheet for loyalty service.'
+    },
+    { num:'A9', title:'Service deployment end-to-end', desc:'Team exercise — deploy, verify, monitor, troubleshoot',
+      blocker: { title:'Rolling update causes 30 seconds of 503 errors', symptom:'During a rolling update, the new pods are marked Ready (readiness probe passes) but requests to them fail with 503 for 30 seconds. Root cause: the readiness probe checks /actuator/health which returns UP as soon as Spring Boot starts, but the application needs 30 seconds for HikariCP pool warmup and Kafka consumer assignment. Fix: custom readiness probe that checks both DB connectivity and Kafka assignment, or add initialDelaySeconds to the readiness probe.' },
+      theory:'N/A — capstone.',
+      core:'Deploy loyalty from scratch. Find and fix 2 planted issues.',
+      medium:'Perform rolling update. Monitor for zero-downtime.',
+      hard:'Compare with your team\'s deployment process. Write improvement proposal.',
+      between:'Write deployment checklist. Track A exit artifact.'
+    }
+  ],
+  b: [
+    { num:'B1', title:'Distributed tracing with OpenTelemetry', desc:'Traces, spans, context propagation',
+      blocker: { title:'Trace breaks at Kafka — downstream spans are orphaned', symptom:'The loyalty service trace shows spans for HTTP handling and Kafka publishing, but the notification service\'s spans appear as separate traces (different trace ID). Root cause: the Kafka producer doesn\'t inject trace context into message headers by default — it needs the OpenTelemetry Kafka instrumentation library. Fix: add opentelemetry-instrumentation-kafka to the producer, which auto-injects W3C trace context into Kafka headers. The consumer auto-extracts if also instrumented.' },
+      theory:'Credit scoring: instrument with OpenTelemetry. Full trace across 5 layers.',
+      core:'Instrument loyalty service. View trace. Verify context propagation.',
+      medium:'Add trace propagation through Kafka to notification service.',
+      hard:'Check your team\'s trace propagation across all service boundaries.',
+      between:'Add custom spans for tier calculation, partner callout, cache lookup.'
+    },
+    { num:'B2', title:'SLIs, SLOs, and error budgets', desc:'Defining "healthy" with numbers',
+      blocker: { title:'SLO dashboard shows 100% availability — but users are complaining', symptom:'The availability SLI (2xx responses / total responses) shows 99.99%. But users report the service is slow and unreliable. Root cause: the SLI counts health check requests from the load balancer (every 5 seconds), which always succeed and vastly outnumber real user requests. Health checks are 95% of traffic, masking a 5% error rate on real requests. Fix: exclude health check endpoints from the SLI calculation. Filter to business-meaningful endpoints only.' },
+      theory:'Credit scoring: define SLIs, SLOs, error budget.',
+      core:'Define SLIs/SLOs for loyalty service. Write PromQL queries. Calculate error budget.',
+      medium:'Batch job spikes affect SLO. Decide: exclude batch from SLO?',
+      hard:'Define SLIs/SLOs for your team\'s service.',
+      between:'Build SLO dashboard for loyalty service.'
+    },
+    { num:'B3', title:'Alerting that works', desc:'Severity, routing, runbooks, noise reduction',
+      blocker: { title:'P1 alert fires at 3am — on-call wakes up — it\'s a known batch spike', symptom:'Alert: "loyalty error rate > 5%." On-call wakes up, investigates for 30 minutes, finds it\'s the nightly batch job that always produces 8% errors during the first minute (transient Kafka consumer rebalance). This happens every night. Fix: either suppress the alert during the known batch window (maintenance window), change the alert to require 5% error rate for > 5 minutes (transient spikes don\'t trigger), or fix the batch job\'s Kafka rebalance behavior.' },
+      theory:'Credit scoring: redesign 12 noisy alerts to 6 meaningful ones.',
+      core:'Design 6 alerts for loyalty. PromQL condition, routing, runbook per alert.',
+      medium:'Redesign the "memory > 80%" false positive. Implement solution.',
+      hard:'Audit your team\'s alerting. Write improvement proposal.',
+      between:'Write runbooks for 3 most important loyalty alerts.'
+    },
+    { num:'B4', title:'Trace context propagation deep dive', desc:'HTTP headers, Kafka headers, baggage',
+      blocker: { title:'Baggage propagation works in test but not in production', symptom:'Engineers add partnerId as OpenTelemetry baggage. In local tests, downstream services see the baggage. In production (GKE), it\'s missing. Root cause: the API gateway (Cloud Load Balancer) strips non-standard headers. The W3C baggage header is forwarded, but a custom middleware in the gateway sanitizes headers and removes "baggage" because it\'s not in the allowlist. Fix: add "baggage" to the gateway\'s header forwarding allowlist.' },
+      theory:'Credit scoring: W3C Trace Context deep dive.',
+      core:'Verify trace propagation across HTTP, Kafka, and back. Fix broken links.',
+      medium:'Add partnerId baggage. Build Grafana filter for partner-specific traces.',
+      hard:'Test trace propagation in your team. Document and fix broken boundaries.',
+      between:'Design correlation between traces and business metrics.'
+    },
+    { num:'B5', title:'Incident correlation: metrics + logs + traces', desc:'Building complete picture during incidents',
+      blocker: { title:'Metrics show the problem, traces show it\'s fine — conflicting signals', symptom:'Grafana shows p99 latency spike to 2s for the loyalty tier calculation endpoint. But individual traces for tier calculation all complete in <50ms. Root cause: the latency metric includes queue wait time (request waiting for a Tomcat thread), but the trace span starts only when the request reaches the handler. 95% of the 2s latency is Tomcat thread pool wait, not business logic. Fix: add a span starting at the servlet filter (request received) to capture queue wait time.' },
+      theory:'Credit scoring: staged incident. Correlate metrics, logs, traces.',
+      core:'Investigate staged loyalty incident using 3-signal approach. Write timeline.',
+      medium:'Fix missing DB span instrumentation. Re-run. Find the slow query.',
+      hard:'Document next team incident using 3-signal approach.',
+      between:'Build incident investigation dashboard for loyalty service.'
+    },
+    { num:'B6', title:'Kubernetes resource management', desc:'Requests/limits, HPA, VPA, right-sizing',
+      blocker: { title:'HPA scales to max replicas but latency doesn\'t improve', symptom:'HPA scales loyalty pods from 3 to 10 based on CPU. But p99 latency stays at 2s. Root cause: the bottleneck isn\'t CPU — it\'s Cloud SQL connections. 10 pods × 10 HikariCP connections = 100 connections, but Cloud SQL max_connections = 100. Adding pods just distributes the same connection pool thinner. Fix: scale the bottleneck (increase Cloud SQL tier or max_connections), not just the compute. HPA target metric should include connection pool saturation.' },
+      theory:'Credit scoring: right-size pods using actual usage data.',
+      core:'Right-size loyalty pods. Compare requests/limits with actual usage.',
+      medium:'Configure HPA on CPU + custom metric (Kafka consumer lag).',
+      hard:'Analyze your team\'s pod resources vs actual usage.',
+      between:'Calculate cost of right-sizing across 10 pods.'
+    },
+    { num:'B7', title:'Custom OpenTelemetry instrumentation', desc:'Custom spans, attributes, sampling',
+      blocker: { title:'Custom spans don\'t appear in traces — only auto-instrumentation visible', symptom:'Engineers add manual spans using Tracer.spanBuilder("loyalty.tier.calculate").startSpan() but they don\'t appear in traces. Root cause: the span is started but never ended (span.end() is missing — it should be in a finally block). Unclosed spans are not exported. Fix: wrap in try-with-resources (try (Scope scope = span.makeCurrent()) { ... } finally { span.end(); }) or use the Span.wrap() pattern for cleaner code.' },
+      theory:'Credit scoring: add custom spans for rule evaluation, bureau callout.',
+      core:'Add 3 custom spans to loyalty service. Verify in trace viewer.',
+      medium:'Implement tail-based sampling: 100% errors, 1% success. Verify cost reduction.',
+      hard:'Add one custom span to your team\'s service.',
+      between:'Generate trace-derived metric: tier calculation time by partner.'
+    },
+    { num:'B8', title:'Observability cost management', desc:'Cardinality, metric explosion, log volume, sampling',
+      blocker: { title:'Grafana dashboard loads for 60 seconds after adding partner label', symptom:'After adding partner_id label to loyalty metrics, Grafana dashboards take 60 seconds to load. The Prometheus query times out. Root cause: partner_id has 500 unique values, multiplied by existing labels (endpoint × status_code × method = 50 combinations) = 25K time series for one metric. Before: 50 series. Fix: remove partner_id from metrics, add it to trace span attributes instead (filterable in traces, not in metrics). Or: use a recording rule that pre-aggregates by partner.' },
+      theory:'Credit scoring: investigate doubled metrics bill. Find high-cardinality metric.',
+      core:'Identify cardinality contributors in loyalty metrics. Propose and implement fixes.',
+      medium:'Design cost budget for loyalty observability. Implement log level management.',
+      hard:'Calculate your team\'s observability cost breakdown. Write optimization proposal.',
+      between:'Implement highest-impact optimization. Measure before/after.'
+    },
+    { num:'B9', title:'Observability design challenge', desc:'Team exercise — full monitoring + alerting + tracing',
+      blocker: { title:'Observability design has no degradation strategy — all or nothing', symptom:'The team designs comprehensive observability: 50 metrics, 20 log fields, full tracing. Cost estimate: $3K/month. Budget: $500/month. Engineers are stuck — they can\'t afford comprehensive observability. Fix: design a tiered strategy — core metrics (5 essential metrics, always on), extended metrics (enabled per-service when investigating), debug logging (on-demand via config change), trace sampling (1% baseline, 100% on alert trigger). Teaches: observability is a spectrum, not binary.' },
+      theory:'N/A — capstone.',
+      core:'Design complete observability strategy for loyalty service. Present.',
+      medium:'Peer critique: cardinality, false positives, sampling, runbooks.',
+      hard:'Write gap analysis comparing exercise to your team\'s setup.',
+      between:'Write observability onboarding guide. Track B exit artifact.'
+    }
+  ],
+  c: [
+    { num:'C1', title:'Terraform module design', desc:'Module hierarchy, state, CI pipeline',
+      blocker: { title:'Terraform state conflict — two engineers apply simultaneously', symptom:'Engineer A runs terraform apply (adding a GCS bucket). Engineer B runs terraform apply at the same time (changing a firewall rule). One succeeds, the other gets "Error acquiring state lock." After Engineer B retries, their apply destroys Engineer A\'s GCS bucket — it wasn\'t in their local state. Root cause: local state file with no locking. Fix: migrate to remote state (GCS backend) with locking enabled. Never use local state in a team environment.' },
+      theory:'Credit scoring: module hierarchy, state backend, CI pipeline.',
+      core:'Design loyalty Terraform module hierarchy. Implement data module.',
+      medium:'Design environment promotion: shared modules, per-env tfvars, CI pipeline.',
+      hard:'Review your team\'s Terraform structure. Write improvement proposal.',
+      between:'Add observability module to loyalty Terraform.'
+    },
+    { num:'C2', title:'Metric cardinality at scale', desc:'Recording rules, label governance, automated alerting',
+      blocker: { title:'Recording rule produces wrong values — SLO dashboard shows 110% availability', symptom:'A Prometheus recording rule pre-aggregates request success rate but the PromQL uses sum(rate(requests_total{status="200"}[5m])) / sum(rate(requests_total[5m])). The recording rule runs every 30s, but the rate() window (5m) means overlapping calculations during high-traffic periods produce values > 1.0. Grafana shows 110% availability. Fix: ensure the recording rule uses consistent evaluation intervals, or use avg_over_time on the recorded metric for dashboard display.' },
+      theory:'Credit scoring: identify cardinality contributors, implement recording rules.',
+      core:'Identify top 5 cardinality contributors in loyalty metrics. Implement recording rules.',
+      medium:'Design metric governance policy. Implement automated cardinality alerting.',
+      hard:'Implement cardinality monitoring for your team.',
+      between:'Write metric design guide for loyalty platform.'
+    },
+    { num:'C3', title:'Compliance controls in infrastructure', desc:'VPC, IAM, audit logging, PCI-DSS zones',
+      blocker: { title:'IAM role is too broad — security review fails', symptom:'The loyalty service account has roles/editor on the project (grants read/write to almost everything). The security review flags this as a violation of least privilege. The service only needs: Cloud SQL client, Pub/Sub subscriber, GCS object reader, and Logging writer. Fix: replace roles/editor with the 4 specific roles. Also: use a dedicated service account per service, not a shared one. Teaches: in regulated environments, IAM must be minimally scoped.' },
+      theory:'Credit scoring: VPC, subnets, IAM, Cloud Audit Logs.',
+      core:'Design loyalty VPC, IAM, audit logging. Implement in Terraform.',
+      medium:'PCI-DSS network segmentation for card-linked reward data.',
+      hard:'Review your team\'s compliance controls. Write improvement proposal.',
+      between:'Run simulated audit on loyalty platform.'
+    },
+    { num:'C4', title:'High availability architecture', desc:'Multi-AZ, PDB, failover, graceful degradation',
+      blocker: { title:'PodDisruptionBudget blocks node drain — cluster upgrade stuck', symptom:'During a GKE node pool upgrade, the drain hangs indefinitely. The PDB has minAvailable: 3 but there are only 3 replicas. The drain can\'t evict any pod because that would violate the PDB. Fix: set minAvailable to N-1 (2 for 3 replicas) or use maxUnavailable: 1 instead. Teaches: PDB must allow at least 1 pod to be evicted, otherwise maintenance operations hang.' },
+      theory:'Credit scoring: multi-AZ, PDB, readiness gates, failover.',
+      core:'Configure HA for loyalty: topology spread, PDB, readiness probe, graceful shutdown.',
+      medium:'Design graceful degradation: cached data when Cloud SQL down, local queue when Kafka down.',
+      hard:'Review your team\'s HA configuration. Test node drain.',
+      between:'Simulate Cloud SQL failover. Measure downtime. Write runbook.'
+    },
+    { num:'C5', title:'Chaos engineering', desc:'Fault injection, steady state hypothesis, experiments',
+      blocker: { title:'Chaos experiment takes down production instead of staging', symptom:'The chaos tool (simulated pod kill) targets pods labeled app=loyalty-service. Both staging and production have this label. The tool\'s Kubernetes context was set to the production cluster. One production pod is killed during business hours. Fix: (1) chaos tools must explicitly target a namespace (staging, not default), (2) add environment labels (env=staging vs env=prod) and use them as selectors, (3) chaos experiments require a safety check: "confirm target cluster is not production."' },
+      theory:'Credit scoring: 3 chaos experiments with hypotheses.',
+      core:'Design and execute 3 chaos experiments on loyalty service. Document results.',
+      medium:'Tune circuit breaker after chaos reveals over-aggressive tripping.',
+      hard:'Design chaos experiment for your team. Execute in test.',
+      between:'Write quarterly chaos engineering plan for loyalty platform.'
+    },
+    { num:'C6', title:'FinOps: infrastructure cost optimization', desc:'GKE costs, Cloud SQL sizing, storage lifecycle',
+      blocker: { title:'Cost optimization proposal saves money but increases latency 40%', symptom:'The proposal downsizes Cloud SQL from db-custom-4-16384 to db-custom-2-8192 (saves $400/month). After implementation, p99 latency increases from 30ms to 42ms (40%). Root cause: the smaller instance has less CPU and memory, reducing the shared buffer cache and increasing I/O. Fix: add latency baseline to cost optimization proposals — define acceptable performance thresholds BEFORE implementing cost changes. Revert if threshold exceeded.' },
+      theory:'Credit scoring: break down monthly GCP bill. Identify top 3 cost drivers.',
+      core:'Calculate loyalty platform monthly cost. Identify 2 optimization opportunities.',
+      medium:'Spot/preemptible nodes for batch, committed use for steady state. Calculate savings.',
+      hard:'Break down your team\'s infra cost. Write optimization proposal.',
+      between:'Implement one optimization. Measure savings.'
+    },
+    { num:'C7', title:'Cross-team infrastructure review', desc:'Structured checklist, actionable feedback',
+      blocker: { title:'Review focuses on code quality but misses operational gaps', symptom:'The infrastructure review checks: Terraform quality ✓, security ✓, cost ✓. But it misses: no monitoring for the new component, no runbook for failure, no backup strategy for the new storage bucket. The component deploys and works fine for 3 months until it fails and nobody knows how to fix it. Fix: add "operational readiness" to the review checklist: monitoring, alerting, runbooks, backup/recovery, on-call rotation, documentation.' },
+      theory:'N/A — practice.',
+      core:'Review another participant\'s infra artifact. Write 3 feedback items.',
+      medium:'Review real infra from another team.',
+      hard:'Synthesize infrastructure review checklist.',
+      between:'Follow up with reviewed team.'
+    },
+    { num:'C8', title:'Runbook-driven operations', desc:'Alert → runbook → test → operational maturity',
+      blocker: { title:'Runbook step 3 requires access that on-call doesn\'t have', symptom:'3am alert fires. On-call follows the runbook. Step 3: "Check Cloud SQL CPU in the GCP Console." The on-call engineer doesn\'t have GCP console access (their IAM role only has kubectl permissions). They can\'t complete the runbook. Fix: (1) ensure all runbook steps can be executed by anyone on the on-call rotation, (2) add prerequisite access to the runbook ("You need: kubectl access, GCP Console viewer role, Grafana viewer"), (3) test runbooks with the most junior on-call engineer, not just the author.' },
+      theory:'Credit scoring: operational maturity model — alerts, runbooks, tested, chaos.',
+      core:'Write complete runbooks for loyalty top 5 alerts. Test each.',
+      medium:'Design operational maturity model. Assess current state. Write roadmap.',
+      hard:'Assess your team\'s operational maturity. Write improvement plan.',
+      between:'Test one existing runbook with a junior team member.'
+    },
+    { num:'C9', title:'Infrastructure architecture forum', desc:'Present, peer review',
+      blocker: { title:'Architecture proposal has no rollback plan', symptom:'A participant proposes migrating loyalty from GKE Autopilot to GKE Standard for cost control. The proposal covers: migration steps, expected savings, timeline. The review board asks: "What if Standard doesn\'t deliver the expected savings? Can you roll back?" There\'s no rollback plan. Worse: the migration involves changing node pool configurations that can\'t be easily reversed. Fix: every infrastructure change proposal needs a "rollback strategy" section, with specific steps and estimated rollback time.' },
+      theory:'N/A — presentations.',
+      core:'Present strongest infra artifact. Group critiques.',
+      medium:'Select highest-impact proposals. Recommend for fleet adoption.',
+      hard:'Synthesize "Cloud & Observability Playbook."',
+      between:'Write letter to past self. Exit artifact.'
+    }
+  ]
+};
+
+const ALL_AREAS = { db: DB, mem: MEM, sd: SD, co: CO };
+
+let state = { area: 'all', track: 'a', view: 'full' };
+
+function renderAreaNav() {
+  document.getElementById('area-nav').innerHTML = AREAS.map(a =>
+    `<button class="nav-btn ${state.area===a.key?'active':''}" onclick="state.area='${a.key}';render()">${a.name}</button>`
+  ).join('');
+}
+
+function renderTrackNav() {
+  document.getElementById('track-nav').innerHTML = TRACKS.map(t =>
+    `<button class="track-btn ${state.track===t.key?'active':''}" onclick="state.track='${t.key}';render()">${t.label}</button>`
+  ).join('');
+}
+
+function renderViewToggle() {
+  document.getElementById('view-toggle').innerHTML =
+    `<button class="view-btn ${state.view==='full'?'active':''}" onclick="state.view='full';render()">Full detail</button>` +
+    `<button class="view-btn ${state.view==='compact'?'active':''}" onclick="state.view='compact';render()">Compact</button>`;
+}
+
+function renderEntryNote() {
+  const t = TRACKS.find(t=>t.key===state.track);
+  document.getElementById('entry-note').innerHTML = `<div class="entry-note">${t.entry}</div>`;
+}
+
+function renderContent() {
+  const areas = state.area === 'all' ? ['db','mem','sd','co'] : [state.area];
+  let html = '';
+
+  areas.forEach(areaKey => {
+    const area = ALL_AREAS[areaKey];
+    const sessions = area[state.track];
+    html += `<div class="area-section">`;
+    html += `<div class="area-header"><div class="area-dot-lg" style="background:${area.color}"></div><h2>${area.name}</h2>
+    <span style="font-size:12px;color:var(--text2);margin-left:auto">${TRACKS.find(t=>t.key===state.track).label} · ${sessions.length} sessions</span></div>`;
+    html += `<div class="session-grid ${state.view==='compact'?'collapsed':''}">`;
+
+    sessions.forEach((s, i) => {
+      html += `<div class="session-card">`;
+      html += `<div class="session-num">Session ${i+1} · ${s.num}</div>`;
+      html += `<div class="session-title">${s.title}</div>`;
+      html += `<div class="session-desc">${s.desc}</div>`;
+
+      if (state.view === 'full') {
+        // Blocker first — prominent
+        if (s.blocker) {
+          html += `<div class="blocker-box">`;
+          html += `<div class="exercise-label label-blocker">Planted blocker</div>`;
+          html += `<div class="blocker-title">${s.blocker.title}</div>`;
+          html += `<div class="blocker-symptom">${s.blocker.symptom}</div>`;
+          html += `</div>`;
+        }
+        if (s.theory) {
+          html += `<div class="exercise-section"><div class="exercise-label label-theory">Theory (credit scoring)</div><div class="exercise-text">${s.theory}</div></div>`;
+        }
+        html += `<div class="exercise-section"><div class="exercise-label label-core">Core (loyalty)</div><div class="exercise-text">${s.core}</div></div>`;
+        html += `<div class="exercise-section"><div class="exercise-label label-medium">Medium (loyalty)</div><div class="exercise-text">${s.medium}</div></div>`;
+        html += `<div class="exercise-section"><div class="exercise-label label-hard">Hard</div><div class="exercise-text">${s.hard}</div></div>`;
+        html += `<div class="exercise-section"><div class="exercise-label label-between">Between sessions</div><div class="exercise-text">${s.between}</div></div>`;
+      }
+      html += `</div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  document.getElementById('content').innerHTML = html;
+}
+
+function render() {
+  renderAreaNav();
+  renderTrackNav();
+  renderViewToggle();
+  renderEntryNote();
+  renderContent();
+}
+
+render();
+</script>
+</body>
+</html>

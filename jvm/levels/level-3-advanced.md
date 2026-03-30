@@ -1,24 +1,37 @@
-# Level 3 — Advanced
+# Level 3 — Adept
 
-**Focus:** Diagnosing non-obvious production problems and tuning the runtime under real load.
+**Focus:** I know where memory goes inside a Spring Boot app.
+
+*Production lens: Memory usage is higher than expected. I can reason about which components are consuming it and adjust configuration or flag the right area of code.*
 
 ## Which of these scenarios can you handle confidently today?
 
-- When a service's heap usage grows slowly over days until it triggers a restart, I can collect and analyse a heap dump to identify which objects are accumulating, which GC roots are keeping them alive, and whether the cause is a code bug or a configuration problem.
-  `heap dump` `Eclipse MAT` `VisualVM` `jmap` `GC roots` `retained heap` `dominator tree` `memory leak`
+- When a Spring Boot service is using more memory than expected, I can reason about the likely consumers: HikariCP connection pool (connections × buffer size), Kafka consumer buffers (concurrency × fetch size × partitions), Tomcat thread pool (threads × stack size), and Spring caches (`@Cacheable` backed by ConcurrentHashMap = unbounded by default).
+  `HikariCP` `maximumPoolSize` `Kafka consumer` `fetch.max.bytes` `concurrency` `server.tomcat.threads.max` `@Cacheable` `ConcurrentMapCacheManager`
 
-- When a service intermittently stalls under load and the cause isn't obvious from logs, I can take a thread dump at the right moment, read the output, and identify whether the stall is caused by lock contention, a thread pool being saturated, or a blocked I/O call.
-  `thread dump` `jstack` `BLOCKED` `WAITING` `synchronized` `thread pool saturation` `virtual threads` `deadlock`
+- When reading Spring Boot Actuator metrics (`/actuator/metrics`), I can find memory-related metrics and understand what `jvm.memory.used`, `jvm.memory.max`, `jvm.buffer.memory.used`, and `hikaricp.connections.active` are telling me about the service's memory footprint.
+  `/actuator/metrics` `jvm.memory.used` `jvm.memory.max` `jvm.buffer.memory.used` `hikaricp.connections.active` `Micrometer` `Spring Boot Actuator`
 
-- When Kafka consumer rebalancing is causing repeated processing pauses or duplicate processing, I can trace the cause — whether it's `max.poll.interval.ms` being exceeded, insufficient heartbeat threads, or a partition assignment strategy mismatch — and fix it.
-  `max.poll.interval.ms` `session.timeout.ms` `heartbeat.interval.ms` `partition assignment` `CooperativeStickyAssignor` `rebalance listener` `duplicate processing` `consumer group coordinator`
+- When I see an `OutOfMemoryError` in logs, I can distinguish the common types — heap space (objects), Metaspace (classes), unable to create native thread (too many threads or not enough OS memory) — and understand what each implies about where memory ran out.
+  `OutOfMemoryError: Java heap space` `OutOfMemoryError: Metaspace` `OutOfMemoryError: unable to create native thread` `GC overhead limit exceeded`
 
-- When a service is consuming more CPU than expected on GKE, I can use async-profiler or JFR CPU profiling to identify which code paths are hot and distinguish between application logic, GC overhead, and framework overhead.
-  `async-profiler` `JFR` `CPU profiling` `flame graph` `jvm.gc.overhead` `safepoint` `JIT compilation` `profiling overhead`
+- When reviewing a PR, I can flag memory risks: an unbounded `Map` that grows with traffic, a `List` accumulated across a batch job, a missing eviction policy on a cache, a new thread pool without considering the stack memory cost.
+  `unbounded Map` `ConcurrentHashMap` `@Cacheable` `Caffeine` `eviction policy` `batch accumulation` `thread pool sizing` `memory risk`
 
-- When a Spring Boot service starts leaking database connections under load, I can trace the leak: identify which code paths are acquiring connections without releasing them, verify the fix with load testing, and add the right HikariCP metrics to catch it early in future.
-  `HikariCP` `leakDetectionThreshold` `hikari.pool.ActiveConnections` `hikari.pool.PendingConnections` `connection leak` `@Transactional` `DataSource` `load testing`
+- When a service has inconsistent memory behavior across pods (one pod's memory climbing while others are stable), I can reason about what might differ: Kafka partition assignment, cached data divergence, connection pool state, or traffic distribution.
+  `Kafka partition assignment` `cache divergence` `connection pool state` `pod memory variance` `traffic distribution` `stateful consumers`
+
+- When estimating a service's memory footprint from its configuration, I can add up: thread counts × stack sizes + pool sizes × connection overhead + configured heap, and check if it fits the container limit with headroom.
+  `memory budget calculation` `thread stacks` `-Xss` `HikariCP connections` `Kafka consumers` `container limit` `safety margin`
+
+> **What this level is about:** You've opened the Spring Boot box. You can connect configuration knobs to actual memory consumption and make informed decisions about sizing and code review.
 
 ## Training Track
 
-Engineers at this level join **Track B: Advanced → Specialist** together with Level 4 engineers.
+Engineers at this level join **Track B: Practitioner → Adept** together with Level 2 engineers completing Track A.
+
+**Cross-reference with Cloud & Observability:** Cloud & Observability L3 covers distributed tracing, SLOs, and alerting design. The Actuator metrics knowledge here complements the broader metrics/tracing instrumentation covered there.
+
+---
+
+*Tags:* #training-program #memory-management #level-3 #track-b

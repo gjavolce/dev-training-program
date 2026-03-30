@@ -1,24 +1,35 @@
 # Level 5 — Expert
 
-**Focus:** Setting JVM and runtime standards that apply across the organisation and mentoring teams through complex production issues.
+**Focus:** I design for memory efficiency and set standards across services.
+
+*Production lens: I make proactive decisions that prevent memory problems across services, and I define the configurations other engineers follow.*
 
 ## Which of these scenarios can you handle confidently today?
 
-- When multiple teams are independently tuning their JVM configurations and arriving at inconsistent results, I can consolidate what works, define org-wide baseline settings for GKE Spring Boot services, and explain the reasoning so teams understand why rather than just following rules.
-  `MaxRAMPercentage` `UseContainerSupport` `G1GC` `ZGC` `JVM baseline` `GKE resource limits` `platform standards` `Spring Boot defaults`
+- When a latency-sensitive service needs consistent response times, I can evaluate G1 vs ZGC for our specific workload — measuring actual pause times under production-like load, comparing throughput and memory overhead, and making a recommendation backed by JFR data.
+  `G1GC` `ZGC` `Shenandoah` `-XX:+UseZGC` `GC pause p99` `throughput vs latency` `JFR` `benchmark` `MaxGCPauseMillis`
 
-- When a team hits a JVM problem they can't diagnose themselves, I can join a production incident, work through the evidence (heap dumps, thread dumps, JFR recordings, GC logs), and get to a root cause — and turn the incident into a learning session for the team afterwards.
-  `heap dump` `thread dump` `JFR` `GC logs` `incident retrospective` `Eclipse MAT` `async-profiler` `root cause analysis`
+- When designing thread pool and connection pool configurations, I can reason about the total memory budget: each Tomcat thread × stack size + each HikariCP connection × buffer overhead + Kafka consumers × partition buffers — and ensure it all fits within the container limit with headroom.
+  `memory budget design` `Tomcat threads` `HikariCP connections` `Kafka consumers` `stack size` `buffer overhead` `container limit` `headroom`
 
-- When we're evaluating new Java versions or JVM distributions for the platform, I can design and run the evaluation: identify the relevant changes, test against our actual workloads (Spring Boot + HikariCP + Kafka), and produce a migration recommendation with a rollout plan.
-  `Java LTS` `Java 21` `virtual threads` `GraalVM` `JDK migration` `Spring Boot compatibility` `Testcontainers` `canary rollout`
+- When a Spring Boot service has slow cold starts on GKE, I can diagnose the contributing factors (JIT compilation, Spring context initialization, connection pool warmup, Kafka consumer group rebalance) and design readiness probes that account for the memory dimension of each.
+  `cold start` `JIT compilation` `Spring context` `connection pool warmup` `Kafka rebalance` `readinessProbe` `startup time` `CDS` `AOT`
 
-- When a service's performance under load doesn't match what local testing suggested, I can design a realistic load test using our actual traffic patterns, identify the discrepancy, and determine whether it's a test fidelity problem or a genuine production-only behaviour.
-  `load testing` `k6` `Gatling` `traffic shaping` `JFR` `throughput` `p99 latency` `production traffic patterns`
+- When multiple teams are configuring JVMs inconsistently, I can define a standard memory configuration baseline: heap ratio to container limit, mandatory flags (`HeapDumpOnOutOfMemoryError`, container awareness, GC logging), and non-heap budget formula.
+  `JVM baseline` `HeapDumpOnOutOfMemoryError` `UseContainerSupport` `GC logging` `platform standards` `non-heap budget` `org-wide config`
 
-- When teams ask how we should instrument our Spring Boot services for observability, I can define the standard: which JVM and application metrics to expose, how to structure custom spans in OpenTelemetry, and how to connect JVM behaviour to business-level SLOs in Grafana.
-  `Micrometer` `OpenTelemetry` `jvm.memory.used` `jvm.gc.pause` `custom spans` `SLO` `Grafana` `Spring Boot Actuator`
+- When evaluating a Java version upgrade (17 → 21), I can assess memory-related implications: changed GC defaults, virtual thread memory model, dependency readiness (HikariCP, Kafka client, Cloud SQL driver under the new threading model).
+  `Java 17` `Java 21` `virtual threads` `GC defaults` `Spring Boot compatibility` `HikariCP` `Kafka client` `migration risk`
+
+- When a production incident involves memory-related cascading failure (one service's GC pauses causing timeout storms in callers, connection pool exhaustion propagating), I can trace the chain and propose both immediate fixes and architectural improvements.
+  `cascading failure` `GC pause cascade` `timeout storm` `connection pool exhaustion` `circuit breaker` `Resilience4j` `cross-service impact`
+
+> **What this level is about:** You're not reacting to memory problems, you're preventing them. You set standards, make architecture-level memory decisions, and lead incident diagnosis.
 
 ## Role in Training Program
 
-Engineers at this level serve as **Mentors & Workshop Leads** for Track A and Track B.
+Engineers at this level serve as **Mentors & Workshop Leads** for Track A, Track B, and Track C.
+
+---
+
+*Tags:* #training-program #memory-management #level-5 #mentor

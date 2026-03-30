@@ -1,24 +1,32 @@
 # Level 1 — Foundations
 
-**Focus:** Reading what the application is telling you and understanding the basic runtime model.
+**Focus:** I know my app uses memory and I can see it.
+
+*Production lens: I'm on-call, an alert fires about memory — I can find the right dashboard, see that something is wrong, and escalate with useful information.*
 
 ## Which of these scenarios can you handle confidently today?
 
-- When an application throws an OutOfMemoryError or StackOverflowError, I can read the stack trace, understand what it means, and know where to start looking — even if I haven't seen that specific error before.
-  `OutOfMemoryError` `StackOverflowError` `heap space` `metaspace` `GC overhead limit exceeded` `stack trace` `java.lang.Error` `OOM killer`
+- When I look at Grafana dashboards for our services, I can find memory-related panels (pod memory usage, JVM heap usage, GC pause times, restart counts) and tell "steady" from "growing" from "spiking."
+  `jvm.memory.used` `jvm.memory.max` `container_memory_usage_bytes` `Grafana` `Cloud Monitoring` `pod memory` `heap committed` `sawtooth pattern`
 
-- When a service is slow or unresponsive, I can check the logs and Spring Boot Actuator health endpoints to get an initial picture of what's wrong before escalating.
-  `Spring Boot Actuator` `/actuator/health` `/actuator/metrics` `structured logging` `liveness` `readiness` `application logs` `kubectl logs`
+- When a pod restarts and someone says "it got OOMKilled," I understand that means it used more memory than it was allowed — even if I don't yet know where the memory went.
+  `OOMKilled` `exit code 137` `kubectl describe pod` `Last State: Terminated` `resources.limits.memory` `container memory limit` `pod restart count`
 
-- When I look at a Grafana dashboard showing JVM heap usage or GC pause time, I can follow what the chart is measuring and tell whether what I'm seeing is normal or not.
-  `jvm.memory.used` `jvm.gc.pause` `heap committed` `eden space` `old gen` `Grafana` `Cloud Monitoring` `GC frequency`
+- When I see memory-related configuration in our deployment manifests (`-Xmx`, resource limits), I know these control how much memory the service gets, even if I can't evaluate whether the values are right.
+  `-Xmx` `-Xms` `resources.requests.memory` `resources.limits.memory` `JAVA_OPTS` `JDK_JAVA_OPTIONS` `deployment manifest`
 
-- When I deploy a Spring Boot service to GKE, I understand what a Pod restart means for in-flight requests, and I know to check whether the liveness and readiness probes are configured correctly.
-  `livenessProbe` `readinessProbe` `Pod restart` `terminationGracePeriodSeconds` `OOMKilled` `CrashLoopBackOff` `kubectl describe pod` `GKE`
+- When a Spring Boot service starts behaving differently right after deployment versus 10 minutes later, I'm aware that "warming up" is a real thing — the JVM needs time to optimize hot code paths.
+  `JIT compilation` `cold start` `warm-up` `readinessProbe` `Spring Boot startup` `first requests slow` `class loading`
 
-- When HikariCP logs a "connection timeout" warning, I understand that it means the pool is exhausted and I know the first place to look: how many connections are open and whether any are stuck.
-  `HikariCP` `connection timeout` `hikari.pool.ActiveConnections` `hikari.pool.PendingConnections` `maximumPoolSize` `connectionTimeout` `pool exhausted` `Cloud SQL`
+- When someone mentions heap, stack, garbage collection, or OutOfMemoryError in a discussion, I have a rough mental model — objects live in memory, the runtime cleans up what's no longer needed, and sometimes things go wrong.
+  `heap` `stack` `garbage collection` `OutOfMemoryError` `GC pause` `memory leak` `java.lang.Error` `OOM`
+
+> **What this level is about:** Building vocabulary and observation skills. You can point at the right dashboard, recognize symptoms, and follow a conversation — but you're not yet diagnosing or fixing.
 
 ## Training Track
 
 Engineers at this level join **Track A: Foundations → Practitioner** together with Level 2 engineers.
+
+---
+
+*Tags:* #training-program #memory-management #level-1 #track-a

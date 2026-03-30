@@ -1,24 +1,37 @@
-# Level 4 — Specialist
+# Level 4 — Veteran
 
-**Focus:** Owning JVM health across multiple services and solving platform-level performance problems.
+**Focus:** I can find root causes using JVM diagnostic tools.
+
+*Production lens: Something is actually wrong — a leak, GC pressure, thread contention causing memory buildup. Dashboard observation isn't enough; I need to look inside the JVM.*
 
 ## Which of these scenarios can you handle confidently today?
 
-- When the team needs to decide whether to switch GC algorithms (G1 to ZGC or Shenandoah) for a latency-sensitive service, I can design the experiment: define success criteria, run the before/after comparison under representative load, and produce a written recommendation with data.
-  `G1GC` `ZGC` `Shenandoah` `-XX:+UseZGC` `GC pause p99` `throughput vs latency` `JFR` `benchmark`
+- When I suspect a memory leak, I can take heap dumps at intervals using `jcmd`, compare them in Eclipse MAT, and identify the growing object graph — tracing it back to the responsible code (a Spring cache, a Kafka offset tracker, a connection that isn't being released).
+  `jcmd` `GC.heap_dump` `Eclipse MAT` `dominator tree` `retained size` `GC roots` `leak suspects` `memory leak`
 
-- When a service is underperforming on GKE and the cause isn't the application code, I can investigate at the platform level: CPU throttling due to CFS quota, NUMA effects, network I/O bottlenecks, or noisy neighbour problems on the node.
-  `CFS throttling` `cpu.cfs_quota_us` `throttled_time` `NUMA` `node affinity` `kubectl top node` `container_cpu_cfs_throttled_seconds_total` `noisy neighbour`
+- When GC logs show increasing Full GC frequency or rising old-generation occupancy, I can read the log lines, understand what they mean (promotion rate, concurrent marking failures, long pauses), and correlate with application behavior.
+  `GC logs` `-Xlog:gc*` `Full GC` `old generation` `promotion rate` `concurrent marking` `GC pause` `allocation rate`
 
-- When our Kafka consumers need to handle a dramatic increase in message volume, I can design the scaling strategy — whether that's horizontal pod scaling, partition rebalancing, or batching changes — and implement it without causing consumer group instability.
-  `partition scaling` `consumer group` `HPA` `max.poll.records` `fetch.min.bytes` `fetch.max.wait.ms` `consumer concurrency` `rebalance`
+- When I capture a JFR recording, I can analyze allocation hotspots — which methods are creating the most objects, what the allocation rate is, and whether short-lived allocations are causing excessive GC pressure.
+  `Java Flight Recorder` `JFR` `jcmd JFR.start` `JDK Mission Control` `JMC` `allocation hotspots` `allocation rate` `object age`
 
-- When we're building a service that must meet strict latency SLOs, I can identify the JVM sources of latency variance (GC pauses, JIT compilation, class loading at startup) and apply techniques (warmup periods, AOT hints, GC tuning) to reduce that variance.
-  `GC pause` `JIT warmup` `Class Data Sharing` `CDS` `AOT` `GraalVM` `p99 latency` `safepoint`
+- When a thread dump shows many threads in BLOCKED or TIMED_WAITING, I can trace what they're contending on — a HikariCP connection, a synchronized block, a full executor pool — and reason about the memory implications of thread accumulation.
+  `thread dump` `jstack` `jcmd Thread.print` `BLOCKED` `TIMED_WAITING` `HikariCP` `synchronized` `thread pool exhaustion`
 
-- When a Cloud SQL connection pool problem cascades across multiple services during a traffic spike, I can trace the problem from HikariCP metrics through the Cloud SQL Auth Proxy to the database instance limits, and propose a platform-level fix rather than a per-service workaround.
-  `HikariCP` `Cloud SQL Auth Proxy` `max_connections` `hikari.pool.PendingConnections` `connection cascade` `pgbouncer` `Cloud SQL` `connection limits`
+- When diagnosing a production memory issue, I know the sequence: check Grafana metrics first, then escalate to JFR if I need allocation details, heap dump if it's a leak, thread dump if it's contention — and I reach for the right tool first.
+  `diagnostic sequence` `Grafana` `JFR` `heap dump` `thread dump` `production diagnosis` `escalation path`
+
+- When Spring Boot's Metaspace is growing steadily, I can investigate whether it's a class loader leak (common with dynamic proxies, Spring AOP, or reflection-heavy code) and know how to set `-XX:MaxMetaspaceSize` as a safety net.
+  `Metaspace` `class loader leak` `Spring AOP` `dynamic proxies` `reflection` `-XX:MaxMetaspaceSize` `class loading` `Metaspace growth`
+
+> **What this level is about:** You've crossed from "observe and reason" to "instrument and investigate." You operate the JVM's diagnostic tools and find root causes that dashboards can't reveal.
 
 ## Training Track
 
-Engineers at this level join **Track B: Advanced → Specialist** together with Level 3 engineers.
+Engineers at this level join **Track C: Adept → Veteran** together with Level 3 engineers completing Track B.
+
+**Cross-reference with Cloud & Observability:** Cloud & Observability L4 covers platform infrastructure, cost management, compliance, and chaos engineering — horizontal, cross-cutting concerns. This level goes vertical: deep inside one service's memory. An engineer at L4 in both tracks can diagnose deep AND wide.
+
+---
+
+*Tags:* #training-program #memory-management #level-4 #track-c

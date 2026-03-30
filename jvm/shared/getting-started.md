@@ -1,0 +1,245 @@
+# Getting Started — JVM Training Environment
+
+**Read this before Session 1. Budget 30 minutes for setup.**
+
+---
+
+## What You Need
+
+### Required Software
+
+| Tool | Version | What it's for | Install |
+|---|---|---|---|
+| **JDK** | 21 (Temurin) | Running the training app | `sdk install java 21.0.4-tem` (SDKMAN) or [adoptium.net](https://adoptium.net) |
+| **Docker Desktop** | Latest | PostgreSQL + Kafka locally | [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/) |
+| **Maven** | 3.9+ | Building the training app | Included in the project (`./mvnw` wrapper) |
+| **Git** | Latest | Cloning the repo | Should be installed already |
+
+### Required Tools (install before Session 1)
+
+| Tool | What it's for | Install |
+|---|---|---|
+| **VisualVM** | Visual JVM monitoring (heap, threads, GC) | [visualvm.github.io](https://visualvm.github.io/) — download and unzip |
+| **curl** or **httpie** | Hitting REST endpoints | `brew install httpie` or use curl (pre-installed on macOS/Linux) |
+
+### Install Before Session 3
+
+| Tool | What it's for | Install |
+|---|---|---|
+| **Eclipse MAT** | Heap dump analysis | [eclipse.org/mat](https://eclipse.org/mat/) — download the standalone version |
+
+### Install Before Session 5
+
+| Tool | What it's for | Install |
+|---|---|---|
+| **JDK Mission Control (JMC)** | Reading JFR (Flight Recorder) files | [oracle.com/java/technologies/jdk-mission-control.html](https://www.oracle.com/java/technologies/jdk-mission-control.html) or `brew install --cask jdk-mission-control` |
+
+---
+
+## Step 1: Clone the Training App
+
+```bash
+cd ~/repos
+git clone <loyalty-service-repo-url>
+cd loyalty-service
+```
+
+## Step 2: Start the Infrastructure
+
+The training app needs PostgreSQL and Kafka running locally. Docker Compose handles both:
+
+```bash
+docker-compose up -d
+```
+
+Verify they're running:
+```bash
+docker-compose ps
+# Should show postgres and kafka containers as "Up"
+```
+
+If you see port conflicts (5432 or 9092 already in use), you may have local PostgreSQL or Kafka installed. Either stop them or adjust the ports in `docker-compose.yml`.
+
+## Step 3: Run the Training App
+
+```bash
+./mvnw spring-boot:run
+```
+
+First run will download dependencies (~2 minutes). Subsequent runs start in ~5 seconds.
+
+You should see:
+```
+Started LoyaltyServiceApplication in X.XXX seconds
+```
+
+## Step 4: Verify It Works
+
+```bash
+# Health check
+curl http://localhost:8080/actuator/health
+# Should return: {"status":"UP"}
+
+# Rewards catalog
+curl http://localhost:8080/api/rewards | python3 -m json.tool
+# Should return a JSON array of reward items
+
+# JVM metrics
+curl http://localhost:8080/actuator/metrics/jvm.memory.used | python3 -m json.tool
+# Should return heap memory usage
+```
+
+## Step 5: Verify JVM Tools
+
+```bash
+# Find the loyalty-service PID
+jcmd
+# Should list a process like: 12345 com.seb.loyalty.LoyaltyServiceApplication
+
+# Get JVM info
+jcmd <pid> VM.version
+# Should show Java 21
+
+# Get heap info
+jcmd <pid> GC.heap_info
+# Should show heap regions with sizes
+```
+
+---
+
+## How to Switch Profiles
+
+Each training session uses a different Spring profile that activates specific JVM behavior. The trainer will tell you which profile to use.
+
+```bash
+# Default (healthy app) — Session 1
+./mvnw spring-boot:run
+
+# GC pressure — Session 2
+SPRING_PROFILES_ACTIVE=gc-pressure ./mvnw spring-boot:run
+
+# Memory leak — Session 3
+SPRING_PROFILES_ACTIVE=leak ./mvnw spring-boot:run
+
+# With GC logging (any session)
+JAVA_OPTS="-Xlog:gc*:stdout:time,level,tags" ./mvnw spring-boot:run
+
+# Combine profile + GC logging
+SPRING_PROFILES_ACTIVE=gc-pressure JAVA_OPTS="-Xlog:gc*:stdout:time,level,tags" ./mvnw spring-boot:run
+```
+
+On Windows PowerShell:
+```powershell
+$env:SPRING_PROFILES_ACTIVE="gc-pressure"
+./mvnw spring-boot:run
+```
+
+---
+
+## Your Variant Assignment
+
+Each engineer is assigned a personal variant (A through F). Your variant changes the internal behavior of the training app — different allocation patterns, different leak rates, different pool sizes. This means your measurements will be numerically different from your colleagues.
+
+```bash
+# Run with your assigned variant
+VARIANT=C SPRING_PROFILES_ACTIVE=gc-pressure ./mvnw spring-boot:run
+```
+
+Your variant is assigned before Session 1 and stays the same for the entire program. The trainer has a validation sheet with expected ranges per variant.
+
+---
+
+## Connecting VisualVM
+
+1. Start VisualVM
+2. In the left panel, look for "Local" → your loyalty-service process should appear automatically
+3. Click on it → "Monitor" tab shows heap, CPU, threads in real-time
+4. Optional: install the Visual GC plugin (Tools → Plugins → Available Plugins → Visual GC) for a detailed GC view
+
+**If the process doesn't appear:** Make sure you're running the same JDK version in VisualVM and the app. Launch with: `visualvm --jdkhome /path/to/your/jdk21`
+
+---
+
+## Quick Reference: jcmd Commands
+
+```bash
+# List running Java processes
+jcmd
+
+# JVM version and flags
+jcmd <pid> VM.version
+jcmd <pid> VM.flags
+
+# Heap information
+jcmd <pid> GC.heap_info
+
+# Trigger a GC (useful for testing, NOT for production)
+jcmd <pid> GC.run
+
+# Take a heap dump (pauses JVM briefly)
+jcmd <pid> GC.heap_dump /tmp/heap.hprof
+
+# Thread dump (safe, instant snapshot)
+jcmd <pid> Thread.print
+
+# Start a JFR recording
+jcmd <pid> JFR.start duration=60s filename=/tmp/recording.jfr
+
+# Native memory tracking (requires -XX:NativeMemoryTracking=summary at startup)
+jcmd <pid> VM.native_memory summary
+```
+
+---
+
+## Quick Reference: Actuator Endpoints
+
+```bash
+# Health
+curl localhost:8080/actuator/health
+
+# Specific JVM metrics
+curl localhost:8080/actuator/metrics/jvm.memory.used
+curl localhost:8080/actuator/metrics/jvm.memory.max
+curl localhost:8080/actuator/metrics/jvm.threads.live
+curl localhost:8080/actuator/metrics/jvm.gc.pause
+curl localhost:8080/actuator/metrics/jvm.gc.memory.allocated
+curl localhost:8080/actuator/metrics/jvm.classes.loaded
+
+# HikariCP pool metrics
+curl localhost:8080/actuator/metrics/hikaricp.connections.active
+curl localhost:8080/actuator/metrics/hikaricp.connections.idle
+curl localhost:8080/actuator/metrics/hikaricp.connections.pending
+```
+
+---
+
+## Troubleshooting
+
+**"Port 5432 already in use"** — Stop local PostgreSQL: `brew services stop postgresql` or change port in `docker-compose.yml`.
+
+**"Port 8080 already in use"** — Use: `SERVER_PORT=8081 ./mvnw spring-boot:run`
+
+**"jcmd: command not found"** — Add JDK bin to PATH or use full path: `/path/to/jdk-21/bin/jcmd`
+
+**VisualVM shows no process** — Launch with: `visualvm --jdkhome $JAVA_HOME`
+
+**"docker-compose: command not found"** — Try `docker compose up -d` (no hyphen, Docker Desktop v2+).
+
+**App starts but /api/rewards returns empty** — Check Liquibase logs. Manual seed: `docker exec -i <postgres-container> psql -U loyalty loyalty < data/seed-data.sql`
+
+---
+
+## Pre-Session 1 Checklist
+
+- [ ] `docker-compose up -d` starts PostgreSQL and Kafka
+- [ ] `./mvnw spring-boot:run` starts the app
+- [ ] `curl localhost:8080/actuator/health` returns UP
+- [ ] `jcmd` shows the loyalty-service process
+- [ ] VisualVM connects to the process
+- [ ] You know your assigned variant letter
+
+If any of these fail, reach out to the training coordinator before the session.
+
+---
+
+*JVM Training Program — Getting Started v1.0*

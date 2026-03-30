@@ -387,7 +387,7 @@ var TRACKS = {
       },
       {
         num: 3,
-        name: 'Advanced',
+        name: 'Adept',
         track: 'B',
         focus: 'Handling complex regulated domains, diagnosing production issues, and understanding what\'s happening under the hood.',
         scenarios: [
@@ -403,8 +403,8 @@ var TRACKS = {
       },
       {
         num: 4,
-        name: 'Specialist',
-        track: 'B',
+        name: 'Veteran',
+        track: 'C',
         focus: 'Operating at scale, managing platform-level database concerns, and ensuring compliance.',
         scenarios: [
           'When a table grows to tens of millions of rows and queries start slowing down, I can evaluate whether partitioning is the right solution, design the partitioning strategy, and plan the migration from unpartitioned to partitioned — including handling the transition period.',
@@ -430,7 +430,7 @@ var TRACKS = {
           'When another team asks for help with a database design question outside my own domain, I can review their proposal, identify risks they may have missed, and provide actionable feedback — and I\'ve contributed to shared standards (ADRs, modelling guidelines, Terraform modules) that teams actually reference.',
           'When we\'re reviewing Cloud SQL costs and someone asks whether we\'re spending appropriately, I can break down the cost drivers (instance tier, HA, storage, replicas, network) and propose specific changes with their performance and cost implications.'
         ],
-        topics: 'At this level, growth comes primarily through architecture reviews, cross-team mentoring, and real production decisions rather than structured workshops. Level 5–6 engineers lead sessions in Track A and Track B.',
+        topics: 'At this level, growth comes primarily through architecture reviews, cross-team mentoring, and real production decisions rather than structured workshops. Level 5\u20136 engineers lead sessions in Track A, Track B, and Track C.',
         keywords: [['Cloud SQL instance isolation', 'blast radius', 'cross-database queries', 'compliance boundaries', 'ADR', 'cost modelling', 'multi-tenant architecture'], ['Cloud SQL read replica', 'replication lag', 'replica routing', 'read-after-write consistency', 'analytics workloads', 'Spring AbstractRoutingDataSource'], ['Cloud SQL clone', 'migration runbook', 'pg_stat_progress_alter_table', 'lock monitoring', 'rollback plan', 'Liquibase', 'pg_repack'], ['query planner', 'planner statistics', 'pg_stats', 'default_statistics_target', 'join order', 'enable_hashjoin', 'enable_seqscan', 'ANALYZE'], ['ADR', 'Terraform Cloud SQL module', 'schema review', 'data modeling', 'referential integrity', 'naming conventions', 'shared standards'], ['Cloud SQL pricing', 'instance tier', 'HA standby', 'read replica cost', 'storage auto-increase', 'network egress', 'committed use discounts']]
       },
       {
@@ -445,7 +445,7 @@ var TRACKS = {
           'When a team is building new internal tooling (CI migration checks, schema validation, monitoring dashboards, Terraform modules for Cloud SQL), I can review or contribute to the design, ensuring it meets the needs of multiple teams and doesn\'t create operational debt.',
           'When leadership asks "how long until we need to scale this database, and what will it cost?", I can produce a capacity projection grounded in actual growth data — storage trajectory, connection count trends, instance tier headroom — with clear decision points and cost estimates for each scaling path.'
         ],
-        topics: 'At this level, growth comes from owning cross-cutting decisions, running organisational processes (DR drills, technology evaluations), and building platform capabilities. There is no structured training track — this is the level that shapes the training programme itself.',
+        topics: 'At this level, growth comes from owning cross-cutting decisions, running organisational processes (DR drills, technology evaluations), and building platform capabilities. There is no structured training track \u2014 this is the level that shapes the training programme itself.',
         keywords: [['cross-region replication', 'Cloud SQL cross-region replica', 'RTO', 'RPO', 'data residency', 'PITR', 'failover topology', 'CAP theorem'], ['AlloyDB', 'Cloud SQL', 'self-managed PostgreSQL on GKE', 'pgbench', 'benchmark criteria', 'TCO', 'managed vs self-hosted', 'technology evaluation'], ['DR drill', 'Cloud SQL failover', 'PITR restore', 'RTO measurement', 'runbook validation', 'incident coordination', 'gap analysis'], ['Terraform Cloud SQL module', 'Liquibase CI', 'schema validation', 'Cloud Monitoring dashboard', 'platform tooling', 'reusable modules', 'operational debt'], ['capacity planning', 'storage growth rate', 'connection count trends', 'instance tier upgrade', 'Cloud SQL metrics', 'cost projection', 'scaling thresholds']]
       }
     ]
@@ -453,99 +453,103 @@ var TRACKS = {
 
   jvm: {
     id: 'jvm',
-    label: 'JVM Understanding',
-    icon: '☕',
-    desc: 'Spring Boot 3 on GKE with PostgreSQL on Cloud SQL and Kafka. Covers JVM internals, memory management, thread behaviour, and production diagnosis.',
+    label: 'Memory Management',
+    icon: '🧠',
+    desc: 'How memory works in our Spring Boot services on GKE. Starts with what you can see in dashboards, progresses through container memory budgets and Spring Boot internals, and reaches JVM diagnostic tools for deep investigation.',
     levels: [
       {
         num: 1,
         name: 'Foundations',
         track: 'A',
-        focus: 'Reading what the application is telling you and understanding the basic runtime model.',
+        focus: 'I know my app uses memory and I can see it. I can find the right dashboard, recognize when something is wrong, and escalate with useful information.',
         scenarios: [
-          'When an application throws an OutOfMemoryError or StackOverflowError, I can read the stack trace, understand what it means, and know where to start looking — even if I haven\'t seen that specific error before.',
-          'When a service is slow or unresponsive, I can check the logs and Spring Boot Actuator health endpoints to get an initial picture of what\'s wrong before escalating.',
-          'When I look at a Grafana dashboard showing JVM heap usage or GC pause time, I can follow what the chart is measuring and tell whether what I\'m seeing is normal or not.',
-          'When I deploy a Spring Boot service to GKE, I understand what a Pod restart means for in-flight requests, and I know to check whether the liveness and readiness probes are configured correctly.',
-          'When HikariCP logs a "connection timeout" warning, I understand that it means the pool is exhausted and I know the first place to look: how many connections are open and whether any are stuck.'
+          'When I look at Grafana dashboards for our services, I can find memory-related panels (pod memory usage, JVM heap usage, GC pause times, restart counts) and tell "steady" from "growing" from "spiking."',
+          'When a pod restarts and someone says "it got OOMKilled," I understand that means it used more memory than it was allowed \u2014 even if I don\'t yet know where the memory went.',
+          'When I see memory-related configuration in our deployment manifests (-Xmx, resource limits), I know these control how much memory the service gets, even if I can\'t evaluate whether the values are right.',
+          'When a Spring Boot service starts behaving differently right after deployment versus 10 minutes later, I\'m aware that "warming up" is a real thing \u2014 the JVM needs time to optimize hot code paths.',
+          'When someone mentions heap, stack, garbage collection, or OutOfMemoryError in a discussion, I have a rough mental model \u2014 objects live in memory, the runtime cleans up what\'s no longer needed, and sometimes things go wrong.'
         ],
-        topics: 'JVM memory model (heap, stack, metaspace), GC basics, Spring Boot Actuator, reading GKE Pod logs, HikariCP pool fundamentals, liveness and readiness probes.',
-        keywords: [['OutOfMemoryError', 'StackOverflowError', 'heap space', 'metaspace', 'GC overhead limit exceeded', 'stack trace', 'java.lang.Error', 'OOM killer'], ['Spring Boot Actuator', '/actuator/health', '/actuator/metrics', 'structured logging', 'liveness', 'readiness', 'application logs', 'kubectl logs'], ['jvm.memory.used', 'jvm.gc.pause', 'heap committed', 'eden space', 'old gen', 'Grafana', 'Cloud Monitoring', 'GC frequency'], ['livenessProbe', 'readinessProbe', 'Pod restart', 'terminationGracePeriodSeconds', 'OOMKilled', 'CrashLoopBackOff', 'kubectl describe pod', 'GKE'], ['HikariCP', 'connection timeout', 'hikari.pool.ActiveConnections', 'hikari.pool.PendingConnections', 'maximumPoolSize', 'connectionTimeout', 'pool exhausted', 'Cloud SQL']]
+        topics: 'Reading Grafana memory panels, understanding OOMKilled vs OutOfMemoryError, basic JVM memory vocabulary (heap, stack, GC), Spring Boot warm-up behaviour, deployment manifest memory configuration.',
+        keywords: [['jvm.memory.used', 'jvm.memory.max', 'container_memory_usage_bytes', 'Grafana', 'Cloud Monitoring', 'pod memory', 'heap committed', 'sawtooth pattern'], ['OOMKilled', 'exit code 137', 'kubectl describe pod', 'Last State: Terminated', 'resources.limits.memory', 'container memory limit', 'pod restart count'], ['-Xmx', '-Xms', 'resources.requests.memory', 'resources.limits.memory', 'JAVA_OPTS', 'JDK_JAVA_OPTIONS', 'deployment manifest'], ['JIT compilation', 'cold start', 'warm-up', 'readinessProbe', 'Spring Boot startup', 'first requests slow', 'class loading'], ['heap', 'stack', 'garbage collection', 'OutOfMemoryError', 'GC pause', 'memory leak', 'java.lang.Error', 'OOM']]
       },
       {
         num: 2,
         name: 'Practitioner',
         track: 'A',
-        focus: 'Configuring the runtime correctly for your service and diagnosing the most common production problems.',
+        focus: 'I understand the container memory budget. When a pod gets OOMKilled, I can figure out whether it\'s a heap problem or a container-sizing problem, and I can configure a new service correctly.',
         scenarios: [
-          'When I size a new service for GKE, I can set JVM heap limits (-Xmx) and GKE resource requests/limits so the container doesn\'t get OOM-killed — and I understand why the JVM doesn\'t automatically respect the container\'s memory limit without explicit configuration.',
-          'When GC pause times are elevated or GC frequency spikes, I can read the GC logs or JFR data well enough to distinguish between a temporary allocation surge and a genuine memory leak, and I know which one needs immediate action.',
-          'When a Kafka consumer in our service starts falling behind on lag, I can check whether the cause is slow processing, insufficient concurrency, or a downstream bottleneck, and I can adjust the consumer thread pool or `max.poll.records` to address it.',
-          'When I need to investigate a production issue without a debugger, I can attach a JFR recording to a running pod, pull the file, and open it in JMC to identify hot methods or lock contention without taking the service down.',
-          'When I write integration tests with Testcontainers for a Spring Boot service, I understand why the test JVM and container startup sequence matters and how to avoid flaky tests caused by connection timing.'
+          'When I size a new service for GKE, I understand that JVM memory = heap + Metaspace + thread stacks + direct byte buffers + native memory, and the container limit must fit all of it \u2014 not just the heap.',
+          'When configuring a service, I can apply the rule that -Xmx should be ~60\u201370% of the container memory limit, leaving room for non-heap memory, and I understand why setting -Xmx equal to the container limit causes OOMKill.',
+          'When Grafana shows healthy heap metrics but pod-level memory is climbing toward the container limit, I recognize that something outside the heap is growing \u2014 and I know the likely suspects (Metaspace, thread stacks, Kafka buffers, HikariCP).',
+          'When reading kubectl describe pod after an OOMKill, I can extract the relevant information \u2014 container memory limit, last termination reason, restart count \u2014 and correlate it with the JVM\'s configured heap size.',
+          'When I see UseContainerSupport in JVM documentation, I understand why the JVM needs to know it\'s running in a container \u2014 and what goes wrong if it doesn\'t (the JVM sees the node\'s total memory instead of the container\'s limit).',
+          'When setting resource requests and limits for a Spring Boot service, I understand the difference between requests (scheduling guarantee) and limits (kill boundary) and can set them appropriately for a JVM workload.'
         ],
-        topics: 'JVM container awareness (UseContainerSupport), HikariCP tuning, GC log analysis, Kafka consumer groups and lag, Java Flight Recorder basics, Spring Boot test slices with Testcontainers.',
-        keywords: [['-Xmx', '-Xms', 'UseContainerSupport', 'MaxRAMPercentage', 'resources.requests', 'resources.limits', 'OOMKilled', 'cgroup memory'], ['GC logs', '-Xlog:gc', 'jvm.gc.pause', 'allocation rate', 'heap pressure', 'Java Flight Recorder', 'JFR', 'G1GC'], ['consumer lag', 'max.poll.records', 'max.poll.interval.ms', 'consumer group', 'kafka.consumer.fetch-latency-avg', 'concurrency', 'partition', '@KafkaListener'], ['Java Flight Recorder', 'JFR', 'jcmd', 'Java Mission Control', 'JMC', 'jcmd VM.unlock_commercial_features', 'kubectl cp', 'lock contention'], ['Testcontainers', '@SpringBootTest', '@Container', 'waitingFor', 'withStartupTimeout', 'Spring Boot test slices', 'flaky tests', 'DataSourceAutoConfiguration']]
+        topics: 'JVM memory model (heap + non-heap), container memory budgeting, the 60\u201370% rule, UseContainerSupport, Kubernetes resource requests vs limits, diagnosing OOMKill vs OutOfMemoryError.',
+        keywords: [['-Xmx', 'Metaspace', 'thread stacks', '-Xss', 'direct byte buffers', 'native memory', 'NIO', 'total JVM footprint'], ['-Xmx', 'resources.limits.memory', 'heap ratio', 'non-heap memory', 'OOMKill', 'container memory budget', '60-70% rule'], ['jvm.memory.used', 'container_memory_usage_bytes', 'non-heap growth', 'Metaspace', 'thread stacks', 'direct buffers', 'Kafka consumer buffers', 'HikariCP'], ['kubectl describe pod', 'Last State: Terminated', 'Reason: OOMKilled', 'resources.limits.memory', '-Xmx', 'restart count', 'exit code 137'], ['UseContainerSupport', 'MaxRAMPercentage', 'cgroup memory', 'container awareness', 'JVM container detection', 'ActiveProcessorCount'], ['resources.requests.memory', 'resources.limits.memory', 'QoS class', 'Guaranteed', 'Burstable', 'scheduling', 'OOMKill threshold']]
       },
       {
         num: 3,
-        name: 'Advanced',
+        name: 'Adept',
         track: 'B',
-        focus: 'Diagnosing non-obvious production problems and tuning the runtime under real load.',
+        focus: 'I know where memory goes inside a Spring Boot app. I can reason about which components consume memory and make informed configuration and code review decisions.',
         scenarios: [
-          'When a service\'s heap usage grows slowly over days until it triggers a restart, I can collect and analyse a heap dump to identify which objects are accumulating, which GC roots are keeping them alive, and whether the cause is a code bug or a configuration problem.',
-          'When a service intermittently stalls under load and the cause isn\'t obvious from logs, I can take a thread dump at the right moment, read the output, and identify whether the stall is caused by lock contention, a thread pool being saturated, or a blocked I/O call.',
-          'When Kafka consumer rebalancing is causing repeated processing pauses or duplicate processing, I can trace the cause — whether it\'s `max.poll.interval.ms` being exceeded, insufficient heartbeat threads, or a partition assignment strategy mismatch — and fix it.',
-          'When a service is consuming more CPU than expected on GKE, I can use async-profiler or JFR CPU profiling to identify which code paths are hot and distinguish between application logic, GC overhead, and framework overhead.',
-          'When a Spring Boot service starts leaking database connections under load, I can trace the leak: identify which code paths are acquiring connections without releasing them, verify the fix with load testing, and add the right HikariCP metrics to catch it early in future.'
+          'When a Spring Boot service is using more memory than expected, I can reason about the likely consumers: HikariCP connection pool, Kafka consumer buffers, Tomcat thread pool, and Spring caches \u2014 and estimate how they add up.',
+          'When reading Spring Boot Actuator metrics (/actuator/metrics), I can find memory-related metrics and understand what jvm.memory.used, jvm.memory.max, jvm.buffer.memory.used, and hikaricp.connections.active tell me about the service\'s memory footprint.',
+          'When I see an OutOfMemoryError in logs, I can distinguish the common types \u2014 heap space (objects), Metaspace (classes), unable to create native thread (too many threads or not enough OS memory) \u2014 and understand what each implies.',
+          'When reviewing a PR, I can flag memory risks: an unbounded Map that grows with traffic, a List accumulated across a batch job, a missing eviction policy on a cache, a new thread pool without considering the stack memory cost.',
+          'When a service has inconsistent memory behaviour across pods (one climbing, others stable), I can reason about what might differ: Kafka partition assignment, cached data divergence, connection pool state, or traffic distribution.',
+          'When estimating a service\'s memory footprint from its configuration, I can add up: thread counts \u00d7 stack sizes + pool sizes \u00d7 connection overhead + configured heap, and check if it fits the container limit with headroom.'
         ],
-        topics: 'Heap dump analysis (Eclipse MAT or VisualVM), thread dump interpretation, async-profiler, Kafka consumer configuration deep-dive, HikariCP leak detection, GC tuning (G1 vs ZGC trade-offs).',
-        keywords: [['heap dump', 'Eclipse MAT', 'VisualVM', 'jmap', 'GC roots', 'retained heap', 'dominator tree', 'memory leak'], ['thread dump', 'jstack', 'BLOCKED', 'WAITING', 'synchronized', 'thread pool saturation', 'virtual threads', 'deadlock'], ['max.poll.interval.ms', 'session.timeout.ms', 'heartbeat.interval.ms', 'partition assignment', 'CooperativeStickyAssignor', 'rebalance listener', 'duplicate processing', 'consumer group coordinator'], ['async-profiler', 'JFR', 'CPU profiling', 'flame graph', 'jvm.gc.overhead', 'safepoint', 'JIT compilation', 'profiling overhead'], ['HikariCP', 'leakDetectionThreshold', 'hikari.pool.ActiveConnections', 'hikari.pool.PendingConnections', 'connection leak', '@Transactional', 'DataSource', 'load testing']]
+        topics: 'Spring Boot memory consumers (HikariCP, Kafka, Tomcat, caches), Actuator memory metrics, OutOfMemoryError types, memory-aware code review, per-pod memory variance diagnosis, memory budget estimation.',
+        keywords: [['HikariCP', 'maximumPoolSize', 'Kafka consumer', 'fetch.max.bytes', 'concurrency', 'server.tomcat.threads.max', '@Cacheable', 'ConcurrentMapCacheManager'], ['/actuator/metrics', 'jvm.memory.used', 'jvm.memory.max', 'jvm.buffer.memory.used', 'hikaricp.connections.active', 'Micrometer', 'Spring Boot Actuator'], ['OutOfMemoryError: Java heap space', 'OutOfMemoryError: Metaspace', 'OutOfMemoryError: unable to create native thread', 'GC overhead limit exceeded'], ['unbounded Map', 'ConcurrentHashMap', '@Cacheable', 'Caffeine', 'eviction policy', 'batch accumulation', 'thread pool sizing', 'memory risk'], ['Kafka partition assignment', 'cache divergence', 'connection pool state', 'pod memory variance', 'traffic distribution', 'stateful consumers'], ['memory budget calculation', 'thread stacks', '-Xss', 'HikariCP connections', 'Kafka consumers', 'container limit', 'safety margin']]
       },
       {
         num: 4,
-        name: 'Specialist',
-        track: 'B',
-        focus: 'Owning JVM health across multiple services and solving platform-level performance problems.',
+        name: 'Veteran',
+        track: 'C',
+        focus: 'I can find root causes using JVM diagnostic tools. Dashboard observation isn\'t enough \u2014 I look inside the JVM to find leaks, GC pressure, and contention.',
         scenarios: [
-          'When the team needs to decide whether to switch GC algorithms (G1 to ZGC or Shenandoah) for a latency-sensitive service, I can design the experiment: define success criteria, run the before/after comparison under representative load, and produce a written recommendation with data.',
-          'When a service is underperforming on GKE and the cause isn\'t the application code, I can investigate at the platform level: CPU throttling due to CFS quota, NUMA effects, network I/O bottlenecks, or noisy neighbour problems on the node.',
-          'When our Kafka consumers need to handle a dramatic increase in message volume, I can design the scaling strategy — whether that\'s horizontal pod scaling, partition rebalancing, or batching changes — and implement it without causing consumer group instability.',
-          'When we\'re building a service that must meet strict latency SLOs, I can identify the JVM sources of latency variance (GC pauses, JIT compilation, class loading at startup) and apply techniques (warmup periods, AOT hints, GC tuning) to reduce that variance.',
-          'When a Cloud SQL connection pool problem cascades across multiple services during a traffic spike, I can trace the problem from HikariCP metrics through the Cloud SQL Auth Proxy to the database instance limits, and propose a platform-level fix rather than a per-service workaround.'
+          'When I suspect a memory leak, I can take heap dumps at intervals using jcmd, compare them in Eclipse MAT, and identify the growing object graph \u2014 tracing it back to the responsible code (a Spring cache, a Kafka offset tracker, a connection that isn\'t being released).',
+          'When GC logs show increasing Full GC frequency or rising old-generation occupancy, I can read the log lines, understand what they mean (promotion rate, concurrent marking failures, long pauses), and correlate with application behaviour.',
+          'When I capture a JFR recording, I can analyse allocation hotspots \u2014 which methods are creating the most objects, what the allocation rate is, and whether short-lived allocations are causing excessive GC pressure.',
+          'When a thread dump shows many threads in BLOCKED or TIMED_WAITING, I can trace what they\'re contending on \u2014 a HikariCP connection, a synchronized block, a full executor pool \u2014 and reason about the memory implications of thread accumulation.',
+          'When diagnosing a production memory issue, I know the sequence: check Grafana metrics first, then escalate to JFR if I need allocation details, heap dump if it\'s a leak, thread dump if it\'s contention \u2014 and I reach for the right tool first.',
+          'When Spring Boot\'s Metaspace is growing steadily, I can investigate whether it\'s a class loader leak (common with dynamic proxies, Spring AOP, or reflection-heavy code) and know how to set -XX:MaxMetaspaceSize as a safety net.'
         ],
-        topics: 'GC algorithm comparison under production load, Linux CFS CPU throttling on GKE, Kafka partition scaling, JVM startup optimisation (CDS, AOT), cross-service connection pool management, platform-level JVM observability.',
-        keywords: [['G1GC', 'ZGC', 'Shenandoah', '-XX:+UseZGC', 'GC pause p99', 'throughput vs latency', 'JFR', 'benchmark'], ['CFS throttling', 'cpu.cfs_quota_us', 'throttled_time', 'NUMA', 'node affinity', 'kubectl top node', 'container_cpu_cfs_throttled_seconds_total', 'noisy neighbour'], ['partition scaling', 'consumer group', 'HPA', 'max.poll.records', 'fetch.min.bytes', 'fetch.max.wait.ms', 'consumer concurrency', 'rebalance'], ['GC pause', 'JIT warmup', 'Class Data Sharing', 'CDS', 'AOT', 'GraalVM', 'p99 latency', 'safepoint'], ['HikariCP', 'Cloud SQL Auth Proxy', 'max_connections', 'hikari.pool.PendingConnections', 'connection cascade', 'pgbouncer', 'Cloud SQL', 'connection limits']]
+        topics: 'Heap dump analysis (Eclipse MAT), GC log reading, Java Flight Recorder (JFR) allocation profiling, thread dump interpretation, structured diagnostic sequence, Metaspace investigation.',
+        keywords: [['jcmd', 'GC.heap_dump', 'Eclipse MAT', 'dominator tree', 'retained size', 'GC roots', 'leak suspects', 'memory leak'], ['GC logs', '-Xlog:gc*', 'Full GC', 'old generation', 'promotion rate', 'concurrent marking', 'GC pause', 'allocation rate'], ['Java Flight Recorder', 'JFR', 'jcmd JFR.start', 'JDK Mission Control', 'JMC', 'allocation hotspots', 'allocation rate', 'object age'], ['thread dump', 'jstack', 'jcmd Thread.print', 'BLOCKED', 'TIMED_WAITING', 'HikariCP', 'synchronized', 'thread pool exhaustion'], ['diagnostic sequence', 'Grafana', 'JFR', 'heap dump', 'thread dump', 'production diagnosis', 'escalation path'], ['Metaspace', 'class loader leak', 'Spring AOP', 'dynamic proxies', 'reflection', '-XX:MaxMetaspaceSize', 'class loading', 'Metaspace growth']]
       },
       {
         num: 5,
         name: 'Expert',
         track: 'M',
-        focus: 'Setting JVM and runtime standards that apply across the organisation and mentoring teams through complex production issues.',
+        focus: 'I design for memory efficiency and set standards. I make proactive decisions that prevent memory problems across services.',
         scenarios: [
-          'When multiple teams are independently tuning their JVM configurations and arriving at inconsistent results, I can consolidate what works, define org-wide baseline settings for GKE Spring Boot services, and explain the reasoning so teams understand why rather than just following rules.',
-          'When a team hits a JVM problem they can\'t diagnose themselves, I can join a production incident, work through the evidence (heap dumps, thread dumps, JFR recordings, GC logs), and get to a root cause — and turn the incident into a learning session for the team afterwards.',
-          'When we\'re evaluating new Java versions or JVM distributions for the platform, I can design and run the evaluation: identify the relevant changes, test against our actual workloads (Spring Boot + HikariCP + Kafka), and produce a migration recommendation with a rollout plan.',
-          'When a service\'s performance under load doesn\'t match what local testing suggested, I can design a realistic load test using our actual traffic patterns, identify the discrepancy, and determine whether it\'s a test fidelity problem or a genuine production-only behaviour.',
-          'When teams ask how we should instrument our Spring Boot services for observability, I can define the standard: which JVM and application metrics to expose, how to structure custom spans in OpenTelemetry, and how to connect JVM behaviour to business-level SLOs in Grafana.'
+          'When a latency-sensitive service needs consistent response times, I can evaluate G1 vs ZGC for our specific workload \u2014 measuring actual pause times under production-like load, comparing throughput and memory overhead, and making a recommendation backed by JFR data.',
+          'When designing thread pool and connection pool configurations, I can reason about the total memory budget: each Tomcat thread \u00d7 stack size + each HikariCP connection \u00d7 buffer overhead + Kafka consumers \u00d7 partition buffers \u2014 and ensure it all fits within the container limit with headroom.',
+          'When a Spring Boot service has slow cold starts on GKE, I can diagnose the contributing factors (JIT compilation, Spring context initialisation, connection pool warmup, Kafka consumer group rebalance) and design readiness probes that account for the memory dimension of each.',
+          'When multiple teams are configuring JVMs inconsistently, I can define a standard memory configuration baseline: heap ratio to container limit, mandatory flags (HeapDumpOnOutOfMemoryError, container awareness, GC logging), and non-heap budget formula.',
+          'When evaluating a Java version upgrade (17 \u2192 21), I can assess memory-related implications: changed GC defaults, virtual thread memory model, dependency readiness (HikariCP, Kafka client, Cloud SQL driver under the new threading model).',
+          'When a production incident involves memory-related cascading failure (one service\'s GC pauses causing timeout storms in callers, connection pool exhaustion propagating), I can trace the chain and propose both immediate fixes and architectural improvements.'
         ],
-        topics: 'At this level, growth comes from cross-team mentoring, production incident ownership, and contributing to platform standards. Level 5–6 engineers lead JVM sessions in Track A and Track B.',
-        keywords: [['MaxRAMPercentage', 'UseContainerSupport', 'G1GC', 'ZGC', 'JVM baseline', 'GKE resource limits', 'platform standards', 'Spring Boot defaults'], ['heap dump', 'thread dump', 'JFR', 'GC logs', 'incident retrospective', 'Eclipse MAT', 'async-profiler', 'root cause analysis'], ['Java LTS', 'Java 21', 'virtual threads', 'GraalVM', 'JDK migration', 'Spring Boot compatibility', 'Testcontainers', 'canary rollout'], ['load testing', 'k6', 'Gatling', 'traffic shaping', 'JFR', 'throughput', 'p99 latency', 'production traffic patterns'], ['Micrometer', 'OpenTelemetry', 'jvm.memory.used', 'jvm.gc.pause', 'custom spans', 'SLO', 'Grafana', 'Spring Boot Actuator']]
+        topics: 'At this level, growth comes from cross-team standards, production incident leadership, and architecture-level memory decisions. Level 5\u20136 engineers lead sessions in Track A, Track B, and Track C.',
+        keywords: [['G1GC', 'ZGC', 'Shenandoah', '-XX:+UseZGC', 'GC pause p99', 'throughput vs latency', 'JFR', 'benchmark', 'MaxGCPauseMillis'], ['memory budget design', 'Tomcat threads', 'HikariCP connections', 'Kafka consumers', 'stack size', 'buffer overhead', 'container limit', 'headroom'], ['cold start', 'JIT compilation', 'Spring context', 'connection pool warmup', 'Kafka rebalance', 'readinessProbe', 'startup time', 'CDS', 'AOT'], ['JVM baseline', 'HeapDumpOnOutOfMemoryError', 'UseContainerSupport', 'GC logging', 'platform standards', 'non-heap budget', 'org-wide config'], ['Java 17', 'Java 21', 'virtual threads', 'GC defaults', 'Spring Boot compatibility', 'HikariCP', 'Kafka client', 'migration risk'], ['cascading failure', 'GC pause cascade', 'timeout storm', 'connection pool exhaustion', 'circuit breaker', 'Resilience4j', 'cross-service impact']]
       },
       {
         num: 6,
         name: 'Authority',
         track: 'M',
-        focus: 'JVM platform strategy, tooling investment, and organisation-wide runtime governance.',
+        focus: 'I own memory strategy for the engineering organisation. Platform-level observability, capacity planning, SLA budgets, and the technology roadmap.',
         scenarios: [
-          'When the organisation needs to decide on a long-term JVM strategy (LTS versions, GraalVM native, container-native tuning), I can lead the decision: gather input from teams, evaluate options against our actual constraints (startup time, memory footprint, tooling ecosystem), and produce a recommendation at the leadership level.',
-          'When we need to build or select tooling to standardise JVM observability across all services (custom Grafana dashboards, shared JFR event libraries, baseline alert rules), I can own the design and adoption — ensuring the tooling works for the range of services we run, not just the ones I know best.',
-          'When a critical production incident involves JVM behaviour at a scale or complexity that stumps the team, I can take ownership of the investigation: organise the evidence, form and test hypotheses, coordinate with engineers across teams, and produce a post-mortem that prevents recurrence.',
-          'When leadership asks about the cost and risk of migrating the entire backend from Java 17 to Java 21 (or any equivalent platform shift), I can produce a structured assessment: compatibility risks, testing strategy, rollout order, and what "done" looks like.',
-          'When there is no structured training track for JVM topics and teams are learning inconsistently, I can identify the gaps, commission or build the curriculum, and ensure the training programme covers what engineers actually need — not just what\'s interesting to experts.'
+          'When the organisation needs a memory reliability strategy (standard JVM base images, mandatory heap dump capture on OOM, GC anomaly alerting, automated JFR on threshold breach), I can design the end-to-end approach and drive adoption across all teams.',
+          'When defining performance budgets for BaaS SLAs, I can translate memory behaviour (GC pause impact on p99 latency, cold start memory ramp, connection pool saturation under burst traffic) into measurable commitments and ensure our configurations support the promises we make to partners.',
+          'When evaluating emerging JVM capabilities (virtual threads at scale, CRaC checkpoint/restore for instant cold starts, ahead-of-time compilation with GraalVM), I can run structured evaluations against our actual workloads and produce an adoption roadmap.',
+          'When building fleet-wide memory observability (per-service GC dashboards, automated heap dump collection, connection pool saturation alerts, Metaspace growth tracking), I can define what we need and drive implementation with the platform team.',
+          'When a critical production incident requires deep analysis (native memory leak in a third-party driver, interaction between JVM memory management and Cloud SQL driver under connection storms, Kafka client memory behaviour during partition rebalances), I can lead the diagnosis or know when to bring in external expertise.'
         ],
-        topics: 'At this level, growth comes from technology strategy, tooling investment, and shaping the engineering culture around JVM topics. There is no structured training track — this is the level that defines what the training programme covers.',
-        keywords: [['GraalVM native image', 'Java LTS', 'Project Leyden', 'startup time', 'memory footprint', 'container-native', 'AOT compilation', 'GKE'], ['JFR custom events', 'Micrometer', 'Grafana dashboards', 'alert rules', 'OpenTelemetry', 'jvm.memory.used', 'platform observability', 'shared libraries'], ['post-mortem', 'heap dump', 'JFR', 'thread dump', 'incident command', 'root cause analysis', 'async-profiler', 'cross-team coordination'], ['Java 17', 'Java 21', 'virtual threads', 'sequenced collections', 'Spring Boot 3', 'migration risk', 'compatibility matrix', 'rollout strategy'], ['curriculum design', 'skills gap', 'training programme', 'adaptive quiz', 'JVM fundamentals', 'GC tuning', 'observability', 'competency levels']]
+        topics: 'At this level, growth comes from technology strategy, tooling investment, and shaping the engineering culture around memory topics. There is no structured training track \u2014 this is the level that defines what the training programme covers.',
+        keywords: [['JVM base images', 'HeapDumpOnOutOfMemoryError', 'GC anomaly alerting', 'automated JFR', 'platform reliability', 'fleet-wide standards'], ['SLA budgets', 'p99 latency', 'GC pause impact', 'cold start', 'burst traffic', 'capacity planning', 'performance budget'], ['virtual threads', 'CRaC', 'Project Leyden', 'GraalVM native image', 'AOT compilation', 'technology evaluation', 'adoption roadmap'], ['fleet-wide observability', 'GC dashboards', 'heap dump collection', 'connection pool alerts', 'Metaspace tracking', 'platform tooling'], ['native memory leak', 'Cloud SQL driver', 'Kafka rebalance memory', 'deep analysis', 'incident leadership', 'external expertise']]
       }
     ]
   },
@@ -588,7 +592,7 @@ var TRACKS = {
       },
       {
         num: 3,
-        name: 'Advanced',
+        name: 'Adept',
         track: 'B',
         focus: 'Designing systems that handle complex domains, failure modes, and regulatory constraints.',
         scenarios: [
@@ -603,8 +607,8 @@ var TRACKS = {
       },
       {
         num: 4,
-        name: 'Specialist',
-        track: 'B',
+        name: 'Veteran',
+        track: 'C',
         focus: 'Owning cross-service designs end-to-end and raising the quality bar across your domain.',
         scenarios: [
           'When a feature requires coordinated changes across three or more services owned by different teams, I can lead the design: facilitate the cross-team design session, produce the shared contract, identify the sequencing dependencies, and maintain the overall design coherence as implementation details emerge.',
@@ -628,7 +632,7 @@ var TRACKS = {
           'When a new technology is proposed for adoption (a new messaging system, a new service mesh, a new API gateway), I can lead the evaluation: define the criteria, prototype the relevant scenarios, and produce an honest assessment of fit for our specific context.',
           'When the training programme needs to cover solution design, I can define the curriculum: what scenarios to cover, what exercises produce real artefacts, and how to structure the progression from "can read a design" to "can lead a design".'
         ],
-        topics: 'At this level, growth comes from cross-team standards work, architecture facilitation, and technology strategy. Level 5–6 engineers lead Solution Design sessions in Track A and Track B.',
+        topics: 'At this level, growth comes from cross-team standards work, architecture facilitation, and technology strategy. Level 5\u20136 engineers lead Solution Design sessions in Track A, Track B, and Track C.',
         keywords: [['ADR', 'architectural standard', 'divergence', 'design guild', 'RFC process', 'buy-in', "Conway's Law", 'org-wide pattern'], ['strangler fig', 'event-driven architecture', 'migration strategy', 'phased rollout', 'risk assessment', 'architectural runway', 'monolith decomposition', 'bounded context mapping'], ['facilitation', 'trade-off analysis', 'assumption mapping', 'design workshop', 'decision criteria', 'constraint vs preference', 'ADR', 'architectural fitness function'], ['technology evaluation', 'proof of concept', 'fit assessment', 'service mesh', 'API gateway', 'Kafka vs alternatives', 'non-functional requirements', 'vendor lock-in'], ['curriculum design', 'scenario-based learning', 'design artefact', 'ADR writing', 'progression framework', 'workshop facilitation', 'competency mapping']]
       },
       {
@@ -643,7 +647,7 @@ var TRACKS = {
           'When we need to assess technical debt across the platform and prioritise what to fix first, I can produce a structured assessment: map the current architecture, identify the highest-risk coupling and inconsistency, and propose a sequenced improvement roadmap.',
           'When engineers across the organisation don\'t have a shared vocabulary for discussing architecture, I can build it: define the standards, run the design guild, and create the reference architectures that teams use as starting points.'
         ],
-        topics: 'At this level, growth comes from architectural governance, strategic design leadership, and building organisational capability. There is no structured training track — this is the level that defines what good design looks like for the organisation.',
+        topics: 'At this level, growth comes from architectural governance, strategic design leadership, and building organisational capability. There is no structured training track \u2014 this is the level that defines what good design looks like for the organisation.',
         keywords: [['domain modelling', 'bounded context', 'context mapping', 'event storming', 'system boundary', 'data strategy', 'BaaS platform', 'strategic DDD'], ['ADR governance', 'decision process', 'architectural review board', 'RFC process', 'design guild', 'RACI', 'decision log', 'revisiting decisions'], ['PCI-DSS', 'SOX', 'data flow diagram', 'regulatory audit', 'data residency', 'failure mode documentation', 'audit evidence', 'gap analysis', 'remediation roadmap'], ['technical debt', 'coupling analysis', 'architectural risk', 'dependency mapping', 'improvement roadmap', 'strangler fig', 'fitness function', 'sequenced migration'], ['reference architecture', 'design guild', 'architectural vocabulary', 'pattern library', 'architectural standard', 'inner source', 'community of practice', 'golden path']]
       }
     ]
@@ -653,16 +657,16 @@ var TRACKS = {
     id: 'cloud',
     label: 'Cloud & Observability',
     icon: '☁',
-    desc: 'GCP, GKE, and the full observability stack: Cloud Monitoring, OpenTelemetry, Grafana, structured logging, and distributed tracing.',
+    desc: 'GCP, GKE, and the full observability stack: Cloud Monitoring, OpenTelemetry, Grafana, structured logging, and distributed tracing. Includes autoscaling, SLO design, and platform strategy.',
     levels: [
       {
         num: 1,
         name: 'Foundations',
         track: 'A',
-        focus: 'Reading what the platform is telling you and navigating GCP without getting lost.',
+        focus: 'I know where our services run and I can look at them. I can find a service, check if it\'s running, and read basic health signals.',
         scenarios: [
           'When a service alert fires in Grafana, I can open the dashboard, understand what the panel is measuring, and tell the difference between a metric that\'s genuinely out of range and one that\'s noisy or stale.',
-          'When a pod is restarting in GKE, I can use `kubectl` to get the pod status, read the recent logs, and identify whether it\'s an OOM kill, a failing liveness probe, or a crash at startup.',
+          'When a pod is restarting in GKE, I can use kubectl to get the pod status, read the recent logs, and identify whether it\'s an OOM kill, a failing liveness probe, or a crash at startup.',
           'When I need to find a specific log line from a service in the last hour, I can use Cloud Logging\'s query interface to filter by service name, severity, and time range without needing someone to write the query for me.',
           'When an alert fires for a service I don\'t own, I can look at the runbook link, follow the triage steps, and escalate to the right team with a useful summary of what I observed — not just "the alert fired".',
           'When I look at a Cloud SQL metrics dashboard, I can read CPU utilisation, connection count, and storage usage, and tell whether any of those numbers suggest something needs attention.'
@@ -674,52 +678,56 @@ var TRACKS = {
         num: 2,
         name: 'Practitioner',
         track: 'A',
-        focus: 'Instrumenting your service correctly and contributing to the team\'s observability setup.',
+        focus: 'I can build infrastructure, instrument services, and troubleshoot basic failures without escalating.',
         scenarios: [
-          'When I deploy a new service to GKE, I can configure its resource requests and limits correctly, set up the liveness and readiness probes, and verify that the service appears healthy in Cloud Monitoring before declaring the deployment done.',
-          'When I add a new feature that touches a critical business flow, I can add structured log statements with the right fields (trace ID, tenant ID, operation name, duration) so that the flow is traceable in Cloud Logging without producing log spam.',
-          'When I need to add a custom metric for a new feature (e.g. number of payment retries per minute), I can instrument it with Micrometer in Spring Boot, verify it appears in Prometheus scraping, and build a simple Grafana panel to display it.',
-          'When I need to understand how a request flows through our system, I can use the trace view in Cloud Trace or Grafana Tempo to follow a trace ID across services and identify where the latency is being spent.',
-          'When the team needs to create a basic alert for a new service, I can define the alert condition, set an appropriate threshold, link it to a runbook, and configure the notification channel — without creating a noisy alert that pages people at 3am for non-issues.'
+          'When a new service needs infrastructure (database, storage bucket, IAM roles), I can write the Terraform resources for it and get them deployed through our pipeline.',
+          'When I deploy a change to Kubernetes, I can update the manifest, apply it, and troubleshoot common failures (CrashLoopBackOff, failed probes, image pull errors, config mount issues) without escalating.',
+          'When building a new feature, I add structured logging and application-level metrics (Micrometer/Prometheus) as part of the work, not as an afterthought.',
+          'When I need to create a Grafana dashboard for a service I own, I can write PromQL queries for the key indicators (request rate, error rate, latency percentiles) and set up basic alerting.',
+          'When someone asks me "what\'s the difference between metrics, logs, and traces?", I can explain when you\'d use each and give a concrete example from our services.',
+          'When I look at our GCP networking setup (VPCs, subnets, firewall rules), I can follow the structure and understand how traffic flows to our services.'
         ],
-        topics: 'GKE resource configuration, structured logging with Spring Boot, Micrometer and custom metrics, distributed tracing with OpenTelemetry, Grafana panel creation, alert threshold design.',
-        keywords: [['resources.requests', 'resources.limits', 'livenessProbe', 'readinessProbe', 'kubectl rollout status', 'Cloud Monitoring uptime check', 'GKE workload health'], ['structured logging', 'JSON log format', 'trace_id field', 'Spring Boot logback', 'MDC (Mapped Diagnostic Context)', 'log severity levels', 'Cloud Logging jsonPayload'], ['Micrometer', 'Counter', 'MeterRegistry', 'prometheus scrape', 'Spring Boot Actuator /actuator/prometheus', 'Grafana panel editor', 'PromQL'], ['Cloud Trace', 'Grafana Tempo', 'trace ID', 'span', 'OpenTelemetry', 'trace waterfall view', 'service-to-service latency'], ['Cloud Monitoring alerting policy', 'alert condition', 'notification channel', 'alert threshold', 'runbook URL annotation', 'alert duration window', 'Grafana alert rule']]
+        topics: 'Terraform modules, Kubernetes troubleshooting (non-memory failures), structured logging, Micrometer metrics, PromQL basics, Grafana dashboards, GCP networking fundamentals.',
+        keywords: [['Terraform', 'google_sql_database_instance', 'google_storage_bucket', 'google_service_account', 'terraform apply', 'terraform plan', 'CI pipeline'], ['CrashLoopBackOff', 'ImagePullBackOff', 'failed probes', 'kubectl rollout status', 'config mount', 'kubectl describe pod', 'pod events'], ['structured logging', 'JSON log format', 'trace_id field', 'Spring Boot logback', 'MDC', 'log severity levels', 'Cloud Logging jsonPayload'], ['PromQL', 'rate()', 'histogram_quantile', 'Grafana panel editor', 'Micrometer', 'Counter', 'MeterRegistry', '/actuator/prometheus'], ['metrics vs logs vs traces', 'when to use each', 'observability pillars', 'Cloud Trace', 'Grafana Tempo', 'OpenTelemetry'], ['VPC', 'subnet', 'firewall rules', 'Cloud NAT', 'GKE networking', 'Service', 'Ingress', 'load balancer']]
       },
       {
         num: 3,
-        name: 'Advanced',
+        name: 'Adept',
         track: 'B',
-        focus: 'Diagnosing complex production issues across multiple services and owning the observability for a domain.',
+        focus: 'I can trace problems across services, design meaningful alerts and SLOs, and configure autoscaling for variable traffic.',
         scenarios: [
-          'When a production incident involves latency degradation that isn\'t obviously caused by a single service, I can use distributed traces to identify where time is being lost, correlate that with metrics (GC pauses, database query times, Kafka consumer lag), and produce a coherent diagnosis rather than guessing.',
-          'When GKE nodes are showing high CPU or memory utilisation and the cause isn\'t a single misbehaving pod, I can investigate at the node level: identify which pods are responsible, whether any are being throttled due to limit settings, and propose the right remedy.',
-          'When our OpenTelemetry instrumentation is producing too much data (high cardinality, excessive sampling, or noisy spans), I can tune the configuration: adjust sampling rates, filter low-value spans, and reduce cardinality without losing the signals that matter for diagnosis.',
-          'When I need to build a dashboard for a business-critical flow, I can design it from the user perspective: identify the right golden signals for that flow (request rate, error rate, latency, saturation), choose the right visualisations, and ensure the dashboard tells a story rather than just showing numbers.',
-          'When Terraform is used to manage our GKE workloads and Cloud SQL instances, I can read and modify the relevant modules, plan and apply changes safely, and understand what a Terraform state conflict or drift means in practice.'
+          'When a request spans multiple services, I can use distributed tracing (OpenTelemetry) to find exactly which service and which operation is the bottleneck — not just guess based on logs.',
+          'When the team asks "how do we know if this API is healthy?", I can define SLIs (what to measure) and SLOs (what\'s acceptable) and explain why "zero errors" is not a useful target.',
+          'When alerting is too noisy or too quiet, I can redesign the strategy: severity levels, routing rules, runbook links, alert-on-burn-rate instead of alert-on-threshold.',
+          'When I add OpenTelemetry instrumentation to a service, I understand how trace context propagates across HTTP calls and Kafka messages, and I can verify it\'s working end-to-end.',
+          'When troubleshooting an incident, I can correlate metrics (latency spike), logs (error messages at that timestamp), and traces (specific request path) to build a complete picture rather than investigating each signal in isolation.',
+          'When a service needs to handle variable traffic, I can configure HPA with an appropriate metric (CPU, memory, or custom) and set sensible min/max replica counts — understanding that autoscaling only works if individual pods are correctly sized (cross-ref Memory Management L2).',
+          'When Terraform is used to manage our GKE workloads and Cloud SQL instances, I can read and modify the relevant modules, plan and apply changes safely, and understand what state drift means in practice.'
         ],
-        topics: 'Cross-service trace correlation, GKE node-level investigation, OpenTelemetry sampling and cardinality, golden signals dashboard design, Terraform for GKE and Cloud SQL, Cloud Monitoring alerting policies.',
-        keywords: [['Grafana Tempo', 'trace correlation', 'span attributes', 'kafka_consumer_lag', 'GC pause duration', 'Cloud SQL query latency', 'exemplars', 'trace-to-metrics linking'], ['kubectl top node', 'kubectl top pod', 'CFS throttling', 'container/cpu/limit_utilization', 'node pool metrics', 'GKE system metrics', 'throttled_time', 'resource limits'], ['otel.traces.sampler', 'otel.traces.sampler.arg', 'TraceIdRatioBased sampler', 'span processor', 'attribute cardinality', 'span filtering', 'OTEL collector config', 'tail-based sampling'], ['golden signals', 'rate / errors / latency / saturation', 'Grafana dashboard', 'histogram_quantile', 'error rate PromQL', 'SLI panels', 'time series vs stat panels', 'dashboard variables'], ['google_container_cluster', 'google_sql_database_instance', 'terraform plan', 'terraform apply', 'terraform state', 'state drift', 'terraform import', 'module variables']]
+        topics: 'OpenTelemetry instrumentation, SLI/SLO definition, alerting design (burn-rate), trace context propagation (HTTP + Kafka), incident correlation across metrics/logs/traces, HPA autoscaling, Terraform for GKE and Cloud SQL.',
+        keywords: [['Grafana Tempo', 'trace correlation', 'span attributes', 'OpenTelemetry', 'trace waterfall', 'service-to-service latency', 'exemplars'], ['SLI', 'SLO', 'error budget', 'good request ratio', 'latency SLO', '99th percentile', 'burn rate', 'Cloud Monitoring SLO'], ['alert noise', 'burn rate alert', 'severity levels', 'routing rules', 'runbook links', 'alert fatigue', 'alert-on-symptom'], ['trace context propagation', 'W3C Trace Context', 'Kafka header trace', 'OpenTelemetry Java agent', 'span', 'trace ID', 'context propagation'], ['incident correlation', 'metrics + logs + traces', 'timeline reconstruction', 'exemplar linking', 'Grafana explore', 'root cause analysis'], ['HPA', 'Horizontal Pod Autoscaler', 'cpu utilization target', 'custom metrics', 'min replicas', 'max replicas', 'scale-down stabilization'], ['google_container_cluster', 'google_sql_database_instance', 'terraform plan', 'terraform state', 'state drift', 'module variables']]
       },
       {
         num: 4,
-        name: 'Specialist',
-        track: 'B',
-        focus: 'Owning the observability platform for the domain and ensuring the team can operate services in production with confidence.',
+        name: 'Veteran',
+        track: 'C',
+        focus: 'I design infrastructure, manage observability at scale, handle compliance, and configure advanced autoscaling and resilience.',
         scenarios: [
           'When the team needs to define SLOs for a critical service, I can lead the process: define the right SLI measurements, set realistic error budget targets based on actual traffic patterns, configure the Cloud Monitoring SLO, and explain to stakeholders what the error budget means in practice.',
           'When GCP cloud costs for the domain are growing faster than traffic, I can analyse the cost breakdown, identify the main drivers (GKE instance types, Cloud SQL tier, storage, network egress), and propose concrete changes with their cost and performance implications.',
           'When we need to do a zero-downtime deployment of a change that requires GKE rolling updates and a database migration simultaneously, I can design and execute the deployment sequencing: migration first, then application rollout, with rollback triggers and observability checkpoints at each step.',
-          'When a team in another domain asks how to set up observability for a new service, I can produce a reusable guide: the standard logging format, the required metrics, the tracing setup, the alert templates, and the Grafana dashboard starting point — so they don\'t have to figure it out from scratch.',
-          'When a Cloud SQL instance needs maintenance (version upgrade, certificate rotation, configuration change), I can plan and execute the change with minimum disruption: schedule the window, communicate to stakeholders, verify application reconnection behaviour, and confirm service health afterwards.'
+          'When a team in another domain asks how to set up observability for a new service, I can produce a reusable guide: the standard logging format, the required metrics, the tracing setup, the alert templates, and the Grafana dashboard starting point.',
+          'When basic CPU-based autoscaling isn\'t sufficient, I can configure scaling on custom metrics (Kafka consumer lag, request queue depth), tune scale-down stabilisation to avoid flapping, configure VPA for services with unpredictable resource profiles, and reason about the cost trade-offs of scaling policies.',
+          'When a compliance review asks about our infrastructure security posture, I can explain our VPC design, network segmentation (PCI-DSS zones), IAM policies, and audit logging (Cloud Audit Logs) confidently.'
         ],
-        topics: 'SLO/SLI/error budget design, GCP cost optimisation, deployment sequencing with observability gates, reusable observability templates, Cloud SQL maintenance operations, GKE upgrade management.',
-        keywords: [['Cloud Monitoring SLO', 'SLI definition', 'error budget', 'request-based SLI', 'window-based SLI', 'burn rate alert', 'good request ratio', '99th percentile latency SLO'], ['GCP Billing export', 'BigQuery cost analysis', 'GKE cost breakdown', 'Cloud SQL tier', 'network egress cost', 'committed use discounts', 'Spot VMs', 'resource rightsizing'], ['kubectl rollout', 'rolling update strategy', 'maxUnavailable / maxSurge', 'Liquibase', 'blue-green deployment', 'deployment observability gate', 'rollback trigger', 'readiness probe during migration'], ['observability template', 'standard log format', 'required Micrometer metrics', 'OTEL Java agent config', 'Grafana dashboard JSON', 'alert policy template', 'Spring Boot Actuator', 'runbook template'], ['Cloud SQL maintenance window', 'SSL certificate rotation', 'HikariCP reconnection', 'Cloud SQL flags', 'Cloud SQL instance restart', 'connection validation', 'maintenance notification', 'gcloud sql instances patch']]
+        topics: 'SLO/SLI/error budget design, GCP cost optimisation, deployment sequencing with observability gates, reusable observability templates, advanced autoscaling (VPA, custom metrics, scale-down tuning), compliance controls.',
+        keywords: [['Cloud Monitoring SLO', 'SLI definition', 'error budget', 'burn rate alert', 'good request ratio', '99th percentile latency SLO', 'request-based SLI'], ['GCP Billing export', 'BigQuery cost analysis', 'GKE cost breakdown', 'Cloud SQL tier', 'network egress cost', 'committed use discounts', 'Spot VMs'], ['kubectl rollout', 'rolling update strategy', 'maxUnavailable / maxSurge', 'Liquibase', 'deployment observability gate', 'rollback trigger', 'readiness probe during migration'], ['observability template', 'standard log format', 'required Micrometer metrics', 'OTEL Java agent config', 'Grafana dashboard JSON', 'alert policy template', 'runbook template'], ['VPA', 'Vertical Pod Autoscaler', 'custom metrics autoscaling', 'Kafka consumer lag HPA', 'scale-down stabilization', 'flapping', 'cost trade-offs'], ['VPC design', 'network segmentation', 'PCI-DSS zones', 'IAM policies', 'Cloud Audit Logs', 'compliance architecture']]
       },
       {
         num: 5,
         name: 'Expert',
         track: 'M',
-        focus: 'Setting observability and cloud standards for the organisation and mentoring teams through complex production scenarios.',
+        focus: 'I define observability strategy and make architecture decisions for the organisation. I set the standards, run the evaluations, and lead incident response.',
         scenarios: [
           'When teams across the organisation are instrumenting their services inconsistently (different log formats, different metric names, different trace sampling strategies), I can define the standard, build the shared libraries or configuration templates, and drive adoption without making it feel like bureaucracy.',
           'When a major incident spans multiple teams and the on-call rotation isn\'t enough to coordinate the response, I can take incident commander role: coordinate the investigation, manage communication to stakeholders, ensure hypotheses are tested systematically, and drive the post-mortem.',
@@ -727,8 +735,8 @@ var TRACKS = {
           'When GKE platform costs are a concern at the leadership level, I can provide the analysis: break down cost by workload, identify optimisation opportunities (spot instances, vertical pod autoscaling, node pool rightsizing), and model the savings and risks of each option.',
           'When teams don\'t know how to write good runbooks, I can define the standard: what a runbook must contain, how to test it, and how to keep it up to date — and run a session where teams actually write and peer-review their runbooks rather than just hearing about it.'
         ],
-        topics: 'At this level, growth comes from cross-team standards, incident command, and platform strategy. Level 5–6 engineers lead Cloud & Observability sessions in Track A and Track B.',
-        keywords: [['OTEL SDK configuration', 'shared logging library', 'standard metric naming', 'otel-collector config', 'Spring Boot starter', 'trace sampling policy', 'instrumentation standard', 'adoption strategy'], ['incident command', 'incident timeline', 'stakeholder communication', 'hypothesis-driven diagnosis', 'post-mortem', 'blameless retrospective', 'incident channel', 'action items'], ['tool evaluation criteria', 'APM comparison', 'Grafana vs Cloud Monitoring', 'OTEL backend compatibility', 'POC scope', 'total cost of ownership', 'migration path', 'vendor lock-in assessment'], ['GKE cost by namespace', 'Spot VMs', 'Vertical Pod Autoscaler (VPA)', 'node pool rightsizing', 'committed use discounts', 'GKE cost allocation', 'workload identity', 'cost modelling'], ['runbook structure', 'alert-to-runbook linking', 'runbook testing', 'escalation matrix', 'diagnostic steps', 'runbook review process', 'on-call readiness', 'alert annotation']]
+        topics: 'At this level, growth comes from cross-team standards, incident command, and platform strategy. Level 5\u20136 engineers lead Cloud & Observability sessions in Track A, Track B, and Track C.',
+        keywords: [['OTEL SDK configuration', 'shared logging library', 'standard metric naming', 'otel-collector config', 'Spring Boot starter', 'trace sampling policy', 'instrumentation standard'], ['incident command', 'incident timeline', 'stakeholder communication', 'hypothesis-driven diagnosis', 'post-mortem', 'blameless retrospective', 'incident channel'], ['tool evaluation criteria', 'APM comparison', 'Grafana vs Cloud Monitoring', 'OTEL backend compatibility', 'POC scope', 'total cost of ownership', 'vendor lock-in assessment'], ['GKE cost by namespace', 'Spot VMs', 'Vertical Pod Autoscaler (VPA)', 'node pool rightsizing', 'committed use discounts', 'GKE cost allocation', 'cost modelling'], ['runbook structure', 'alert-to-runbook linking', 'runbook testing', 'escalation matrix', 'diagnostic steps', 'runbook review process', 'on-call readiness']]
       },
       {
         num: 6,
@@ -742,8 +750,8 @@ var TRACKS = {
           'When a regulatory audit requires evidence of how we detect, alert on, and respond to security events in our cloud environment, I can produce that evidence: describe the detection mechanisms, the alerting chain, the response procedures, and the audit log retention.',
           'When we need to build a platform capability that will benefit all engineering teams (e.g. a standard observability stack, a shared incident management process, a Terraform module library), I can lead the design and rollout — ensuring it\'s adopted because it\'s genuinely useful, not because it\'s mandated.'
         ],
-        topics: 'At this level, growth comes from cloud strategy, organisational reliability engineering, and platform investment decisions. There is no structured training track — this is the level that shapes the cloud and observability direction for the organisation.',
-        keywords: [['GKE vs Cloud Run vs GKE Autopilot', 'multi-region architecture', 'managed services trade-offs', 'GCP service selection', 'technology radar', 'architecture decision record', 'long-term cost model', 'vendor strategy'], ['DR drill', 'Cloud SQL failover', 'RTO / RPO', 'GKE multi-region failover', 'DR runbook', 'success criteria', 'gap analysis', 'chaos engineering'], ['GCP Billing export', 'BigQuery cost dashboard', 'committed use discounts', 'sustained use discounts', 'FinOps', 'cost roadmap', 'unit economics', 'executive cost narrative'], ['Cloud Audit Logs', 'Cloud IAM audit trail', 'Cloud KMS key usage', 'Security Command Center', 'log retention policy', 'alert evidence', 'PCI-DSS / SOX compliance', 'audit log export'], ['Terraform module registry', 'shared observability stack', 'platform capability design', 'inner-source adoption', 'OTEL collector deployment', 'Grafana provisioning', 'platform engineering', 'developer experience']]
+        topics: 'At this level, growth comes from cloud strategy, organisational reliability engineering, and platform investment decisions. There is no structured training track \u2014 this is the level that shapes the cloud and observability direction for the organisation.',
+        keywords: [['GKE vs Cloud Run vs GKE Autopilot', 'multi-region architecture', 'managed services trade-offs', 'GCP service selection', 'technology radar', 'long-term cost model', 'vendor strategy'], ['DR drill', 'Cloud SQL failover', 'RTO / RPO', 'GKE multi-region failover', 'DR runbook', 'success criteria', 'gap analysis', 'chaos engineering'], ['GCP Billing export', 'BigQuery cost dashboard', 'committed use discounts', 'sustained use discounts', 'FinOps', 'cost roadmap', 'unit economics', 'executive cost narrative'], ['Cloud Audit Logs', 'Cloud IAM audit trail', 'Cloud KMS key usage', 'Security Command Center', 'log retention policy', 'alert evidence', 'PCI-DSS / SOX compliance'], ['Terraform module registry', 'shared observability stack', 'platform capability design', 'inner-source adoption', 'OTEL collector deployment', 'Grafana provisioning', 'platform engineering']]
       }
     ]
   }

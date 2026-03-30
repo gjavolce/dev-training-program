@@ -1,24 +1,37 @@
 # Level 2 — Practitioner
 
-**Focus:** Configuring the runtime correctly for your service and diagnosing the most common production problems.
+**Focus:** I understand the container memory budget.
+
+*Production lens: When a pod gets OOMKilled, I can figure out whether it's a heap problem or a container-sizing problem, and I can configure a new service so it doesn't get killed.*
 
 ## Which of these scenarios can you handle confidently today?
 
-- When I size a new service for GKE, I can set JVM heap limits (-Xmx) and GKE resource requests/limits so the container doesn't get OOM-killed — and I understand why the JVM doesn't automatically respect the container's memory limit without explicit configuration.
-  `-Xmx` `-Xms` `UseContainerSupport` `MaxRAMPercentage` `resources.requests` `resources.limits` `OOMKilled` `cgroup memory`
+- When I size a new service for GKE, I understand that JVM memory = heap + Metaspace + thread stacks + direct byte buffers + native memory, and the container limit must fit all of it — not just the heap.
+  `-Xmx` `Metaspace` `thread stacks` `-Xss` `direct byte buffers` `native memory` `NIO` `total JVM footprint`
 
-- When GC pause times are elevated or GC frequency spikes, I can read the GC logs or JFR data well enough to distinguish between a temporary allocation surge and a genuine memory leak, and I know which one needs immediate action.
-  `GC logs` `-Xlog:gc` `jvm.gc.pause` `allocation rate` `heap pressure` `Java Flight Recorder` `JFR` `G1GC`
+- When configuring a service, I can apply the rule that `-Xmx` should be ~60–70% of the container memory limit, leaving room for non-heap memory, and I understand why setting `-Xmx` equal to the container limit causes OOMKill.
+  `-Xmx` `resources.limits.memory` `heap ratio` `non-heap memory` `OOMKill` `container memory budget` `60-70% rule`
 
-- When a Kafka consumer in our service starts falling behind on lag, I can check whether the cause is slow processing, insufficient concurrency, or a downstream bottleneck, and I can adjust the consumer thread pool or `max.poll.records` to address it.
-  `consumer lag` `max.poll.records` `max.poll.interval.ms` `consumer group` `kafka.consumer.fetch-latency-avg` `concurrency` `partition` `@KafkaListener`
+- When Grafana shows healthy heap metrics but pod-level memory is climbing toward the container limit, I recognize that something outside the heap is growing — and I know the likely suspects in our stack (Metaspace, thread stacks, Kafka buffers, HikariCP).
+  `jvm.memory.used` `container_memory_usage_bytes` `non-heap growth` `Metaspace` `thread stacks` `direct buffers` `Kafka consumer buffers` `HikariCP`
 
-- When I need to investigate a production issue without a debugger, I can attach a JFR recording to a running pod, pull the file, and open it in JMC to identify hot methods or lock contention without taking the service down.
-  `Java Flight Recorder` `JFR` `jcmd` `Java Mission Control` `JMC` `jcmd VM.unlock_commercial_features` `kubectl cp` `lock contention`
+- When reading `kubectl describe pod` after an OOMKill, I can extract the relevant information — container memory limit, last termination reason, restart count — and correlate it with the JVM's configured heap size.
+  `kubectl describe pod` `Last State: Terminated` `Reason: OOMKilled` `resources.limits.memory` `-Xmx` `restart count` `exit code 137`
 
-- When I write integration tests with Testcontainers for a Spring Boot service, I understand why the test JVM and container startup sequence matters and how to avoid flaky tests caused by connection timing.
-  `Testcontainers` `@SpringBootTest` `@Container` `waitingFor` `withStartupTimeout` `Spring Boot test slices` `flaky tests` `DataSourceAutoConfiguration`
+- When I see `UseContainerSupport` in JVM documentation, I understand why the JVM needs to know it's running in a container — and what goes wrong if it doesn't (the JVM sees the node's total memory instead of the container's limit).
+  `UseContainerSupport` `MaxRAMPercentage` `cgroup memory` `container awareness` `JVM container detection` `ActiveProcessorCount`
+
+- When setting resource requests and limits for a Spring Boot service, I understand the difference between requests (scheduling guarantee) and limits (kill boundary) and can set them appropriately for a JVM workload.
+  `resources.requests.memory` `resources.limits.memory` `QoS class` `Guaranteed` `Burstable` `scheduling` `OOMKill threshold`
+
+> **What this level is about:** The container is the real memory wall. Most production OOMKills are a misconfigured budget, not a leak. This is the highest-ROI knowledge for production reliability.
 
 ## Training Track
 
 Engineers at this level join **Track A: Foundations → Practitioner** together with Level 1 engineers.
+
+**Cross-reference with Cloud & Observability:** Cloud & Observability L2 covers other pod failure modes (probe failures, CrashLoopBackOff, config issues) and the broader infrastructure and instrumentation skills. Memory Management owns the "why did it run out of memory" question; Cloud & Observability owns everything else about the pod lifecycle.
+
+---
+
+*Tags:* #training-program #memory-management #level-2 #track-a
