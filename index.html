@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engineering Training Program — SEB Embedded</title>
+<style>
+  :root {
+    --bg: #0f0d13;
+    --surface: #1a1820;
+    --card: #222028;
+    --border: rgba(255,255,255,0.08);
+    --border-h: rgba(255,255,255,0.15);
+    --accent: #6e8efa;
+    --accent-soft: rgba(110,142,250,0.12);
+    --accent-mid: rgba(110,142,250,0.25);
+    --text: #e8e6f0;
+    --sub: rgba(232,230,240,0.65);
+    --muted: rgba(232,230,240,0.35);
+    --green: #4ade80;
+    --green-soft: rgba(74,222,128,0.12);
+    --radius: 10px;
+    --radius-lg: 16px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+  .fade-up-d1 { animation-delay: 0.08s; }
+  .fade-up-d2 { animation-delay: 0.16s; }
+  .fade-up-d3 { animation-delay: 0.24s; }
+  .fade-up-d4 { animation-delay: 0.32s; }
+
+  /* ── Layout ──────────────────────────────────── */
+  .page { max-width: 960px; margin: 0 auto; padding: 0 32px; }
+
+  /* ── Hero ─────────────────────────────────────── */
+  .hero {
+    text-align: center;
+    padding: 80px 0 64px;
+  }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 20px;
+  }
+  .hero-title {
+    font-size: clamp(28px, 5vw, 48px); font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 20px;
+  }
+  .hero-sub {
+    font-size: 16px; color: var(--sub); line-height: 1.7;
+    max-width: 520px; margin: 0 auto 36px;
+  }
+  .hero-actions {
+    display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px; border-radius: 999px;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.01em;
+    text-decoration: none; border: none;
+  }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+  }
+  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent; color: var(--accent);
+    border: 1px solid var(--accent-mid);
+  }
+  .btn-secondary:hover { background: var(--accent-soft); transform: translateY(-1px); }
+
+  /* ── Section ─────────────────────────────────── */
+  .section {
+    padding: 56px 0;
+  }
+  .section + .section {
+    border-top: 1px solid var(--border);
+  }
+  .section-eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: clamp(20px, 3.5vw, 28px); font-weight: 800;
+    letter-spacing: -0.02em; margin-bottom: 8px;
+  }
+  .section-sub {
+    font-size: 14px; color: var(--sub); line-height: 1.65;
+    max-width: 480px; margin-bottom: 32px;
+  }
+
+  /* ── How It Works ────────────────────────────── */
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .step {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px;
+    position: relative;
+  }
+  .step-num {
+    font-family: var(--mono); font-size: 32px; font-weight: 700;
+    color: var(--accent); opacity: 0.25; margin-bottom: 12px; line-height: 1;
+  }
+  .step-title {
+    font-size: 15px; font-weight: 700; margin-bottom: 6px;
+  }
+  .step-desc {
+    font-size: 13px; color: var(--sub); line-height: 1.6;
+  }
+  .step-connector {
+    display: none;
+  }
+
+  /* ── Tracks ──────────────────────────────────── */
+  .track-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .track-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px;
+    transition: all 0.2s; text-decoration: none; color: inherit;
+    display: block;
+  }
+  .track-card:hover {
+    border-color: var(--accent); background: rgba(110,142,250,0.06);
+  }
+  .track-card-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; margin-bottom: 14px;
+    font-family: var(--mono);
+  }
+  .track-card-name {
+    font-size: 15px; font-weight: 700; margin-bottom: 6px;
+  }
+  .track-card-desc {
+    font-size: 13px; color: var(--sub); line-height: 1.6;
+  }
+
+  /* ── Levels ──────────────────────────────────── */
+  .levels {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+  }
+  .level-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 12px;
+    text-align: center;
+  }
+  .level-num {
+    font-family: var(--mono); font-size: 24px; font-weight: 700;
+    color: var(--accent); line-height: 1; margin-bottom: 6px;
+  }
+  .level-name {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .level-desc {
+    font-size: 11px; color: var(--sub); line-height: 1.5;
+  }
+
+  /* ── CTA ─────────────────────────────────────── */
+  .cta {
+    text-align: center;
+    padding: 64px 0 80px;
+  }
+  .cta-title {
+    font-size: clamp(20px, 3.5vw, 28px); font-weight: 800;
+    letter-spacing: -0.02em; margin-bottom: 12px;
+  }
+  .cta-sub {
+    font-size: 14px; color: var(--sub); line-height: 1.65;
+    max-width: 400px; margin: 0 auto 28px;
+  }
+
+  /* ── Footer ──────────────────────────────────── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    text-align: center;
+    font-size: 12px; color: var(--muted);
+  }
+
+  /* ── Responsive ──────────────────────────────── */
+  @media (max-width: 700px) {
+    .steps { grid-template-columns: 1fr; }
+    .levels { grid-template-columns: repeat(3, 1fr); }
+    .hero { padding: 56px 0 48px; }
+  }
+  @media (max-width: 480px) {
+    body { padding: 0; }
+    .page { padding: 0 20px; }
+    .track-grid { grid-template-columns: 1fr; }
+    .levels { grid-template-columns: repeat(2, 1fr); }
+    .hero { padding: 40px 0 36px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Hero -->
+  <section class="hero fade-up">
+    <p class="hero-eyebrow">SEB Embedded · Engineering Training</p>
+    <h1 class="hero-title">Grow with your team</h1>
+    <p class="hero-sub">
+      A structured training program that discovers where your expertise sits across
+      4 competency tracks — so you can be placed with peers at the right level and
+      grow together.
+    </p>
+    <div class="hero-actions">
+      <a href="quiz.html" class="btn btn-primary">Take the Quiz</a>
+      <a href="level-guide.html" class="btn btn-secondary">Explore the Levels</a>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section fade-up fade-up-d1">
+    <p class="section-eyebrow">How it works</p>
+    <h2 class="section-title">Three steps to find your zone</h2>
+    <p class="section-sub">
+      The quiz uses an adaptive engine — it adjusts in real-time to zero in on
+      your level. No studying needed, just answer honestly.
+    </p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Pick a track</div>
+        <div class="step-desc">Choose one of the 4 competency areas — database, JVM, solution design, or cloud.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Answer questions</div>
+        <div class="step-desc">The quiz adapts as you go — getting harder when you're right, easier when you're not. Around 20 questions total.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Get placed</div>
+        <div class="step-desc">You'll see your level and a breakdown of scenario strengths, ready for group placement.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tracks -->
+  <section class="section fade-up fade-up-d2">
+    <p class="section-eyebrow">Competency tracks</p>
+    <h2 class="section-title">Four areas of expertise</h2>
+    <p class="section-sub">
+      Each track covers a distinct skill area relevant to the platform.
+      Pick the one closest to your role or interest.
+    </p>
+    <div class="track-grid">
+      <a href="quiz.html" class="track-card">
+        <div class="track-card-icon">DB</div>
+        <div class="track-card-name">Database Engineering</div>
+        <div class="track-card-desc">Schema design, query performance, migrations, PostgreSQL on Cloud SQL, multi-tenant isolation.</div>
+      </a>
+      <a href="quiz.html" class="track-card">
+        <div class="track-card-icon" style="font-size:11px">JVM</div>
+        <div class="track-card-name">JVM Understanding</div>
+        <div class="track-card-desc">Heap and GC diagnosis, thread analysis, JFR profiling, Kafka consumers, HikariCP tuning.</div>
+      </a>
+      <a href="quiz.html" class="track-card">
+        <div class="track-card-icon">SD</div>
+        <div class="track-card-name">Solution Design</div>
+        <div class="track-card-desc">API contracts, ADRs, sagas, multi-tenancy, event sourcing, cross-team design coherence.</div>
+      </a>
+      <a href="quiz.html" class="track-card">
+        <div class="track-card-icon" style="font-size:11px">CO</div>
+        <div class="track-card-name">Cloud & Observability</div>
+        <div class="track-card-desc">GKE resource management, distributed tracing, SLO/SLI, Terraform, incident command.</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Levels -->
+  <section class="section fade-up fade-up-d3">
+    <p class="section-eyebrow">Progression</p>
+    <h2 class="section-title">Six levels of mastery</h2>
+    <p class="section-sub">
+      Each track spans 6 levels. The quiz finds where you sit so training
+      starts at the right challenge point.
+    </p>
+    <div class="levels">
+      <div class="level-item">
+        <div class="level-num">1</div>
+        <div class="level-name">Foundations</div>
+        <div class="level-desc">Core concepts, reading code, following guidance</div>
+      </div>
+      <div class="level-item">
+        <div class="level-num">2</div>
+        <div class="level-name">Practitioner</div>
+        <div class="level-desc">Independent work, applying patterns correctly</div>
+      </div>
+      <div class="level-item">
+        <div class="level-num">3</div>
+        <div class="level-name">Advanced</div>
+        <div class="level-desc">Complex problems, production-grade decisions</div>
+      </div>
+      <div class="level-item">
+        <div class="level-num">4</div>
+        <div class="level-name">Specialist</div>
+        <div class="level-desc">Deep expertise, cross-team impact</div>
+      </div>
+      <div class="level-item">
+        <div class="level-num">5</div>
+        <div class="level-name">Expert</div>
+        <div class="level-desc">Setting standards, leading incidents</div>
+      </div>
+      <div class="level-item">
+        <div class="level-num">6</div>
+        <div class="level-name">Authority</div>
+        <div class="level-desc">Org-wide strategy, platform ownership</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta section fade-up fade-up-d4">
+    <h2 class="cta-title">Ready to find your zone?</h2>
+    <p class="cta-sub">
+      It takes about 10 minutes. No preparation needed — just your experience.
+    </p>
+    <div class="hero-actions">
+      <a href="quiz.html" class="btn btn-primary">Start the Quiz</a>
+      <a href="level-guide.html" class="btn btn-secondary">View Level Guide</a>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <div class="page">SEB Embedded · Engineering Training Program</div>
+</footer>
+
+</body>
+</html>
