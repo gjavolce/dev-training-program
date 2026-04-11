@@ -9,7 +9,7 @@
 ## Program structure
 
 - **4 competency areas**: Database Engineering, Memory Management, Solution Design, Cloud & Observability
-- **6 proficiency levels**: Foundations (L1) → Practitioner (L2) → Adept (L3) → Veteran (L4) → Expert (L5) → Authority (L6)
+- **6 proficiency levels**: Foundations (L1) → Practitioner (L2) → Advanced (L3) → Specialist (L4) → Expert (L5) → Authority (L6)
 - **3 education tracks**: Track A (L1→L2), Track B (L2→L3), Track C (L3→L4)
 - **Track continuity**: Track B entry = completed Track A capstone. Track C entry = completed Track B capstone.
 - **L5–L6 engineers** serve as mentors and workshop leads across all tracks.
@@ -232,7 +232,7 @@ Entry: Self-assessment at L1. Exit: Confidence at L2.
 
 ---
 
-## DB Track B: Practitioner → Adept (L2 → L3)
+## DB Track B: Practitioner → Advanced (L2 → L3)
 
 Entry: Completed Track A capstone (or self-assessed at L2). Exit: Confidence at L3.
 
@@ -382,7 +382,7 @@ Entry: Completed Track A capstone (or self-assessed at L2). Exit: Confidence at 
 
 ---
 
-## DB Track C: Adept → Veteran (L3 → L4)
+## DB Track C: Advanced → Specialist (L3 → L4)
 
 Entry: Completed Track B capstone (or self-assessed at L3). Exit: Confidence at L4.
 
@@ -684,7 +684,7 @@ Entry: Self-assessment at L1. Exit: Confidence at L2.
 
 ---
 
-## MM Track B: Practitioner → Adept (L2 → L3)
+## MM Track B: Practitioner → Advanced (L2 → L3)
 
 Entry: Completed Track A capstone (or self-assessed at L2). Exit: Confidence at L3.
 
@@ -834,7 +834,7 @@ Entry: Completed Track A capstone (or self-assessed at L2). Exit: Confidence at 
 
 ---
 
-## MM Track C: Adept → Veteran (L3 → L4)
+## MM Track C: Advanced → Specialist (L3 → L4)
 
 Entry: Completed Track B capstone (or self-assessed at L3). Exit: Confidence at L4.
 
@@ -1136,7 +1136,7 @@ Entry: Self-assessment at L1. Exit: Confidence at L2.
 
 ---
 
-## SD Track B: Practitioner → Adept (L2 → L3)
+## SD Track B: Practitioner → Advanced (L2 → L3)
 
 Entry: Completed Track A capstone (or self-assessed at L2). Exit: Confidence at L3.
 
@@ -1286,7 +1286,7 @@ Entry: Completed Track A capstone (or self-assessed at L2). Exit: Confidence at 
 
 ---
 
-## SD Track C: Adept → Veteran (L3 → L4)
+## SD Track C: Advanced → Specialist (L3 → L4)
 
 Entry: Completed Track B capstone (or self-assessed at L3). Exit: Confidence at L4.
 
@@ -1469,7 +1469,7 @@ Entry: Self-assessment at L1. Exit: Confidence at L2.
 
 ---
 
-## CO Track B: Practitioner → Adept (L2 → L3)
+## CO Track B: Practitioner → Advanced (L2 → L3)
 
 Entry: Completed Track A capstone (or self-assessed at L2). Exit: Confidence at L3.
 
@@ -1556,7 +1556,7 @@ Entry: Completed Track A capstone (or self-assessed at L2). Exit: Confidence at 
 
 ---
 
-## CO Track C: Adept → Veteran (L3 → L4)
+## CO Track C: Advanced → Specialist (L3 → L4)
 
 Entry: Completed Track B capstone (or self-assessed at L3). Exit: Confidence at L4.
 

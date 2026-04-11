@@ -1,4 +1,4 @@
-# Level 3 — Adept
+# Level 3 — Advanced
 
 **Focus:** I know where memory goes inside a Spring Boot app.
 
@@ -28,7 +28,7 @@
 
 ## Training Track
 
-Engineers at this level join **Track B: Practitioner → Adept** together with Level 2 engineers completing Track A.
+Engineers at this level join **Track B: Practitioner → Advanced** together with Level 2 engineers completing Track A.
 
 **Cross-reference with Cloud & Observability:** Cloud & Observability L3 covers distributed tracing, SLOs, and alerting design. The Actuator metrics knowledge here complements the broader metrics/tracing instrumentation covered there.
 

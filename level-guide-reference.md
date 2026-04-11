@@ -8,7 +8,7 @@
 
 ## How levels work
 
-- **6 levels per area**: Foundations (L1) → Practitioner (L2) → Adept (L3) → Veteran (L4) → Expert (L5) → Authority (L6)
+- **6 levels per area**: Foundations (L1) → Practitioner (L2) → Advanced (L3) → Specialist (L4) → Expert (L5) → Authority (L6)
 - **3 training tracks**: Track A (L1→L2), Track B (L2→L3), Track C (L3→L4)
 - **Mentor track (M)**: L5–L6 engineers lead workshops, not attend them
 - **Per-area assignment**: An engineer can be L1 in one area and L3 in another
@@ -63,7 +63,7 @@ PostgreSQL on Cloud SQL (GCP). Covers everything from writing your first JOIN to
   5. READ COMMITTED, REPEATABLE READ, SERIALIZABLE, phantom read, lost update, dirty read, SET TRANSACTION ISOLATION LEVEL
   6. Cloud SQL Query Insights, pg_stat_statements, query fingerprint, mean execution time, Cloud Monitoring
 
-## DB Level 3 — Adept
+## DB Level 3 — Advanced
 - **Track**: B (paired with L4 engineers)
 - **Focus**: Handling complex regulated domains, diagnosing production issues, and understanding what's happening under the hood.
 - **Scenarios**:
@@ -82,7 +82,7 @@ PostgreSQL on Cloud SQL (GCP). Covers everything from writing your first JOIN to
   5. pg_stat_activity, pg_locks, pg_blocking_pids(), wait_event, idle in transaction, lock modes
   6. partial index, expression index, covering index, INCLUDE, GIN index, index-only scan
 
-## DB Level 4 — Veteran
+## DB Level 4 — Specialist
 - **Track**: C (paired with L3 engineers)
 - **Focus**: Operating at scale, managing platform-level database concerns, and ensuring compliance.
 - **Scenarios**:
@@ -181,7 +181,7 @@ How memory works in our Spring Boot services on GKE. Starts with what you can se
   5. UseContainerSupport, MaxRAMPercentage, cgroup memory, container awareness
   6. resources.requests.memory, resources.limits.memory, QoS class, Guaranteed, Burstable
 
-## MM Level 3 — Adept
+## MM Level 3 — Advanced
 - **Track**: B (paired with L4 engineers)
 - **Focus**: I know where memory goes inside a Spring Boot app. I can reason about consumers and make informed configuration and code review decisions.
 - **Scenarios**:
@@ -200,7 +200,7 @@ How memory works in our Spring Boot services on GKE. Starts with what you can se
   5. Kafka partition assignment, cache divergence, connection pool state, pod memory variance
   6. memory budget calculation, thread stacks, -Xss, HikariCP connections, container limit, safety margin
 
-## MM Level 4 — Veteran
+## MM Level 4 — Specialist
 - **Track**: C (paired with L3 engineers)
 - **Focus**: I can find root causes using JVM diagnostic tools. I look inside the JVM to find leaks, GC pressure, and contention.
 - **Scenarios**:
@@ -295,7 +295,7 @@ Architecture and system design for distributed BaaS services. Covers API design,
   4. aggregate root, consistency boundary, DDD, bounded context, domain event
   5. backwards compatibility, error propagation, failure mode, contract versioning
 
-## SD Level 3 — Adept
+## SD Level 3 — Advanced
 - **Track**: B (paired with L4 engineers)
 - **Focus**: Designing systems that handle complex domains, failure modes, and regulatory constraints.
 - **Scenarios**:
@@ -312,7 +312,7 @@ Architecture and system design for distributed BaaS services. Covers API design,
   4. multi-tenancy, tenant isolation, row-level security, ThreadLocal, schema-per-tenant, data leakage
   5. dead-letter topic, at-least-once delivery, idempotent consumer, @RetryableTopic, Kafka transactions
 
-## SD Level 4 — Veteran
+## SD Level 4 — Specialist
 - **Track**: C (paired with L3 engineers)
 - **Focus**: Owning cross-service designs end-to-end and raising the quality bar across the domain.
 - **Scenarios**:
@@ -405,7 +405,7 @@ GCP, GKE, and the full observability stack: Cloud Monitoring, OpenTelemetry, Gra
   5. metrics vs logs vs traces, observability pillars, OpenTelemetry, Cloud Trace
   6. VPC, subnet, firewall rules, Cloud NAT, GKE networking, Service, Ingress
 
-## CO Level 3 — Adept
+## CO Level 3 — Advanced
 - **Track**: B (paired with L4 engineers)
 - **Focus**: I can trace problems across services, design meaningful alerts and SLOs, and configure autoscaling.
 - **Scenarios**:
@@ -426,7 +426,7 @@ GCP, GKE, and the full observability stack: Cloud Monitoring, OpenTelemetry, Gra
   6. HPA, Horizontal Pod Autoscaler, custom metrics, scale-down stabilization
   7. terraform plan, terraform state, state drift, module variables
 
-## CO Level 4 — Veteran
+## CO Level 4 — Specialist
 - **Track**: C (paired with L3 engineers)
 - **Focus**: I design infrastructure, manage observability at scale, handle compliance, and configure advanced autoscaling.
 - **Scenarios**:

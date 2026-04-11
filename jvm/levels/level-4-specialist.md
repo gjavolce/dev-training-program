@@ -1,4 +1,4 @@
-# Level 4 — Veteran
+# Level 4 — Specialist
 
 **Focus:** I can find root causes using JVM diagnostic tools.
 
@@ -28,7 +28,7 @@
 
 ## Training Track
 
-Engineers at this level join **Track C: Adept → Veteran** together with Level 3 engineers completing Track B.
+Engineers at this level join **Track C: Advanced → Specialist** together with Level 3 engineers completing Track B.
 
 **Cross-reference with Cloud & Observability:** Cloud & Observability L4 covers platform infrastructure, cost management, compliance, and chaos engineering — horizontal, cross-cutting concerns. This level goes vertical: deep inside one service's memory. An engineer at L4 in both tracks can diagnose deep AND wide.
 
