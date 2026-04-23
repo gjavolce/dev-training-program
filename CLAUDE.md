@@ -61,19 +61,21 @@ Each track has 6 levels with 5 scenarios each. Each question maps to a level, di
 
 ## Adaptive engine
 
-5 phases: `ASSESS → EXPLORE → BONUS → CONFIRM → MAP → finish`
+6 phases: `CALIBRATE → ASSESS → EXPLORE → BONUS → CONFIRM → MAP → finish`
 
-**ASSESS** — Questions at current level. Streak of 2 correct → explore up. After 3+ questions, if wrong ≥ 2 and wrong ≥ 2×correct → drop down and confirm.
+**CALIBRATE** — 1 question at L2 as a gate. Correct = start at L2. Wrong = start at L1.
 
-**EXPLORE** — 3 questions at next level. 0-1 wrong = promote. 2 wrong = bonus. 3 wrong = settle back.
+**ASSESS** — Questions at current level. Streak of 2 correct → explore up. After 2+ questions, if wrong ≥ 2 and wrong ≥ 2×correct → drop down and confirm.
+
+**EXPLORE** — 2 questions at next level. 0 wrong = promote. 1 wrong = bonus. 2 wrong = settle back.
 
 **BONUS** — 1 extra question. Correct = promote. Wrong = settle back to confirm.
 
-**CONFIRM** — 3 questions at settled level. 0-1 wrong = confirmed. 2+ wrong and level > 0 = cascade down one more level and re-confirm.
+**CONFIRM** — 2 questions at settled level. 0-1 wrong = confirmed. 2 wrong and level > 0 = cascade down one more level and re-confirm.
 
-**MAP** — Gather scenario coverage (≥4 questions at settled level). Streak of 2 can re-explore up.
+**MAP** — Gather scenario coverage (≥2 questions at settled level). Streak of 3 can re-explore up.
 
-**Finish:** pool exhausted, 30 questions reached, or MAP has enough data.
+**Finish:** pool exhausted, 20 questions reached, or MAP has enough data (≥3 answers at settled level with ≥65% correct).
 
 ## Adding questions to a track
 
@@ -174,12 +176,17 @@ Target: ≥ 9 questions per level (3 per difficulty), all 5 scenarios covered.
 
 | What | Where | Current | Effect |
 |------|-------|---------|--------|
+| Calibrate questions | CALIBRATE | `1` | Gate question at L2 |
 | Streak to explore | ASSESS | `streak >= 2` | Lower = faster up |
-| Demotion trigger | ASSESS | `wrong >= 2 && wrong >= correct*2` | Higher ratio = more forgiving |
-| Explore questions | EXPLORE | `eAsked >= 3` | More = more evidence |
-| Confirm questions | CONFIRM | `confirmAsked >= 3` | More = thorough check |
-| Map coverage | askNextOrFinish | `asked >= 4` | More = better results |
-| Hard stop | nextStep | `maxQuestions: 30` | Absolute max |
+| Demotion trigger | ASSESS | `asked >= 2 && wrong >= 2 && wrong >= correct*2` | Higher ratio = more forgiving |
+| Explore questions | EXPLORE | `eAsked >= 2` | More = more evidence |
+| Explore max wrong | EXPLORE | `0` | 0 wrong = promote, 1 = bonus, 2 = fail |
+| Confirm questions | CONFIRM | `confirmAsked >= 2` | More = thorough check |
+| Map coverage | askNextOrFinish | `asked >= 2` | More = better results |
+| Map re-explore | MAP | `streak >= 3` | Higher = harder to re-explore |
+| Hard stop | nextStep | `hardMax: 20` | Absolute max |
+| Min answers for finish | hasEnoughConfidence | `3` | Min answers at level |
+| Min confidence | hasEnoughConfidence | `0.65` | Proportion correct |
 | Needle weight | nudgeNeedle | easy=0.8, med=1.0, hard=1.3 | Sensitivity |
 
 ## Scenario lists for question generation
